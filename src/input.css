@@ -1,0 +1,35 @@
+/* styles/index.css */
+
+/* Reset básico */
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--background-color-1);
+  color: var(--text-color-1);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+/* Añade aquí estilos globales que quieras que afecten a todo el sitio */
