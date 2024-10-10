@@ -30,23 +30,6 @@ export default function RegisterStudent() {
     };
   };
 
-  const limpiarCampos = () => {
-    setNombre('');
-    setApellidoPaterno('');
-    setApellidoMaterno('');
-    setFechaNacimiento('');
-    setEmail('');
-    setPassword('');
-    setPasswordConfirm('');
-    setCelular('');
-    setControlNumber('');
-    setCareer('');
-    setSemester('');
-    setShift('');
-    setFoto(null);
-    setFotoUrl(null);
-  };
-
   const handleNumericInput = (e, setter, maxLength) => {
     const value = e.target.value;
     if (/^\d*$/.test(value) && value.length <= maxLength) {
@@ -55,7 +38,7 @@ export default function RegisterStudent() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
       <form className="bg-white p-8 rounded-3xl shadow-lg w-full max-w-md text-center">
         <div className="flex flex-col items-center">
           <h5 className="text-2xl font-bold mb-6">Registro de Alumno</h5>
@@ -68,7 +51,7 @@ export default function RegisterStudent() {
           </div>
           {step === 1 && (
             <>
-              <div className="flex items-center w-full mb-4">
+              <div className="flex w-full items-center mb-4">
                 <label htmlFor="fileUpload" className="bg-gray-200 text-black py-2 px-4 rounded-l-lg border border-gray-300 cursor-pointer whitespace-nowrap">
                   Seleccionar archivo
                 </label>
@@ -81,7 +64,7 @@ export default function RegisterStudent() {
                 />
                 <input
                   type="text"
-                  className="flex-grow py-2 px-3 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                  className="w-full py-2 px-3 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-gray-500 cursor-not-allowed"
                   value={foto ? foto.name : "Sin archivos seleccionados"}
                   readOnly
                 />
@@ -114,14 +97,6 @@ export default function RegisterStudent() {
               <SelectGroup label="Semestre" value={semester} onChange={(e) => setSemester(e.target.value)} options={[
                 { value: "", label: "Seleccione" },
                 { value: "0", label: "0" },
-                { value: "1", label: "1" },
-                { value: "2", label: "2" },
-                { value: "3", label: "3" },
-                { value: "4", label: "4" },
-                { value: "5", label: "5" },
-                { value: "6", label: "6" },
-                { value: "7", label: "7" },
-                { value: "8", label: "8" },
                 { value: "9", label: "9" },
               ]} />
               <SelectGroup label="Turno" value={shift} onChange={(e) => setShift(e.target.value)} options={[
@@ -142,21 +117,21 @@ export default function RegisterStudent() {
           )}
           <div className="flex flex-col gap-3 mt-6 w-full">
             {step > 1 && (
-              <button type="button" className="bg-gray-200 text-gray-700 py-3 px-6 rounded-lg text-base hover:bg-gray-300 transition-colors" onClick={() => setStep(step - 1)}>
+              <button type="button" className="bg-slate-300 text-gray-700 font-medium py-3 px-6 rounded-lg text-base hover:bg-slate-400 transition-colors" onClick={() => setStep(step - 1)}>
                 Anterior
               </button>
             )}
             {step < 3 && (
               <button
                 type="button"
-                className={`bg-blue-600 text-white py-3 px-6 rounded-lg text-base hover:bg-blue-700 transition-colors ${step === 1 ? 'w-full' : ''}`}
+                className={`bg-blue-600 text-white font-medium py-3 px-6 rounded-lg text-base hover:bg-blue-700 transition-colors ${step === 1 ? 'w-full' : ''}`}
                 onClick={() => setStep(step + 1)}
               >
                 Siguiente
               </button>
             )}
             {step === 3 && (
-              <button type="submit" className="bg-green-600 text-white py-3 px-6 rounded-lg text-base hover:bg-green-700 transition-colors w-full">
+              <button type="submit" className="bg-emerald-600 text-white font-medium py-3 px-6 rounded-lg text-base hover:bg-emerald-700 transition-colors w-full">
                 Registrar Alumno
               </button>
             )}
