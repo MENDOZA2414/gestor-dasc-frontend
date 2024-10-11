@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import api from '../api';  // Importar la instancia de Axios configurada
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
@@ -8,34 +9,47 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [contentHeight, setContentHeight] = useState('100vh');
-
-  useEffect(() => {
-    const updateContentHeight = () => {
-      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-      setContentHeight(`calc(100vh - ${headerHeight}px)`);
-    };
-
-    updateContentHeight();
-    window.addEventListener('resize', updateContentHeight);
-
-    return () => window.removeEventListener('resize', updateContentHeight);
-  }, []);
+  const navigate = useNavigate(); // Definir navigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Utilizar la instancia de Axios
       const response = await api.post('/user/login', {
         email,
         password,
       });
       console.log('Login exitoso:', response.data);
-      // Manejar el éxito, como guardar el token o redirigir
+
+      const { token, userTypeID } = response.data;
+
+      // Debug: Verificar el valor de userTypeID
+      console.log('userTypeID:', userTypeID);
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('userTypeID', userTypeID);
+
+      // Asegurarse de que el navigate esté siendo llamado correctamente
+      if (userTypeID === 1) {
+        console.log('Navigating to /internalAssessor');
+        navigate('/internalAssessor');
+      } else if (userTypeID === 2) {
+        console.log('Navigating to /userStudent');
+        navigate('/userStudent');
+      } else if (userTypeID === 3) {
+        console.log('Navigating to /externalAssessor');
+        navigate('/externalAssessor');
+      } else if (userTypeID === 4) {
+        console.log('Navigating to /company');
+        navigate('/company');
+      } else {
+        console.error('userTypeID no coincide con ninguno de los casos esperados.');
+      }
     } catch (err) {
       console.error('Error en el login:', err);
       setError('Credenciales incorrectas');
     }
   };
+
 
   return (
     <div className="font-poppins flex flex-col justify-between items-center bg-gray-100 overflow-hidden" style={{ height: contentHeight }}>
