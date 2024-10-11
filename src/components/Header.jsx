@@ -26,11 +26,13 @@ export default function Header() {
       <div className="max-w-full mx-auto px-8 sm:px-12 lg:px-16">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0">
-            <img
-              src="/dasc.png"
-              alt="Logo DASC"
-              className="h-12 w-auto"
-            />
+            <Link to="/">
+              <img
+                src="/dasc.png"
+                alt="Logo DASC"
+                className="h-12 w-auto"
+              />
+            </Link>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
             {menuItems.map((item) => (
