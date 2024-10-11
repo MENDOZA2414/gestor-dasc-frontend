@@ -18,11 +18,11 @@ export default function Header() {
 
   const authItems = [
     { name: 'Iniciar sesión', path: '/login' },
-    { name: 'Registro', path: '/register' },
+    { name: 'Registro', path: '/preRegister' },
   ];
 
   return (
-    <header className="font-poppins bg-white shadow-md w-full">
+    <header className="font-poppins bg-white shadow-md w-full fixed top-0 z-50">
       <div className="max-w-full mx-auto px-8 sm:px-12 lg:px-16">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0">

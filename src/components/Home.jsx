@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
-        <div className="mt-20 text-center px-4">
+        <div className="mt-16 text-center px-4">
           <h1 className="text-4xl font-bold mb-4">
             La <span className="text-blue-600">gestión de prácticas</span> del DASC bajo control
           </h1>
