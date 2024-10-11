@@ -1,13 +1,13 @@
 // components/Home/Home.jsx
 import React from 'react';
 
-const UserStudent = () => {
+const UserInternalAssesor= () => {
   return (
     <div>
-      <h1>Welcome Student:</h1>
+      <h1>Welcome InternalAssessor:</h1>
       <p>OMG AAAAAA.</p>
     </div>
   );
 };
 
-export default UserStudent;
+export default UserInternalAssesor;

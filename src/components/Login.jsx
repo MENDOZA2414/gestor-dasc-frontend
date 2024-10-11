@@ -30,17 +30,17 @@ export default function Login() {
 
       // Asegurarse de que el navigate esté siendo llamado correctamente
       if (userTypeID === 1) {
-        console.log('Navigating to /internalAssessor');
-        navigate('/internalAssessor');
+        console.log('Navigating to /userInternalAssessor');
+        navigate('/userInternalAssessor');
       } else if (userTypeID === 2) {
         console.log('Navigating to /userStudent');
         navigate('/userStudent');
       } else if (userTypeID === 3) {
-        console.log('Navigating to /externalAssessor');
-        navigate('/externalAssessor');
+        console.log('Navigating to /userExternalAssessor');
+        navigate('/userExternalAssessor');
       } else if (userTypeID === 4) {
-        console.log('Navigating to /company');
-        navigate('/company');
+        console.log('Navigating to /userCompany');
+        navigate('/userCompany');
       } else {
         console.error('userTypeID no coincide con ninguno de los casos esperados.');
       }
