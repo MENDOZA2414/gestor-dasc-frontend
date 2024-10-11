@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BASE_URL } from '../config';
+import api from '../api';  // Importar la instancia de Axios configurada
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Login() {
@@ -25,7 +24,8 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${BASE_URL}login`, {
+      // Utilizar la instancia de Axios
+      const response = await api.post('/user/login', {
         email,
         password,
       });
