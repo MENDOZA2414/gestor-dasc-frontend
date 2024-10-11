@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../api';
 
 export default function RegisterStudent() {
   const [foto, setFoto] = useState(null);
@@ -16,7 +17,22 @@ export default function RegisterStudent() {
   const [semester, setSemester] = useState('');
   const [shift, setShift] = useState('');
   const [studentStatus, setStudentStatus] = useState('Activo');
+  const [internalAssessorID, setInternalAssessorID] = useState('');
+  const [internalAssessors, setInternalAssessors] = useState([]);
   const [step, setStep] = useState(1);
+
+  useEffect(() => {
+    const fetchInternalAssessors = async () => {
+      try {
+        const response = await api.get('/internalAssessors');
+        setInternalAssessors(response.data);
+      } catch (error) {
+        console.error('Error al obtener asesores internos:', error);
+      }
+    };
+
+    fetchInternalAssessors();
+  }, []);
 
   const prevFoto = (e) => {
     const file = e.target.files[0];
@@ -30,16 +46,39 @@ export default function RegisterStudent() {
     };
   };
 
-  const handleNumericInput = (e, setter, maxLength) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= maxLength) {
-      setter(value);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      firstName: nombre,
+      firstLastName: apellidoPaterno,
+      secondLastName: apellidoMaterno,
+      dateOfBirth: fechaNacimiento,
+      email,
+      password,
+      phone: celular,
+      controlNumber,
+      career,
+      semester,
+      shift,
+      studentStatus,
+      internalAssessorID,
+      photo: foto ? foto : null,
+      status: 'Pending' // O cualquier valor por defecto que desees
+    };
+
+    try {
+      await api.post('/students/register', formData);
+      alert('Registro exitoso');
+    } catch (error) {
+      console.error("Error al registrar el alumno:", error);
+      alert('Hubo un error al registrar el alumno, por favor intente nuevamente.');
     }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
-      <form className="bg-white p-8 rounded-3xl shadow-lg w-full max-w-md text-center">
+      <form className="bg-white p-8 rounded-3xl shadow-lg w-full max-w-md text-center" onSubmit={handleSubmit} noValidate>
         <div className="flex flex-col items-center">
           <h5 className="text-2xl font-bold mb-6">Registro de Alumno</h5>
           <div className="w-40 h-40 mb-4 flex justify-center items-center">
@@ -51,24 +90,6 @@ export default function RegisterStudent() {
           </div>
           {step === 1 && (
             <>
-              <div className="flex w-full items-center mb-4">
-                <label htmlFor="fileUpload" className="bg-gray-200 text-black py-2 px-4 rounded-l-lg border border-gray-300 cursor-pointer whitespace-nowrap">
-                  Seleccionar archivo
-                </label>
-                <input
-                  id="fileUpload"
-                  type="file"
-                  accept=".jpg,.jpeg,.png"
-                  onChange={prevFoto}
-                  className="hidden"
-                />
-                <input
-                  type="text"
-                  className="w-full py-2 px-3 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-                  value={foto ? foto.name : "Sin archivos seleccionados"}
-                  readOnly
-                />
-              </div>
               <InputGroup label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
               <InputGroup label="Apellido Paterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} />
               <InputGroup label="Apellido Materno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} />
@@ -80,7 +101,7 @@ export default function RegisterStudent() {
               <InputGroup label="Correo Electrónico" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <InputGroup label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               <InputGroup label="Confirmar Contraseña" type="password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} />
-              <InputGroup label="Número Celular" type="tel" value={celular} onChange={(e) => handleNumericInput(e, setCelular, 10)} />
+              <InputGroup label="Número Celular" type="tel" value={celular} onChange={(e) => setCelular(e.target.value)} />
             </>
           )}
           {step === 3 && (
@@ -104,14 +125,12 @@ export default function RegisterStudent() {
                 { value: "TM", label: "TM" },
                 { value: "TV", label: "TV" },
               ]} />
-              <SelectGroup label="Estado del Estudiante" value={studentStatus} onChange={(e) => setStudentStatus(e.target.value)} options={[
-                { value: "Activo", label: "Activo" },
-                { value: "Inactivo", label: "Inactivo" },
-              ]} />
-              <SelectGroup label="Seleccione su asesor" value={studentStatus} onChange={(e) => setStudentStatus(e.target.value)} options={[
+              <SelectGroup label="Asesor Interno" value={internalAssessorID} onChange={(e) => setInternalAssessorID(e.target.value)} options={[
                 { value: "", label: "Seleccione" },
-                { value: "Asesor1", label: "Asesor1" },
-                { value: "Asesor2", label: "Asesor2" },
+                ...internalAssessors.map((assessor) => ({
+                  value: assessor.internalAssessorID,
+                  label: assessor.fullName,
+                })),
               ]} />
             </>
           )}
