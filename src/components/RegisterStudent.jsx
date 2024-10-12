@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function RegisterStudent() {
   const [foto, setFoto] = useState(null);
@@ -21,6 +22,8 @@ export default function RegisterStudent() {
   const [internalAssessors, setInternalAssessors] = useState([]);
   const [step, setStep] = useState(1);
   const [omitirFoto, setOmitirFoto] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   useEffect(() => {
     const fetchInternalAssessors = async () => {
@@ -107,8 +110,24 @@ export default function RegisterStudent() {
           {step === 2 && (
             <>
               <InputGroup label="Correo Electrónico" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <InputGroup label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength="8" />
-              <InputGroup label="Confirmar Contraseña" type="password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} required minLength="8" />
+              <PasswordInputGroup
+                label="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                required
+                minLength="8"
+              />
+              <PasswordInputGroup
+                label="Confirmar Contraseña"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                showPassword={showPasswordConfirm}
+                setShowPassword={setShowPasswordConfirm}
+                required
+                minLength="8"
+              />
               <InputGroup label="Número Celular" type="tel" value={celular} onChange={(e) => handleNumericInput(e, setCelular, 10)} required pattern="\d{10}" />
             </>
           )}
@@ -227,6 +246,31 @@ function InputGroup({ label, type = "text", value, onChange, required, minLength
         minLength={minLength}
         pattern={pattern}
       />
+    </div>
+  );
+}
+
+function PasswordInputGroup({ label, value, onChange, showPassword, setShowPassword, required, minLength }) {
+  return (
+    <div className="w-full mb-3">
+      <label className="block text-sm font-medium mb-1 text-left">{label}</label>
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          value={value}
+          onChange={onChange}
+          required={required}
+          minLength={minLength}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+        >
+          {showPassword ? <FaEyeSlash className="h-4 w-4 text-gray-500" /> : <FaEye className="h-4 w-4 text-gray-500" />}
+        </button>
+      </div>
     </div>
   );
 }

@@ -30,8 +30,8 @@ export default function PreRegister() {
 
   return (
     <div className="font-poppins max-w-7xl mx-auto p-12 min-h-[calc(100vh-80px)] bg-gray-100 overflow-auto">
-      <h1 className="text-2xl font-bold text-center mb-12 text-gray-800">
-        Selecciona el tipo de usuario deseado para registrarte
+      <h1 className="text-3xl font-bold text-center mb-12 text-gray-800">
+        Selecciona el <span className="text-blue-600">tipo de usuario</span> deseado para registrarte
       </h1>
       <div className="flex flex-wrap gap-8 justify-center">
         {[
@@ -62,9 +62,9 @@ export default function PreRegister() {
                     readOnly
                     className="absolute opacity-0 w-0 h-0"
                   />
-                  <span className="relative inline-block w-10 h-10 bg-white rounded-full border-2 border-gray-300">
+                  <span className={`relative inline-block w-10 h-10 bg-white rounded-full border-2 ${selectedRole === role ? 'border-black' : 'border-gray-300'}`}>
                     {selectedRole === role && (
-                      <span className="absolute top-1/2 left-1/2 w-5 h-5 -translate-x-1/2 -translate-y-1/2 bg-gray-700 rounded-full"></span>
+                      <span className="absolute top-1/2 left-1/2 w-5 h-5 -translate-x-1/2 -translate-y-1/2 bg-slate-950 rounded-full"></span>
                     )}
                   </span>
                 </label>

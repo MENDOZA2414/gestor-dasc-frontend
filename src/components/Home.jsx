@@ -3,13 +3,13 @@ import { FaFacebook, FaInstagram } from 'react-icons/fa'
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="font-poppins flex flex-col min-h-screen">
       <main className="flex-grow">
         <div className="mt-16 text-center px-4">
           <h1 className="text-4xl font-bold mb-4">
             La <span className="text-blue-600">gestión de prácticas</span> del DASC bajo control
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-lg text-gray-600 mb-8">
             Simplificamos y unificamos los procesos de prácticas profesionales de nuestro departamento para que ganes tiempo, seguridad y tranquilidad.
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function Home() {
               <div className="p-8 flex flex-col h-full">
                 <h2 className="text-2xl font-semibold mb-4 text-center">Su objetivo</h2>
                 <p className="text-justify">
-                  Las prácticas Profesionales tienen como objetivo general que los alumnos pongan en práctica los conocimientos adquiridos en el transcurso de su formación profesional.
+                  Las prácticas Profesionales tienen como objetivo general que los alumnos pongan en práctica los conocimientos adquiridos en el transcurso de su formación profesional, cubriendo un total de 160 hrs.
                 </p>
               </div>
             </div>
