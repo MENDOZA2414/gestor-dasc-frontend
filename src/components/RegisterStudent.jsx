@@ -103,7 +103,7 @@ export default function RegisterStudent() {
               <InputGroup label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
               <InputGroup label="Apellido Paterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
               <InputGroup label="Apellido Materno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
-              <InputGroup label="Fecha de Nacimiento" type="date" value={fechaNacimiento} onChange={(e) => setFechaNacimiento(e.target.value)} required />
+              <DateInputGroup label="Fecha de Nacimiento" value={fechaNacimiento} onChange={(e) => setFechaNacimiento(e.target.value)} required />
               <InputGroup label="Número de Control" value={controlNumber} onChange={(e) => setControlNumber(e.target.value)} required />
             </>
           )}
@@ -239,12 +239,32 @@ function InputGroup({ label, type = "text", value, onChange, required, minLength
       <label className="block text-sm font-medium mb-1 text-left">{label}</label>
       <input
         type={type}
-        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
         value={value}
         onChange={onChange}
         required={required}
         minLength={minLength}
         pattern={pattern}
+      />
+    </div>
+  );
+}
+
+function DateInputGroup({ label, value, onChange, required }) {
+  return (
+    <div className="w-full mb-3">
+      <label className="block text-sm font-medium mb-1 text-left">{label}</label>
+      <input
+        type="date"
+        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+        value={value}
+        onChange={onChange}
+        required={required}
+        style={{
+          backgroundImage: 'none',
+          WebkitAppearance: 'none',
+          MozAppearance: 'textfield'
+        }}
       />
     </div>
   );
@@ -257,7 +277,7 @@ function PasswordInputGroup({ label, value, onChange, showPassword, setShowPassw
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}
-          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
           value={value}
           onChange={onChange}
           required={required}
@@ -280,7 +300,7 @@ function SelectGroup({ label, value, onChange, options, required }) {
     <div className="w-full mb-3">
       <label className="block text-sm font-medium mb-1 text-left">{label}</label>
       <select
-        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent  appearance-none"
         value={value}
         onChange={onChange}
         required={required}
