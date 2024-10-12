@@ -91,10 +91,10 @@ export default function RegisterStudent() {
   };
 
   return (
-    <div className="flex justify-center items-start pt-10 min-h-[calc(100vh-80px)] bg-gray-100 font-poppins overflow-auto">
-      <form className="bg-white p-8 rounded-3xl shadow-lg w-full max-w-md text-center" onSubmit={handleSubmit} noValidate>
+    <div className="flex justify-center items-start pt-6 min-h-[calc(100vh-80px)] bg-gray-100 font-poppins overflow-auto px-4 sm:px-6 lg:px-8">
+      <form className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm text-center" onSubmit={handleSubmit} noValidate>
         <div className="flex flex-col items-center">
-          <h5 className="text-2xl font-bold mb-6">Registro de Alumno</h5>
+          <h5 className="text-xl font-bold mb-4">Registro de Alumno</h5>
           {step === 1 && (
             <>
               <InputGroup label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
@@ -143,16 +143,16 @@ export default function RegisterStudent() {
           )}
           {step === 4 && (
             <>
-              <h6 className="text-lg text-gray-700 font-base mb-4">Selecciona una foto de perfil</h6>
-              <div className="w-40 h-40 mb-4 flex justify-center items-center">
+              <h6 className="text-base text-gray-700 font-medium mb-3">Selecciona una foto de perfil</h6>
+              <div className="w-32 h-32 mb-3 flex justify-center items-center">
                 {fotoUrl ? (
                   <img className="w-full h-full object-cover rounded-full" src={fotoUrl} alt="Foto del alumno" />
                 ) : (
                   <div className="w-full h-full bg-gray-200 rounded-full"></div>
                 )}
               </div>
-              <div className="flex w-full items-center mb-4">
-                <label htmlFor="fileUpload" className="bg-gray-200 text-black py-2 px-4 rounded-l-lg border border-gray-300 cursor-pointer whitespace-nowrap">
+              <div className="flex w-full items-center mb-3">
+                <label htmlFor="fileUpload" className="bg-gray-200 text-black py-1.5 px-3 rounded-l-lg border border-gray-300 cursor-pointer whitespace-nowrap text-sm">
                   Seleccionar archivo
                 </label>
                 <input
@@ -165,12 +165,12 @@ export default function RegisterStudent() {
                 />
                 <input
                   type="text"
-                  className="w-full py-2 px-3 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                  className="w-full py-1.5 px-2 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-gray-500 cursor-not-allowed text-sm"
                   value={foto ? foto.name : "Sin archivos seleccionados"}
                   readOnly
                 />
               </div>
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-3">
                 <input
                   type="checkbox"
                   id="omitirFoto"
@@ -184,30 +184,30 @@ export default function RegisterStudent() {
               </div>
             </>
           )}
-          <div className="flex flex-col gap-3 mt-6 w-full">
+          <div className="flex flex-col gap-2 mt-4 w-full">
             {step > 1 && (
-              <button type="button" className="bg-slate-300 text-gray-700 font-medium py-3 px-6 rounded-lg text-base hover:bg-slate-400 transition-colors" onClick={() => setStep(step - 1)}>
+              <button type="button" className="bg-slate-300 text-gray-700 font-medium py-2 px-4 rounded-lg text-sm hover:bg-slate-400 transition-colors" onClick={() => setStep(step - 1)}>
                 Anterior
               </button>
             )}
             {step < 4 && (
               <button
                 type="button"
-                className={`bg-blue-600 text-white font-medium py-3 px-6 rounded-lg text-base hover:bg-blue-700 transition-colors ${step === 1 ? 'w-full' : ''}`}
+                className={`bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm hover:bg-blue-700 transition-colors ${step === 1 ? 'w-full' : ''}`}
                 onClick={() => setStep(step + 1)}
               >
                 Siguiente
               </button>
             )}
             {step === 4 && (
-              <button type="submit" className="bg-emerald-600 text-white font-medium py-3 px-6 rounded-lg text-base hover:bg-emerald-700 transition-colors w-full">
+              <button type="submit" className="bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg text-sm hover:bg-emerald-700 transition-colors w-full">
                 Registrar Alumno
               </button>
             )}
           </div>
         </div>
-        <div className="mt-6">
-          <p>¿Ya tienes una cuenta? <a href="/login" className="text-blue-600 hover:underline">Inicia sesión</a></p>
+        <div className="mt-4">
+          <p className="text-sm">¿Ya tienes una cuenta? <a href="/login" className="text-blue-600 hover:underline">Inicia sesión</a></p>
         </div>
       </form>
     </div>
@@ -216,11 +216,11 @@ export default function RegisterStudent() {
 
 function InputGroup({ label, type = "text", value, onChange, required, minLength, pattern }) {
   return (
-    <div className="w-full mb-4">
+    <div className="w-full mb-3">
       <label className="block text-sm font-medium mb-1 text-left">{label}</label>
       <input
         type={type}
-        className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         value={value}
         onChange={onChange}
         required={required}
@@ -233,10 +233,10 @@ function InputGroup({ label, type = "text", value, onChange, required, minLength
 
 function SelectGroup({ label, value, onChange, options, required }) {
   return (
-    <div className="w-full mb-4">
+    <div className="w-full mb-3">
       <label className="block text-sm font-medium mb-1 text-left">{label}</label>
       <select
-        className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         value={value}
         onChange={onChange}
         required={required}
