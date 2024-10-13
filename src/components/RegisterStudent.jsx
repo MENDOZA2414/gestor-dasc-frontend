@@ -58,9 +58,78 @@ export default function RegisterStudent() {
     }
   };
 
+  const handleAlphaInput = (e, setter) => {
+    const value = e.target.value;
+    const alphaRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/; // Permitir solo letras y espacios
+    if (alphaRegex.test(value)) {
+      setter(value); // Solo actualiza el estado si el valor es válido
+    }
+  };
+  
+
+  // Validar si la fecha de nacimiento es mayor a 18 años
+  const validateAge = (fecha) => {
+    const hoy = new Date();
+    const fechaNacimiento = new Date(fecha);
+    
+    // Verificar si la fecha de nacimiento es posterior a la fecha actual
+    if (fechaNacimiento > hoy) {
+        return -1; // Fecha no válida si es mayor a hoy
+    }
+
+    const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+        return edad - 1;
+    }
+
+    return edad;
+};
+
+
+  const handleDateChange = (e) => {
+    const fecha = e.target.value;
+    setFechaNacimiento(fecha);  // Simplemente actualiza el estado sin validar
+  };
+
+
+
+
+  const validatePassword = (password) => {
+    // Contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const validateEmail = (email) => {
+    // Validación de formato básico de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    // Validaciones de campos
+    if (!validateEmail(email)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El correo electrónico no es válido',
+      });
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.',
+      });
+      return;
+    }
+
     if (password !== passwordConfirm) {
       Swal.fire({
         icon: 'error',
@@ -69,7 +138,34 @@ export default function RegisterStudent() {
       });
       return;
     }
-  
+
+    if (celular.length !== 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El número de celular debe tener 10 dígitos',
+      });
+      return;
+    }
+
+    if (controlNumber.length !== 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El número de control debe tener 10 dígitos',
+      });
+      return;
+    }
+
+    if (validateAge(fechaNacimiento) < 18) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Debes tener al menos 18 años',
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("apellidoPaterno", apellidoPaterno);
@@ -108,6 +204,44 @@ export default function RegisterStudent() {
     }
   };
 
+  const isStepValid = () => {
+    if (step === 1) {
+      // Validar que el año esté entre hace 100 años y hace 18 años al hacer clic en "Siguiente"
+      const hoy = new Date();
+      const year = parseInt(fechaNacimiento.split("-")[0], 10); // Obtener solo el año
+  
+      if (isNaN(year)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Fecha no válida',
+          text: 'El año debe ser un número válido.',
+        });
+        return false;
+      }
+  
+      const minYear = hoy.getFullYear() - 100;
+      const maxYear = hoy.getFullYear() - 18;
+  
+      if (year < minYear || year > maxYear) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Fecha no válida',
+          text: `El año debe estar entre ${minYear} y ${maxYear}.`,
+        });
+        return false;
+      }
+  
+      // Validaciones de otros campos
+      return nombre && apellidoPaterno && controlNumber && fechaNacimiento;
+    } else if (step === 2) {
+      return email && password && passwordConfirm && celular;
+    } else if (step === 3) {
+      return career && semester && shift && internalAssessorID;
+    }
+    return true;
+  };
+  
+
   return (
     <div className="flex justify-center items-start pt-6 min-h-[calc(100vh-80px)] bg-gray-100 font-poppins overflow-auto px-4 sm:px-6 lg:px-8">
       <form className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm text-center" onSubmit={handleSubmit} noValidate>
@@ -115,11 +249,18 @@ export default function RegisterStudent() {
           <h5 className="text-xl font-bold mb-4">Registro de Alumno</h5>
           {step === 1 && (
             <>
-              <InputGroup label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-              <InputGroup label="Apellido Paterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
-              <InputGroup label="Apellido Materno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
-              <DateInputGroup label="Fecha de Nacimiento" value={fechaNacimiento} onChange={(e) => setFechaNacimiento(e.target.value)} required />
-              <InputGroup label="Número de Control" value={controlNumber} onChange={(e) => setControlNumber(e.target.value)} required />
+              <InputGroup label="Nombre" value={nombre} onChange={(e) => handleAlphaInput(e, setNombre)} required />
+              <InputGroup label="Apellido Paterno" value={apellidoPaterno} onChange={(e) => handleAlphaInput(e, setApellidoPaterno)} required />
+              <InputGroup label="Apellido Materno" value={apellidoMaterno} onChange={(e) => handleAlphaInput(e, setApellidoMaterno)} />
+              <DateInputGroup label="Fecha de Nacimiento" value={fechaNacimiento} onChange={handleDateChange} required />
+              <InputGroup 
+                label="Número de Control" 
+                value={controlNumber} 
+                onChange={(e) => handleNumericInput(e, setControlNumber, 10)} 
+                required 
+                maxLength={10} 
+                pattern="\d*" 
+              />
             </>
           )}
           {step === 2 && (
@@ -228,7 +369,17 @@ export default function RegisterStudent() {
               <button
                 type="button"
                 className={`bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm hover:bg-blue-700 transition-colors ${step === 1 ? 'w-full' : ''}`}
-                onClick={() => setStep(step + 1)}
+                onClick={() => {
+                  if (isStepValid()) {
+                    setStep(step + 1);
+                  } else {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: 'Por favor, completa todos los campos obligatorios antes de continuar.',
+                    });
+                  }
+                }}
               >
                 Siguiente
               </button>
