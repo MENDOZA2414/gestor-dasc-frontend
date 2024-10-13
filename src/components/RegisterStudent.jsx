@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
+import Swal from 'sweetalert2';  
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function RegisterStudent() {
@@ -61,7 +62,11 @@ export default function RegisterStudent() {
     e.preventDefault();
   
     if (password !== passwordConfirm) {
-      alert("Las contraseñas no coinciden");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Las contraseñas no coinciden',
+      });
       return;
     }
   
@@ -86,10 +91,20 @@ export default function RegisterStudent() {
   
     try {
       await api.post('/students/register', formData);
-      alert('Registro exitoso');
+      Swal.fire({
+        icon: 'success',
+        title: 'Registro exitoso',
+        text: 'El alumno ha sido registrado correctamente.',
+        showConfirmButton: false,
+        timer: 1500
+      });
     } catch (error) {
       console.error("Error al registrar el alumno:", error);
-      alert('Hubo un error al registrar el alumno, por favor intente nuevamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al registrar el alumno, por favor intente nuevamente.',
+      });
     }
   };
 
