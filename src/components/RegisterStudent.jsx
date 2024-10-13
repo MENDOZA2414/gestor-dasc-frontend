@@ -275,14 +275,13 @@ export default function RegisterStudent() {
                 required
                 minLength="8"
               />
-              <PasswordInputGroup
+               <ConfirmPasswordInputGroup
                 label="Confirmar Contraseña"
-                value={passwordConfirm}
+                password={password}
+                confirmPassword={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
                 showPassword={showPasswordConfirm}
                 setShowPassword={setShowPasswordConfirm}
-                required
-                minLength="8"
               />
               <InputGroup label="Número Celular" type="tel" value={celular} onChange={(e) => handleNumericInput(e, setCelular, 10)} required pattern="\d{10}" />
             </>
@@ -437,6 +436,18 @@ function DateInputGroup({ label, value, onChange, required }) {
 }
 
 function PasswordInputGroup({ label, value, onChange, showPassword, setShowPassword, required, minLength }) {
+  const [hasLowerCase, setHasLowerCase] = useState(false);
+  const [hasUpperCase, setHasUpperCase] = useState(false);
+  const [hasDigit, setHasDigit] = useState(false);
+  const [hasMinLength, setHasMinLength] = useState(false);
+
+  useEffect(() => {
+    setHasLowerCase(/[a-z]/.test(value));
+    setHasUpperCase(/[A-Z]/.test(value));
+    setHasDigit(/\d/.test(value));
+    setHasMinLength(value.length >= minLength);
+  }, [value, minLength]);
+
   return (
     <div className="w-full mb-3">
       <label className="block text-sm font-medium mb-1 text-left">{label}</label>
@@ -457,9 +468,54 @@ function PasswordInputGroup({ label, value, onChange, showPassword, setShowPassw
           {showPassword ? <FaEyeSlash className="h-4 w-4 text-gray-500" /> : <FaEye className="h-4 w-4 text-gray-500" />}
         </button>
       </div>
+      <ul className="mt-2 text-xs">
+        <li className={`flex items-center ${hasLowerCase ? 'text-green-500' : 'text-red-500'}`}>
+          {hasLowerCase ? '✔️' : '❌'} Al menos una letra minúscula
+        </li>
+        <li className={`flex items-center ${hasUpperCase ? 'text-green-500' : 'text-red-500'}`}>
+          {hasUpperCase ? '✔️' : '❌'} Al menos una letra mayúscula
+        </li>
+        <li className={`flex items-center ${hasDigit ? 'text-green-500' : 'text-red-500'}`}>
+          {hasDigit ? '✔️' : '❌'} Al menos un dígito
+        </li>
+        <li className={`flex items-center ${hasMinLength ? 'text-green-500' : 'text-red-500'}`}>
+          {hasMinLength ? '✔️' : '❌'} Al menos {minLength} caracteres
+        </li>
+      </ul>
     </div>
   );
 }
+
+function ConfirmPasswordInputGroup({ label, password, confirmPassword, onChange, showPassword, setShowPassword }) {
+  const passwordsMatch = password === confirmPassword && confirmPassword !== '';
+
+  return (
+    <div className="w-full mb-3">
+      <label className="block text-sm font-medium mb-1 text-left">{label}</label>
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+          value={confirmPassword}
+          onChange={onChange}
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+        >
+          {showPassword ? <FaEyeSlash className="h-4 w-4 text-gray-500" /> : <FaEye className="h-4 w-4 text-gray-500" />}
+        </button>
+      </div>
+      <p className={`mt-2 text-xs text-left ${passwordsMatch ? 'text-green-500' : 'text-red-500'}`}>
+        {passwordsMatch ? '✔️ Las contraseñas coinciden' : '❌ Las contraseñas no coinciden'}
+      </p>
+    </div>
+  );
+}
+
+
 
 function SelectGroup({ label, value, onChange, options, required }) {
   return (
