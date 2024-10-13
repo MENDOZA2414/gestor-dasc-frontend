@@ -97,10 +97,11 @@ export default function RegisterStudent() {
 
 
   const validatePassword = (password) => {
-    // Contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial
+    // Incluye caracteres especiales en el regex
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
+  
 
   const validateEmail = (email) => {
     // Validación de formato básico de email
@@ -206,40 +207,92 @@ export default function RegisterStudent() {
 
   const isStepValid = () => {
     if (step === 1) {
-      // Validar que el año esté entre hace 100 años y hace 18 años al hacer clic en "Siguiente"
+      // Validar que el número de control tenga exactamente 10 dígitos
+      if (controlNumber.length !== 10) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El número de control debe tener 10 dígitos.',
+        });
+        return false;
+      }
+  
+      // Validar la fecha de nacimiento
       const hoy = new Date();
-      const year = parseInt(fechaNacimiento.split("-")[0], 10); // Obtener solo el año
+      const birthDate = new Date(fechaNacimiento);
+      
+      let edad = hoy.getFullYear() - birthDate.getFullYear(); // Cambiado a 'let'
+      const mes = hoy.getMonth() - birthDate.getMonth();
   
-      if (isNaN(year)) {
+      if (mes < 0 || (mes === 0 && hoy.getDate() < birthDate.getDate())) {
+        edad--; // Reasignación de 'edad'
+      }
+  
+      if (edad < 18 || edad > 100) {
         Swal.fire({
           icon: 'error',
-          title: 'Fecha no válida',
-          text: 'El año debe ser un número válido.',
+          title: 'Error',
+          text: 'Debes tener entre 18 y 100 años.',
         });
         return false;
       }
   
-      const minYear = hoy.getFullYear() - 100;
-      const maxYear = hoy.getFullYear() - 18;
-  
-      if (year < minYear || year > maxYear) {
+      // Validar que todos los campos obligatorios estén llenos
+      if (!nombre || !apellidoPaterno || !controlNumber || !fechaNacimiento) {
         Swal.fire({
           icon: 'error',
-          title: 'Fecha no válida',
-          text: `El año debe estar entre ${minYear} y ${maxYear}.`,
+          title: 'Error',
+          text: 'Por favor, llena todos los campos obligatorios.',
         });
         return false;
       }
-  
-      // Validaciones de otros campos
-      return nombre && apellidoPaterno && controlNumber && fechaNacimiento;
     } else if (step === 2) {
-      return email && password && passwordConfirm && celular;
-    } else if (step === 3) {
-      return career && semester && shift && internalAssessorID;
+      // Validar el correo electrónico
+      if (!validateEmail(email)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ingresa un correo electrónico válido.',
+        });
+        return false;
+      }
+  
+      // Validar la contraseña
+      if (!validatePassword(password)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.',
+        });
+        return false;
+      }
+  
+      // Validar que las contraseñas coincidan
+      if (password !== passwordConfirm) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Las contraseñas no coinciden.',
+        });
+        return false;
+      }
+  
+      // Validar el número de celular
+      if (celular.length !== 10) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El número de celular debe tener 10 dígitos.',
+        });
+        return false;
+      }
     }
+  
     return true;
   };
+  
+  
+  
   
 
   return (
@@ -371,13 +424,7 @@ export default function RegisterStudent() {
                 onClick={() => {
                   if (isStepValid()) {
                     setStep(step + 1);
-                  } else {
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Error',
-                      text: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-                    });
-                  }
+                  } 
                 }}
               >
                 Siguiente
