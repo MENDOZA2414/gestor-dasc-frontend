@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Swal from 'sweetalert2';  // Importar SweetAlert2
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -29,6 +31,13 @@ export default function Login() {
 
       if (routes[userTypeID]) {
         navigate(routes[userTypeID]);
+        Swal.fire({
+          icon: 'success',
+          title: 'Login exitoso',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        
       } else {
         console.error('userTypeID no coincide con ninguno de los casos esperados.');
       }

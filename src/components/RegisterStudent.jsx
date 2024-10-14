@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
+import Swal from 'sweetalert2';  
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function RegisterStudent() {
@@ -57,14 +58,115 @@ export default function RegisterStudent() {
     }
   };
 
+  const handleAlphaInput = (e, setter) => {
+    const value = e.target.value;
+    const alphaRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/; // Permitir solo letras y espacios
+    if (alphaRegex.test(value)) {
+      setter(value); // Solo actualiza el estado si el valor es válido
+    }
+  };
+  
+
+  // Validar si la fecha de nacimiento es mayor a 18 años
+  const validateAge = (fecha) => {
+    const hoy = new Date();
+    const fechaNacimiento = new Date(fecha);
+    
+    // Verificar si la fecha de nacimiento es posterior a la fecha actual
+    if (fechaNacimiento > hoy) {
+        return -1; // Fecha no válida si es mayor a hoy
+    }
+
+    const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+        return edad - 1;
+    }
+
+    return edad;
+};
+
+
+  const handleDateChange = (e) => {
+    const fecha = e.target.value;
+    setFechaNacimiento(fecha);  // Simplemente actualiza el estado sin validar
+  };
+
+
+
+
+  const validatePassword = (password) => {
+    // Incluye caracteres especiales en el regex
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+  
+
+  const validateEmail = (email) => {
+    // Validación de formato básico de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (password !== passwordConfirm) {
-      alert("Las contraseñas no coinciden");
+    // Validaciones de campos
+    if (!validateEmail(email)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El correo electrónico no es válido',
+      });
       return;
     }
-  
+
+    if (!validatePassword(password)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.',
+      });
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Las contraseñas no coinciden',
+      });
+      return;
+    }
+
+    if (celular.length !== 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El número de celular debe tener 10 dígitos',
+      });
+      return;
+    }
+
+    if (controlNumber.length !== 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'El número de control debe tener 10 dígitos',
+      });
+      return;
+    }
+
+    if (validateAge(fechaNacimiento) < 18) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Debes tener al menos 18 años',
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("apellidoPaterno", apellidoPaterno);
@@ -86,12 +188,112 @@ export default function RegisterStudent() {
   
     try {
       await api.post('/students/register', formData);
-      alert('Registro exitoso');
+      Swal.fire({
+        icon: 'success',
+        title: 'Registro exitoso',
+        text: 'El alumno ha sido registrado correctamente.',
+        showConfirmButton: false,
+        timer: 1500
+      });
     } catch (error) {
       console.error("Error al registrar el alumno:", error);
-      alert('Hubo un error al registrar el alumno, por favor intente nuevamente.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al registrar el alumno, por favor intente nuevamente.',
+      });
     }
   };
+
+  const isStepValid = () => {
+    if (step === 1) {
+      // Validar que el número de control tenga exactamente 10 dígitos
+      if (controlNumber.length !== 10) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El número de control debe tener 10 dígitos.',
+        });
+        return false;
+      }
+  
+      // Validar la fecha de nacimiento
+      const hoy = new Date();
+      const birthDate = new Date(fechaNacimiento);
+      
+      let edad = hoy.getFullYear() - birthDate.getFullYear(); // Cambiado a 'let'
+      const mes = hoy.getMonth() - birthDate.getMonth();
+  
+      if (mes < 0 || (mes === 0 && hoy.getDate() < birthDate.getDate())) {
+        edad--; // Reasignación de 'edad'
+      }
+  
+      if (edad < 18 || edad > 100) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Debes tener entre 18 y 100 años.',
+        });
+        return false;
+      }
+  
+      // Validar que todos los campos obligatorios estén llenos
+      if (!nombre || !apellidoPaterno || !controlNumber || !fechaNacimiento) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Por favor, llena todos los campos obligatorios.',
+        });
+        return false;
+      }
+    } else if (step === 2) {
+      // Validar el correo electrónico
+      if (!validateEmail(email)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ingresa un correo electrónico válido.',
+        });
+        return false;
+      }
+  
+      // Validar la contraseña
+      if (!validatePassword(password)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.',
+        });
+        return false;
+      }
+  
+      // Validar que las contraseñas coincidan
+      if (password !== passwordConfirm) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Las contraseñas no coinciden.',
+        });
+        return false;
+      }
+  
+      // Validar el número de celular
+      if (celular.length !== 10) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'El número de celular debe tener 10 dígitos.',
+        });
+        return false;
+      }
+    }
+  
+    return true;
+  };
+  
+  
+  
+  
 
   return (
     <div className="flex justify-center items-start pt-6 min-h-[calc(100vh-80px)] bg-gray-100 font-poppins overflow-auto px-4 sm:px-6 lg:px-8">
@@ -100,11 +302,26 @@ export default function RegisterStudent() {
           <h5 className="text-xl font-bold mb-4">Registro de Alumno</h5>
           {step === 1 && (
             <>
+<<<<<<< HEAD
               <InputGroup label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
               <InputGroup label="Apellido Paterno" value={apellidoPaterno} onChange={(e) => setApellidoPaterno(e.target.value)} required />
               <InputGroup label="Apellido Materno" value={apellidoMaterno} onChange={(e) => setApellidoMaterno(e.target.value)} required />
               <InputGroup label="Fecha de Nacimiento" type="date" value={fechaNacimiento} onChange={(e) => setFechaNacimiento(e.target.value)} required />
               <InputGroup label="Número de Control" value={controlNumber} onChange={(e) => setControlNumber(e.target.value)} required />
+=======
+              <InputGroup label="Nombre" value={nombre} onChange={(e) => handleAlphaInput(e, setNombre)} required />
+              <InputGroup label="Apellido Paterno" value={apellidoPaterno} onChange={(e) => handleAlphaInput(e, setApellidoPaterno)} required />
+              <InputGroup label="Apellido Materno" value={apellidoMaterno} onChange={(e) => handleAlphaInput(e, setApellidoMaterno)} />
+              <DateInputGroup label="Fecha de Nacimiento" value={fechaNacimiento} onChange={handleDateChange} required />
+              <InputGroup 
+                label="Número de Control" 
+                value={controlNumber} 
+                onChange={(e) => handleNumericInput(e, setControlNumber, 10)} 
+                required 
+                maxLength={10} 
+                pattern="\d*" 
+              />
+>>>>>>> 4e34754888c5abf7e676077c08de58450f3b39ba
             </>
           )}
           {step === 2 && (
@@ -119,14 +336,13 @@ export default function RegisterStudent() {
                 required
                 minLength="8"
               />
-              <PasswordInputGroup
+               <ConfirmPasswordInputGroup
                 label="Confirmar Contraseña"
-                value={passwordConfirm}
+                password={password}
+                confirmPassword={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
                 showPassword={showPasswordConfirm}
                 setShowPassword={setShowPasswordConfirm}
-                required
-                minLength="8"
               />
               <InputGroup label="Número Celular" type="tel" value={celular} onChange={(e) => handleNumericInput(e, setCelular, 10)} required pattern="\d{10}" />
             </>
@@ -213,7 +429,11 @@ export default function RegisterStudent() {
               <button
                 type="button"
                 className={`bg-blue-600 text-white font-medium py-2 px-4 rounded-lg text-sm hover:bg-blue-700 transition-colors ${step === 1 ? 'w-full' : ''}`}
-                onClick={() => setStep(step + 1)}
+                onClick={() => {
+                  if (isStepValid()) {
+                    setStep(step + 1);
+                  } 
+                }}
               >
                 Siguiente
               </button>
@@ -251,6 +471,18 @@ function InputGroup({ label, type = "text", value, onChange, required, minLength
 }
 
 function PasswordInputGroup({ label, value, onChange, showPassword, setShowPassword, required, minLength }) {
+  const [hasLowerCase, setHasLowerCase] = useState(false);
+  const [hasUpperCase, setHasUpperCase] = useState(false);
+  const [hasDigit, setHasDigit] = useState(false);
+  const [hasMinLength, setHasMinLength] = useState(false);
+
+  useEffect(() => {
+    setHasLowerCase(/[a-z]/.test(value));
+    setHasUpperCase(/[A-Z]/.test(value));
+    setHasDigit(/\d/.test(value));
+    setHasMinLength(value.length >= minLength);
+  }, [value, minLength]);
+
   return (
     <div className="w-full mb-3">
       <label className="block text-sm font-medium mb-1 text-left">{label}</label>
@@ -271,9 +503,54 @@ function PasswordInputGroup({ label, value, onChange, showPassword, setShowPassw
           {showPassword ? <FaEyeSlash className="h-4 w-4 text-gray-500" /> : <FaEye className="h-4 w-4 text-gray-500" />}
         </button>
       </div>
+      <ul className="mt-2 text-xs">
+        <li className={`flex items-center ${hasLowerCase ? 'text-green-500' : 'text-red-500'}`}>
+          {hasLowerCase ? '✔️' : '❌'} Al menos una letra minúscula
+        </li>
+        <li className={`flex items-center ${hasUpperCase ? 'text-green-500' : 'text-red-500'}`}>
+          {hasUpperCase ? '✔️' : '❌'} Al menos una letra mayúscula
+        </li>
+        <li className={`flex items-center ${hasDigit ? 'text-green-500' : 'text-red-500'}`}>
+          {hasDigit ? '✔️' : '❌'} Al menos un dígito
+        </li>
+        <li className={`flex items-center ${hasMinLength ? 'text-green-500' : 'text-red-500'}`}>
+          {hasMinLength ? '✔️' : '❌'} Al menos {minLength} caracteres
+        </li>
+      </ul>
     </div>
   );
 }
+
+function ConfirmPasswordInputGroup({ label, password, confirmPassword, onChange, showPassword, setShowPassword }) {
+  const passwordsMatch = password === confirmPassword && confirmPassword !== '';
+
+  return (
+    <div className="w-full mb-3">
+      <label className="block text-sm font-medium mb-1 text-left">{label}</label>
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+          value={confirmPassword}
+          onChange={onChange}
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+        >
+          {showPassword ? <FaEyeSlash className="h-4 w-4 text-gray-500" /> : <FaEye className="h-4 w-4 text-gray-500" />}
+        </button>
+      </div>
+      <p className={`mt-2 text-xs text-left ${passwordsMatch ? 'text-green-500' : 'text-red-500'}`}>
+        {passwordsMatch ? '✔️ Las contraseñas coinciden' : '❌ Las contraseñas no coinciden'}
+      </p>
+    </div>
+  );
+}
+
+
 
 function SelectGroup({ label, value, onChange, options, required }) {
   return (
