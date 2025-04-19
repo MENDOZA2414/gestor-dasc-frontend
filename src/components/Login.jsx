@@ -10,18 +10,18 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/user/login', { email, password });
+      const response = await api.post('/user/login', { email, password, rememberMe });
       console.log('Login exitoso:', response.data);
 
-      const { token, userTypeID } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userTypeID', userTypeID);
-
+      const { userTypeID } = response.data;
+      sessionStorage.setItem('userTypeID', userTypeID); // si quieres conservar este dato, está bien
+      
       const routes = {
         1: '/userInternalAssessor',
         2: '/userStudent',
@@ -96,9 +96,11 @@ export default function Login() {
           </div>
 
           <div className="flex items-center justify-start mb-4">
-            <input
+           <input
               type="checkbox"
               id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
               className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="rememberMe" className="text-sm text-gray-700">
