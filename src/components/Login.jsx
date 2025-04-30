@@ -18,17 +18,18 @@ export default function Login() {
     try {
       const response = await api.post('/user/login', { email, password, rememberMe });
       console.log('Login exitoso:', response.data);
-
+    
       const { userTypeID } = response.data;
-      sessionStorage.setItem('userTypeID', userTypeID); // si quieres conservar este dato, está bien
-      
+      sessionStorage.setItem('userTypeID', userTypeID);
+      sessionStorage.removeItem('alertShown'); // limpia alerta de sesión expirada anterior
+    
       const routes = {
         1: '/userInternalAssessor',
         2: '/userStudent',
         3: '/userExternalAssessor',
         4: '/userCompany'
       };
-
+    
       if (routes[userTypeID]) {
         navigate(routes[userTypeID]);
         Swal.fire({
@@ -37,14 +38,64 @@ export default function Login() {
           showConfirmButton: false,
           timer: 1500
         });
-        
       } else {
         console.error('userTypeID no coincide con ninguno de los casos esperados.');
       }
+    
     } catch (err) {
-      console.error('Error en el login:', err);
-      setError('Credenciales incorrectas');
-    }
+      const message = err?.response?.data?.message;
+    
+      if (err.response?.status === 409 && message?.includes('sesión activa')) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Sesión activa detectada',
+          text: 'Ya hay una sesión abierta con esta cuenta. ¿Deseas cerrar la anterior y continuar aquí?',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, continuar aquí',
+          cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            // Reintenta login con override
+            try {
+              const secondAttempt = await api.post('/user/login', {
+                email,
+                password,
+                rememberMe,
+                override: true
+              });
+    
+              const { userTypeID } = secondAttempt.data;
+              sessionStorage.setItem('userTypeID', userTypeID);
+              sessionStorage.removeItem('alertShown');
+    
+              const routes = {
+                1: '/userInternalAssessor',
+                2: '/userStudent',
+                3: '/userExternalAssessor',
+                4: '/userCompany'
+              };
+    
+              if (routes[userTypeID]) {
+                navigate(routes[userTypeID]);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Sesión iniciada',
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+              }
+    
+            } catch (secondErr) {
+              console.error('Error al reemplazar sesión:', secondErr);
+              setError('No se pudo iniciar sesión.');
+            }
+          }
+        });
+      } else {
+        console.error('Error en el login:', err);
+        setError('Credenciales incorrectas');
+      }
+    }    
   };
 
   return (
