@@ -24,7 +24,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await api.post('/user/login', { email, password, rememberMe });
-      console.log('Login exitoso:', response.data);
+      console.log('Sesión Iniciada:', response.data);
       localStorage.setItem('token', response.data.token);
     
       const { userTypeID } = response.data;
@@ -38,7 +38,7 @@ export default function Login() {
         
         Swal.fire({
           icon: 'success',
-          title: 'Login exitoso',
+          title: 'Sesión Iniciada',
           showConfirmButton: false,
           timer: 1500
         });
@@ -80,7 +80,7 @@ export default function Login() {
                 
                 Swal.fire({
                   icon: 'success',
-                  title: 'Login exitoso',
+                  title: 'Sesión Iniciada',
                   showConfirmButton: false,
                   timer: 1500
                 });
