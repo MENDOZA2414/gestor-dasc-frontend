@@ -32,7 +32,10 @@ export default function Login() {
       };
     
       if (routes[userTypeID]) {
-        window.location.href = routes[userTypeID];
+        setTimeout(() => {
+          window.location.replace(routes[userTypeID]);
+        }, 100);
+        
         Swal.fire({
           icon: 'success',
           title: 'Login exitoso',
@@ -77,7 +80,10 @@ export default function Login() {
               };
     
               if (routes[userTypeID]) {
-                window.location.href = routes[userTypeID];
+                setTimeout(() => {
+                  window.location.replace(routes[userTypeID]);
+                }, 100);
+                
                 Swal.fire({
                   icon: 'success',
                   title: 'Sesión iniciada',
