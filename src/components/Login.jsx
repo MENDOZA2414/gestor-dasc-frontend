@@ -13,6 +13,13 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
+  const routes = {
+    1: '/userInternalAssessor',
+    2: '/userStudent',
+    3: '/userExternalAssessor',
+    4: '/userCompany'
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -23,13 +30,6 @@ export default function Login() {
       const { userTypeID } = response.data;
       sessionStorage.setItem('userTypeID', userTypeID);
       sessionStorage.removeItem('alertShown'); // limpia alerta de sesión expirada anterior
-    
-      const routes = {
-        1: '/userInternalAssessor',
-        2: '/userStudent',
-        3: '/userExternalAssessor',
-        4: '/userCompany'
-      };
     
       if (routes[userTypeID]) {
         setTimeout(() => {
@@ -67,17 +67,11 @@ export default function Login() {
                 rememberMe,
                 override: true
               });
-    
+              localStorage.setItem('token', secondAttempt.data.token); 
+
               const { userTypeID } = secondAttempt.data;
               sessionStorage.setItem('userTypeID', userTypeID);
               sessionStorage.removeItem('alertShown');
-    
-              const routes = {
-                1: '/userInternalAssessor',
-                2: '/userStudent',
-                3: '/userExternalAssessor',
-                4: '/userCompany'
-              };
     
               if (routes[userTypeID]) {
                 setTimeout(() => {
@@ -86,7 +80,7 @@ export default function Login() {
                 
                 Swal.fire({
                   icon: 'success',
-                  title: 'Sesión iniciada',
+                  title: 'Login exitoso',
                   showConfirmButton: false,
                   timer: 1500
                 });
