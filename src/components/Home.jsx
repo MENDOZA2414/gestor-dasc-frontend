@@ -1,7 +1,43 @@
-import React from 'react'
-import { FaFacebook, FaInstagram } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api';
+import { FaFacebook, FaInstagram } from 'react-icons/fa';
 
 export default function Home() {
+  const navigate = useNavigate();
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    api.get('/user/protected')
+      .then(res => {
+        const { userTypeID } = res.data.user;
+        const routes = {
+          1: '/userInternalAssessor',
+          2: '/userStudent',
+          3: '/userExternalAssessor',
+          4: '/userCompany'
+        };
+        if (routes[userTypeID]) {
+          navigate(routes[userTypeID]);
+        } else {
+          setCheckingSession(false); // tipo desconocido
+        }
+      })
+      .catch(() => {
+        setCheckingSession(false); // no hay sesión
+      });
+  }, [navigate]);
+
+  if (checkingSession) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-white">
+        <img src="/logo-dasc.png" alt="Logo" className="w-24 mb-4 animate-pulse" />
+        <div className="w-8 h-8 border-4 border-[#049774] border-t-transparent rounded-full animate-spin mb-3"></div>
+        <p className="text-gray-600 text-lg">Verificando sesión...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="font-poppins flex flex-col min-h-screen">
       <main className="flex-grow">
@@ -62,5 +98,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
