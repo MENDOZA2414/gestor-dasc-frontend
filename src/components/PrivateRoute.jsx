@@ -9,17 +9,22 @@ const PrivateRoute = ({ children }) => {
 useEffect(() => {
   api.get('/user/protected')
     .then(() => setAuthorized(true))
-    .catch(() => {
+    .catch((err) => {
+      const msg = err?.response?.data?.message;
+    
       if (!sessionStorage.getItem('alertShown')) {
         Swal.fire({
           icon: 'info',
-          title: 'Sesión expirada',
-          text: 'Por favor, inicia sesión de nuevo',
+          title: msg === 'No hay sesión activa' ? 'No has iniciado sesión' : 'Sesión expirada',
+          text: msg === 'No hay sesión activa'
+            ? 'Por favor, inicia sesión para acceder a esta sección.'
+            : 'Tu sesión ha expirado. Vuelve a iniciar sesión.',
           timer: 2500,
           showConfirmButton: false
         });
         sessionStorage.setItem('alertShown', 'true');
       }
+    
       setAuthorized(false);
     });    
 }, []);
