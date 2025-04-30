@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Swal from 'sweetalert2';  // Importar SweetAlert2
+import Swal from 'sweetalert2';  
 
 
 export default function Login() {
@@ -31,7 +31,7 @@ export default function Login() {
       };
     
       if (routes[userTypeID]) {
-        navigate(routes[userTypeID]);
+        window.location.href = routes[userTypeID];
         Swal.fire({
           icon: 'success',
           title: 'Login exitoso',
@@ -76,7 +76,7 @@ export default function Login() {
               };
     
               if (routes[userTypeID]) {
-                navigate(routes[userTypeID]);
+                window.location.href = routes[userTypeID];
                 Swal.fire({
                   icon: 'success',
                   title: 'Sesión iniciada',

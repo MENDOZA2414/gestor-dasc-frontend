@@ -18,7 +18,7 @@ export default function Home() {
           4: '/userCompany'
         };
         if (routes[userTypeID]) {
-          navigate(routes[userTypeID]);
+          window.location.href = routes[userTypeID];
         } else {
           setCheckingSession(false); // tipo desconocido
         }
