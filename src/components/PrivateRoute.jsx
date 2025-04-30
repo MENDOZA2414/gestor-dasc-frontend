@@ -12,13 +12,14 @@ useEffect(() => {
     .catch((err) => {
       const msg = err?.response?.data?.message;
     
-      if (!sessionStorage.getItem('alertShown')) {
+      // Mostrar alerta solo si fue una sesión reemplazada o expirada
+      const showAlert = msg === 'Token inválido o expirado' || msg === 'Sesión inválida o reemplazada desde otro dispositivo';
+    
+      if (showAlert && !sessionStorage.getItem('alertShown')) {
         Swal.fire({
           icon: 'info',
-          title: msg === 'No hay sesión activa' ? 'No has iniciado sesión' : 'Sesión expirada',
-          text: msg === 'No hay sesión activa'
-            ? 'Por favor, inicia sesión para acceder a esta sección.'
-            : 'Tu sesión ha expirado. Vuelve a iniciar sesión.',
+          title: 'Sesión expirada',
+          text: 'Tu sesión ha sido cerrada o ha expirado.',
           timer: 2500,
           showConfirmButton: false
         });
