@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import api from '../api';
+import Swal from 'sweetalert2';
 
 const PrivateRoute = ({ children }) => {
   const [authorized, setAuthorized] = useState(null); // null = aún validando
 
-  useEffect(() => {
-    api.get('/user/protected')
-      .then(() => setAuthorized(true))
-      .catch(() => setAuthorized(false));
-  }, []);
+useEffect(() => {
+  api.get('/user/protected')
+    .then(() => setAuthorized(true))
+    .catch(() => {
+      if (!sessionStorage.getItem('alertShown')) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Sesión expirada',
+          text: 'Por favor, inicia sesión de nuevo',
+          timer: 2500,
+          showConfirmButton: false
+        });
+        sessionStorage.setItem('alertShown', 'true');
+      }
+      setAuthorized(false);
+    });    
+}, []);
+
 
   if (authorized === null) {
     return (

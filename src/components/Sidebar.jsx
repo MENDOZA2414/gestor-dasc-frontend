@@ -20,11 +20,12 @@ const Sidebar = ({ children }) => {
     try {
       await api.get('/user/logout');
       sessionStorage.clear();
-      navigate('/');
+      window.location.href = '/'; 
     } catch (err) {
       console.error('Error al cerrar sesión:', err);
     }
   };
+  
 
   const menuOptions = [
     { path: '/inicio', icon: FaHome, label: 'Inicio' },
