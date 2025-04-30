@@ -19,8 +19,10 @@ const Sidebar = ({ children }) => {
   const handleLogout = async () => {
     try {
       await api.get('/user/logout');
+      localStorage.removeItem('token');
       sessionStorage.clear();
-      window.location.href = '/'; 
+      window.location.href = '/';
+
     } catch (err) {
       console.error('Error al cerrar sesión:', err);
     }

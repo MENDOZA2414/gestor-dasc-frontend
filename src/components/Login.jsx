@@ -18,6 +18,7 @@ export default function Login() {
     try {
       const response = await api.post('/user/login', { email, password, rememberMe });
       console.log('Login exitoso:', response.data);
+      localStorage.setItem('token', response.data.token);
     
       const { userTypeID } = response.data;
       sessionStorage.setItem('userTypeID', userTypeID);
