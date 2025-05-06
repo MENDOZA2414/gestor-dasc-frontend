@@ -18,7 +18,7 @@ const Sidebar = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      await api.get('/user/logout');
+      await api.get('/users/logout');
       localStorage.removeItem('token');
       sessionStorage.clear();
       window.location.href = '/';

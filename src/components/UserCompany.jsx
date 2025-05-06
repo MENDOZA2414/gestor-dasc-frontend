@@ -7,7 +7,7 @@ const UserCompany = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    api.get('/user/protected')
+    api.get('/users/protected')
       .then(res => {
         console.log('✅ Sesión válida para entidad receptora:', res.data.user);
         setUser(res.data.user);

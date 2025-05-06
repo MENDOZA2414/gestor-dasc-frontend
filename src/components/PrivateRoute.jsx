@@ -7,7 +7,7 @@ const PrivateRoute = ({ children }) => {
   const [authorized, setAuthorized] = useState(null); // null = aún validando
 
 useEffect(() => {
-  api.get('/user/protected')
+  api.get('/users/protected')
     .then(() => setAuthorized(true))
     .catch((err) => {
       const msg = err?.response?.data?.message;

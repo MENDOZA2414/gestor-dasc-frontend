@@ -1,12 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './components/Login';
-<<<<<<< HEAD
 import RegisterStudent from './components/RegisterStudent/RegisterStudent';
-=======
 import PrivateRoute from './components/PrivateRoute';
-import RegisterStudent from './components/RegisterStudent';
->>>>>>> ef81278ee506ae8ca1a9f23d31025f9cff8b985d
 import Home from './components/Home';
 import UserStudent from './components/UserStudent';
 import UserInternalAssessor from './components/UserInternalAssessor';

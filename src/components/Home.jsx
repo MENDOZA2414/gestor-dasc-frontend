@@ -8,7 +8,7 @@ export default function Home() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
-    api.get('/user/protected')
+    api.get('/users/protected')
       .then(res => {
         const { userTypeID } = res.data.user;
         const routes = {

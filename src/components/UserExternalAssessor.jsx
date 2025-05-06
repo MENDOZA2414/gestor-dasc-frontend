@@ -7,7 +7,7 @@ const UserExternalAssessor = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    api.get('/user/protected')
+    api.get('/users/protected')
       .then(res => {
         console.log('✅ Sesión válida para asesor externo:', res.data.user);
         setUser(res.data.user);

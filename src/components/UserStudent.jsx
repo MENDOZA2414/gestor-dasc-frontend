@@ -5,7 +5,7 @@ const UserStudent = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    api.get('/user/protected').then(res => {
+    api.get('/users/protected').then(res => {
       setUser(res.data.user);
     });
   }, []);

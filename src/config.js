@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://gestor-dasc-backend.onrender.com/';
+export const BASE_URL = 'https://gestor-dasc-backend.onrender.com/api';

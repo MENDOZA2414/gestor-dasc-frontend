@@ -23,7 +23,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/user/login', { email, password, rememberMe });
+      const response = await api.post('/users/login', { email, password, rememberMe });
       console.log('Sesión Iniciada:', response.data);
       localStorage.setItem('token', response.data.token);
     
@@ -61,7 +61,7 @@ export default function Login() {
           if (result.isConfirmed) {
             // Reintenta login con override
             try {
-              const secondAttempt = await api.post('/user/login', {
+              const secondAttempt = await api.post('/users/login', {
                 email,
                 password,
                 rememberMe,
