@@ -1,11 +1,19 @@
-// components/Home/Home.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import api from '../api';
 
 const UserStudent = () => {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    api.get('/user/protected').then(res => {
+      setUser(res.data.user);
+    });
+  }, []);
+
   return (
-    <div>
-      <h1>Welcome Student:</h1>
-      <p>OMG AAAAAA.</p>
+    <div className="p-4">
+      <h1 className="text-xl font-bold">Bienvenido:</h1>
+      <p className="text-lg">{user.email}</p>
     </div>
   );
 };

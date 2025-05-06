@@ -1,7 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './components/Login';
+<<<<<<< HEAD
 import RegisterStudent from './components/RegisterStudent/RegisterStudent';
+=======
+import PrivateRoute from './components/PrivateRoute';
+import RegisterStudent from './components/RegisterStudent';
+>>>>>>> ef81278ee506ae8ca1a9f23d31025f9cff8b985d
 import Home from './components/Home';
 import UserStudent from './components/UserStudent';
 import UserInternalAssessor from './components/UserInternalAssessor';
@@ -28,56 +33,68 @@ const AppContent = () => {
   const showHeaderRoutes = ['/', '/login', '/register', '/preRegister'];
   const showHeader = showHeaderRoutes.includes(location.pathname);
 
-  // Simulación de usuario y tipo de usuario (deberías obtener estos datos de tu sistema de autenticación)
+  // Simulación temporal de usuario
   const user = { username: 'Usuario Ejemplo', logo: 'https://example.com/user-logo.png' };
-  const userType = 'alumno'; // Esto podría ser 'alumno', 'asesorInterno', 'asesorExterno', o 'entidadReceptora'
+  const userType = 'alumno';
 
   return (
     <div className={`${showHeader ? 'pt-20' : ''} bg-gray-100 min-h-screen`}>
       {showHeader && <Header />}
       <Routes>
+        {/* Rutas públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterStudent />} />
         <Route path="/preRegister" element={<PreRegister />} />
-        
-        {/* Rutas que usan el nuevo Layout */}
+
+        {/* Estudiante */}
         <Route path="/userStudent/*" element={
-          <Layout userType="alumno" user={user}>
-            <Routes>
-              <Route index element={<UserStudent />} />
-              {/* Añade aquí más rutas específicas del estudiante si es necesario */}
-            </Routes>
-          </Layout>
+          <PrivateRoute>
+            <Layout userType="alumno" user={user}>
+              <Routes>
+                <Route index element={<UserStudent />} />
+              </Routes>
+            </Layout>
+          </PrivateRoute>
         } />
+
+        {/* Asesor Interno */}
         <Route path="/userInternalAssessor/*" element={
-          <Layout userType="asesorInterno" user={user}>
-            <Routes>
-              <Route index element={<UserInternalAssessor />} />
-              {/* Añade aquí más rutas específicas del asesor interno si es necesario */}
-            </Routes>
-          </Layout>
+          <PrivateRoute>
+            <Layout userType="asesorInterno" user={user}>
+              <Routes>
+                <Route index element={<UserInternalAssessor />} />
+              </Routes>
+            </Layout>
+          </PrivateRoute>
         } />
+
+        {/* Asesor Externo */}
         <Route path="/userExternalAssessor/*" element={
-          <Layout userType="asesorExterno" user={user}>
-            <Routes>
-              <Route index element={<UserExternalAssessor />} />
-              {/* Añade aquí más rutas específicas del asesor externo si es necesario */}
-            </Routes>
-          </Layout>
+          <PrivateRoute>
+            <Layout userType="asesorExterno" user={user}>
+              <Routes>
+                <Route index element={<UserExternalAssessor />} />
+              </Routes>
+            </Layout>
+          </PrivateRoute>
         } />
+
+        {/* Entidad Receptora */}
         <Route path="/userCompany/*" element={
-          <Layout userType="entidadReceptora" user={user}>
-            <Routes>
-              <Route index element={<UserCompany />} />
-              {/* Añade aquí más rutas específicas de la empresa si es necesario */}
-            </Routes>
-          </Layout>
+          <PrivateRoute>
+            <Layout userType="entidadReceptora" user={user}>
+              <Routes>
+                <Route index element={<UserCompany />} />
+              </Routes>
+            </Layout>
+          </PrivateRoute>
         } />
       </Routes>
     </div>
   );
 };
+
 
 const App = () => {
   return (

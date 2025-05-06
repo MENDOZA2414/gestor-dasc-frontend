@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaUser, FaBuilding, FaFileAlt, FaChalkboardTeacher, FaChartLine, FaSignOutAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import api from '../api'; 
 
 // Creamos un contexto para compartir el estado del sidebar
 const SidebarContext = createContext();
@@ -9,10 +10,24 @@ export const useSidebar = () => useContext(SidebarContext);
 
 const Sidebar = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
+
+  const handleLogout = async () => {
+    try {
+      await api.get('/user/logout');
+      localStorage.removeItem('token');
+      sessionStorage.clear();
+      window.location.href = '/';
+
+    } catch (err) {
+      console.error('Error al cerrar sesión:', err);
+    }
+  };
+  
 
   const menuOptions = [
     { path: '/inicio', icon: FaHome, label: 'Inicio' },
@@ -54,7 +69,10 @@ const Sidebar = ({ children }) => {
             ))}
           </ul>
           <div className="absolute bottom-4 left-0 w-full px-4">
-            <Link to="/" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 rounded-lg transition-all duration-300">
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 rounded-lg transition-all duration-300"
+            >
               <div className="w-6 h-6 flex items-center justify-center">
                 <FaSignOutAlt className="text-xl" />
               </div>
@@ -64,7 +82,7 @@ const Sidebar = ({ children }) => {
                   Cerrar sesión
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
         <div className={`flex-1 ${collapsed ? 'ml-20' : 'ml-64'} transition-all duration-300`}>

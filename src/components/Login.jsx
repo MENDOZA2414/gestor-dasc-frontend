@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Swal from 'sweetalert2';  // Importar SweetAlert2
+import Swal from 'sweetalert2';  
 
 
 export default function Login() {
@@ -10,41 +10,93 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  const routes = {
+    1: '/userInternalAssessor',
+    2: '/userStudent',
+    3: '/userExternalAssessor',
+    4: '/userCompany'
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/user/login', { email, password });
-      console.log('Login exitoso:', response.data);
-
-      const { token, userTypeID } = response.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userTypeID', userTypeID);
-
-      const routes = {
-        1: '/userInternalAssessor',
-        2: '/userStudent',
-        3: '/userExternalAssessor',
-        4: '/userCompany'
-      };
-
+      const response = await api.post('/user/login', { email, password, rememberMe });
+      console.log('Sesión Iniciada:', response.data);
+      localStorage.setItem('token', response.data.token);
+    
+      const { userTypeID } = response.data;
+      sessionStorage.setItem('userTypeID', userTypeID);
+      sessionStorage.removeItem('alertShown'); // limpia alerta de sesión expirada anterior
+    
       if (routes[userTypeID]) {
-        navigate(routes[userTypeID]);
+        setTimeout(() => {
+          window.location.replace(routes[userTypeID]);
+        }, 100);
+        
         Swal.fire({
           icon: 'success',
-          title: 'Login exitoso',
+          title: 'Sesión Iniciada',
           showConfirmButton: false,
           timer: 1500
         });
-        
       } else {
         console.error('userTypeID no coincide con ninguno de los casos esperados.');
       }
+    
     } catch (err) {
-      console.error('Error en el login:', err);
-      setError('Credenciales incorrectas');
-    }
+      const message = err?.response?.data?.message;
+    
+      if (err.response?.status === 409 && message?.includes('sesión activa')) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Sesión activa detectada',
+          text: 'Ya hay una sesión abierta con esta cuenta. ¿Deseas cerrar la anterior y continuar aquí?',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, continuar aquí',
+          cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            // Reintenta login con override
+            try {
+              const secondAttempt = await api.post('/user/login', {
+                email,
+                password,
+                rememberMe,
+                override: true
+              });
+              localStorage.setItem('token', secondAttempt.data.token); 
+
+              const { userTypeID } = secondAttempt.data;
+              sessionStorage.setItem('userTypeID', userTypeID);
+              sessionStorage.removeItem('alertShown');
+    
+              if (routes[userTypeID]) {
+                setTimeout(() => {
+                  window.location.replace(routes[userTypeID]);
+                }, 100);
+                
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Sesión Iniciada',
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+              }
+    
+            } catch (secondErr) {
+              console.error('Error al reemplazar sesión:', secondErr);
+              setError('No se pudo iniciar sesión.');
+            }
+          }
+        });
+      } else {
+        console.error('Error en el login:', err);
+        setError('Credenciales incorrectas');
+      }
+    }    
   };
 
   return (
@@ -96,9 +148,11 @@ export default function Login() {
           </div>
 
           <div className="flex items-center justify-start mb-4">
-            <input
+           <input
               type="checkbox"
               id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
               className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="rememberMe" className="text-sm text-gray-700">

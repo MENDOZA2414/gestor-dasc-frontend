@@ -1,7 +1,33 @@
-import React from 'react'
-import { FaFacebook, FaInstagram } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api';
+import { FaFacebook, FaInstagram } from 'react-icons/fa';
 
 export default function Home() {
+  const navigate = useNavigate();
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    api.get('/user/protected')
+      .then(res => {
+        const { userTypeID } = res.data.user;
+        const routes = {
+          1: '/userInternalAssessor',
+          2: '/userStudent',
+          3: '/userExternalAssessor',
+          4: '/userCompany'
+        };
+        if (routes[userTypeID]) {
+          window.location.href = routes[userTypeID];
+        } else {
+          setCheckingSession(false); // tipo desconocido
+        }
+      })
+      .catch(() => {
+        setCheckingSession(false); // no hay sesión
+      });
+  }, [navigate]);
+
   return (
     <div className="font-poppins flex flex-col min-h-screen">
       <main className="flex-grow">
@@ -62,5 +88,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
