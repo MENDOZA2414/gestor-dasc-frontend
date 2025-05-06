@@ -171,7 +171,34 @@ export default function RegisterStudent() {
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  
+  const handleFinalSubmit = async () => {
+    if (!isStepValid()) return;
+
+    if (!foto && !omitirFoto) {
+      const result = await Swal.fire({
+        icon: 'warning',
+        title: 'Sin foto seleccionada',
+        text: '¿Deseas continuar sin subir una foto de perfil?',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, continuar',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (!result.isConfirmed) return;
+
+      setOmitirFoto(true);
+
+      const initials = `${formData.firstName[0] || ''}${formData.firstLastName[0] || ''}`.toUpperCase();
+      const { file, url } = await generateInitialsImage(formData.firstName, formData.firstLastName);
+      setFoto(file);
+      setFotoUrl(url);
+    }
+
+    handleSubmit();
+  };
+
+const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isStepValid()) return;
 
@@ -228,7 +255,7 @@ export default function RegisterStudent() {
           {step < 4 ? (
             <button type="button" onClick={() => isStepValid() && setStep(step + 1)} className={`bg-blue-600 text-white hover:bg-blue-700 ${sharedButtonClass}`}>Siguiente</button>
           ) : (
-            <button type="submit" className={`bg-[#049774] text-white hover:bg-[#037d5e] ${sharedButtonClass}`}>Registrar Alumno</button>
+            <button type="button" onClick={handleFinalSubmit} className={`bg-[#049774] text-white hover:bg-[#037d5e] ${sharedButtonClass}`}>Registrar Alumno</button>
           )}
         </div>
         <p className="mt-4 text-sm text-center">¿Ya tienes una cuenta? <a href="/login" className="text-blue-600 hover:underline">Inicia sesión</a></p>
