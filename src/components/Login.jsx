@@ -49,7 +49,8 @@ export default function Login() {
     } catch (err) {
       const message = err?.response?.data?.message;
     
-      if (err.response?.status === 409 && message?.includes('sesión activa')) {
+      if (err.response?.status === 409 && err.response?.data?.code === 'SESSION_ACTIVE') {
+
         Swal.fire({
           icon: 'warning',
           title: 'Sesión activa detectada',
