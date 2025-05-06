@@ -26,16 +26,14 @@ export default function Login() {
       const response = await api.post('/users/login', { email, password, rememberMe });
       console.log('Sesión Iniciada:', response.data);
       localStorage.setItem('token', response.data.token);
-    
+  
       const { userTypeID } = response.data;
       sessionStorage.setItem('userTypeID', userTypeID);
-      sessionStorage.removeItem('alertShown'); // limpia alerta de sesión expirada anterior
-    
+      sessionStorage.removeItem('alertShown');
+  
       if (routes[userTypeID]) {
-        setTimeout(() => {
-          window.location.replace(routes[userTypeID]);
-        }, 100);
-        
+        window.location.replace(routes[userTypeID]);
+  
         Swal.fire({
           icon: 'success',
           title: 'Sesión Iniciada',
@@ -45,12 +43,11 @@ export default function Login() {
       } else {
         console.error('userTypeID no coincide con ninguno de los casos esperados.');
       }
-    
+  
     } catch (err) {
       const message = err?.response?.data?.message;
-    
+  
       if (err.response?.status === 409 && err.response?.data?.code === 'SESSION_ACTIVE') {
-
         Swal.fire({
           icon: 'warning',
           title: 'Sesión activa detectada',
@@ -60,7 +57,6 @@ export default function Login() {
           cancelButtonText: 'Cancelar'
         }).then(async (result) => {
           if (result.isConfirmed) {
-            // Reintenta login con override
             try {
               const secondAttempt = await api.post('/users/login', {
                 email,
@@ -68,17 +64,15 @@ export default function Login() {
                 rememberMe,
                 override: true
               });
-              localStorage.setItem('token', secondAttempt.data.token); 
-
+              localStorage.setItem('token', secondAttempt.data.token);
+  
               const { userTypeID } = secondAttempt.data;
               sessionStorage.setItem('userTypeID', userTypeID);
               sessionStorage.removeItem('alertShown');
-    
+  
               if (routes[userTypeID]) {
-                setTimeout(() => {
-                  window.location.replace(routes[userTypeID]);
-                }, 100);
-                
+                window.location.replace(routes[userTypeID]);
+  
                 Swal.fire({
                   icon: 'success',
                   title: 'Sesión Iniciada',
@@ -86,7 +80,7 @@ export default function Login() {
                   timer: 1500
                 });
               }
-    
+  
             } catch (secondErr) {
               console.error('Error al reemplazar sesión:', secondErr);
               setError('No se pudo iniciar sesión.');
@@ -97,9 +91,9 @@ export default function Login() {
         console.error('Error en el login:', err);
         setError('Credenciales incorrectas');
       }
-    }    
+    }
   };
-
+  
   return (
     <div className="flex justify-center items-start pt-6 min-h-[calc(100vh-80px)] bg-gray-100 font-poppins overflow-auto px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-sm">

@@ -8,6 +8,12 @@ export default function Home() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setCheckingSession(false);
+      return;
+    }
+  
     api.get('/users/protected')
       .then(res => {
         const { userTypeID } = res.data.user;
@@ -20,13 +26,15 @@ export default function Home() {
         if (routes[userTypeID]) {
           window.location.href = routes[userTypeID];
         } else {
-          setCheckingSession(false); // tipo desconocido
+          setCheckingSession(false);
         }
       })
       .catch(() => {
-        setCheckingSession(false); // no hay sesión
+        setCheckingSession(false);
       });
   }, [navigate]);
+  
+  if (checkingSession) return null;
 
   return (
     <div className="font-poppins flex flex-col min-h-screen">
