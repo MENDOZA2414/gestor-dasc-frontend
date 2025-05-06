@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './components/Login';
-import RegisterStudent from './components/RegisterStudent';
+import RegisterStudent from './components/RegisterStudent/RegisterStudent';
 import Home from './components/Home';
 import UserStudent from './components/UserStudent';
 import UserInternalAssessor from './components/UserInternalAssessor';
