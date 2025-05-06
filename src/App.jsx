@@ -8,15 +8,15 @@ import UserStudent from './components/UserStudent';
 import UserInternalAssessor from './components/UserInternalAssessor';
 import UserExternalAssessor from './components/UserExternalAssessor';
 import UserCompany from './components/UserCompany';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 import PreRegister from './components/PreRegister';
-import Sidebar from './components/Sidebar';
-import HeaderUser from './components/HeaderUser';
+import Sidebar from './components/Sidebar/Sidebar';
+import HeaderUser from './components/HeaderUser/HeaderUser';
 
 // Nuevo componente Layout
 const Layout = ({ children, userType, user }) => {
   return (
-    <Sidebar>
+    <Sidebar userType={userType}>
       <HeaderUser user={user} userType={userType} />
       <main className="p-4">{children}</main>
     </Sidebar>

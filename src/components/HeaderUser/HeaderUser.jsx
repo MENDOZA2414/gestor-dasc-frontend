@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaBell, FaEnvelope } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { useSidebar } from './Sidebar';
+import { useSidebar } from '../Sidebar/Sidebar';
 
 const HeaderUser = ({ user, userType }) => {
   const { collapsed } = useSidebar();
@@ -31,7 +31,7 @@ const HeaderUser = ({ user, userType }) => {
     <header className={`sticky top-0 z-40 flex items-center justify-between bg-white p-4 border-b border-gray-200 shadow-md transition-all duration-300`}>
       <div className="flex items-center">
         <div className="flex flex-col">
-          {user && user.username && (
+          {user && user.username && !collapsed && (
             <>
               <span className="text-lg font-medium">¡Hola {user.username}!</span>
               <span className="text-sm text-gray-500">{getCurrentDate()}</span>
