@@ -1,4 +1,3 @@
-// src/components/RegisterStudent/validations.js
 
 export function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

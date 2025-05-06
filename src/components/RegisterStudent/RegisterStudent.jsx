@@ -1,4 +1,3 @@
-// src/components/RegisterStudent/RegisterStudent.jsx
 import React, { useState, useEffect } from 'react';
 import Step1BasicInfo from './Step1BasicInfo';
 import Step2Credentials from './Step2Credentials';
@@ -18,26 +17,27 @@ export default function RegisterStudent() {
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellidoPaterno: '',
-    apellidoMaterno: '',
-    fechaNacimiento: '',
+    firstName: '',
+    firstLastName: '',
+    secondLastName: '',
+    dateOfBirth: '',
     controlNumber: '',
     email: '',
     password: '',
     passwordConfirm: '',
-    celular: '',
+    phone: '',
     career: '',
     semester: '',
     shift: '',
     studentStatus: 'Activo',
+    status: 'Pendiente',
     internalAssessorID: ''
   });
 
   const [internalAssessors, setInternalAssessors] = useState([]);
 
   useEffect(() => {
-    api.get('/api/internalAssessors')
+    api.get('/internalAssessors')
       .then((res) => setInternalAssessors(res.data))
       .catch((err) => console.error('Error al obtener asesores internos:', err));
   }, []);
@@ -62,13 +62,13 @@ export default function RegisterStudent() {
     const newErrors = {};
 
     if (step === 1) {
-      if (!formData.nombre.trim()) newErrors.nombre = 'Nombre requerido';
-      if (!formData.apellidoPaterno.trim()) newErrors.apellidoPaterno = 'Apellido paterno requerido';
-      if (!formData.apellidoMaterno.trim()) newErrors.apellidoMaterno = 'Apellido materno requerido';
-      if (!formData.fechaNacimiento) {
-        newErrors.fechaNacimiento = 'Fecha requerida';
-      } else if (validateAge(formData.fechaNacimiento) < 18) {
-        newErrors.fechaNacimiento = 'Debes tener al menos 18 años';
+      if (!formData.firstName.trim()) newErrors.firstName = 'Nombre requerido';
+      if (!formData.firstLastName.trim()) newErrors.firstLastName = 'Apellido paterno requerido';
+      if (!formData.secondLastName.trim()) newErrors.secondLastName = 'Apellido materno requerido';
+      if (!formData.dateOfBirth) {
+        newErrors.dateOfBirth = 'Fecha requerida';
+      } else if (validateAge(formData.dateOfBirth) < 18) {
+        newErrors.dateOfBirth = 'Debes tener al menos 18 años';
       }
       if (!formData.controlNumber || formData.controlNumber.length !== 10) {
         newErrors.controlNumber = 'Número de control inválido';
@@ -91,8 +91,8 @@ export default function RegisterStudent() {
         newErrors.passwordConfirm = 'No coinciden';
       }
 
-      if (!formData.celular.trim()) newErrors.celular = 'Celular requerido';
-      else if (formData.celular.length !== 10) newErrors.celular = 'Debe tener 10 dígitos';
+      if (!formData.phone.trim()) newErrors.phone = 'Celular requerido';
+      else if (formData.phone.length !== 10) newErrors.phone = 'Debe tener 10 dígitos';
     }
 
     if (step === 3) {
@@ -118,9 +118,9 @@ export default function RegisterStudent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!isStepValid()) return;
-
+  
     if (!omitirFoto && !foto) {
       const result = await Swal.fire({
         icon: 'warning',
@@ -132,18 +132,30 @@ export default function RegisterStudent() {
       });
       if (!result.isConfirmed) return;
     }
-
+  
     const sendData = new FormData();
     Object.entries(formData).forEach(([key, value]) => sendData.append(key, value));
     if (!omitirFoto && foto) sendData.append("photo", foto);
-
+  
     try {
       await api.post('/students/register', sendData);
-      Swal.fire({ icon: 'success', title: 'Registro exitoso', timer: 1500, showConfirmButton: false });
+      Swal.fire({
+        icon: 'success',
+        title: 'Registro exitoso',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        window.location.href = '/login'; 
+      });
     } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Error al registrar alumno' });
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.response?.data?.message || 'Error al registrar alumno'
+      });
     }
   };
+  
 
   const sharedButtonClass = "rounded-lg py-2 px-4 text-sm cursor-pointer transition duration-300";
 

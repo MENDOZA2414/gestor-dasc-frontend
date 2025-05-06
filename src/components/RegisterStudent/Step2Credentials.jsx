@@ -1,4 +1,3 @@
-// src/components/RegisterStudent/Step2Credentials.jsx
 import React from 'react';
 import InputGroup from './inputs/InputGroup';
 import PasswordInputGroup from './inputs/PasswordInputGroup';
@@ -7,7 +6,14 @@ import ConfirmPasswordInputGroup from './inputs/ConfirmPasswordInputGroup';
 export default function Step2Credentials({ data, onChange, showPassword, setShowPassword, showPasswordConfirm, setShowPasswordConfirm, errors }) {
   return (
     <>
-      <InputGroup label="Correo Electrónico" type="email" value={data.email} onChange={onChange('email')} required error={errors?.email} />
+      <InputGroup
+        label="Correo Electrónico"
+        type="email"
+        value={data.email}
+        onChange={onChange('email')}
+        required
+        error={errors?.email}
+      />
       <PasswordInputGroup
         label="Contraseña"
         value={data.password}
@@ -27,7 +33,15 @@ export default function Step2Credentials({ data, onChange, showPassword, setShow
         setShowPasswordConfirm={setShowPasswordConfirm}
         error={errors?.passwordConfirm}
       />
-      <InputGroup label="Número Celular" type="tel" value={data.celular} onChange={onChange('celular')} required pattern="\d{10}" error={errors?.celular} />
+      <InputGroup
+        label="Número Celular"
+        type="tel"
+        value={data.phone}
+        onChange={onChange('phone')}
+        required
+        pattern="\d{10}"
+        error={errors?.phone}
+      />
     </>
   );
 }
