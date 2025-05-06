@@ -7,6 +7,50 @@ import { validateEmail, validatePassword, validateAge } from './validations';
 import api from '../../api';
 import Swal from 'sweetalert2';
 
+// Función que genera imagen con iniciales y color aleatorio
+function generateInitialsImage(name, lastName) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+
+  const baseColors = ['#3498db', '#1abc9c', '#9b59b6', '#f39c12', '#e74c3c'];
+  const base = baseColors[Math.floor(Math.random() * baseColors.length)];
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = shadeColor(base, -40);
+  ctx.font = 'bold 120px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const initials = `${name.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  ctx.fillText(initials, canvas.width / 2, canvas.height / 2);
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      const file = new File([blob], 'avatar.png', { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      resolve({ file, url });
+    });
+  });
+}
+
+function shadeColor(color, percent) {
+  let R = parseInt(color.substring(1, 3), 16);
+  let G = parseInt(color.substring(3, 5), 16);
+  let B = parseInt(color.substring(5, 7), 16);
+
+  R = Math.min(255, parseInt(R * (100 + percent) / 100));
+  G = Math.min(255, parseInt(G * (100 + percent) / 100));
+  B = Math.min(255, parseInt(B * (100 + percent) / 100));
+
+  const RR = R.toString(16).padStart(2, '0');
+  const GG = G.toString(16).padStart(2, '0');
+  const BB = B.toString(16).padStart(2, '0');
+
+  return `#${RR}${GG}${BB}`;
+}
+
 export default function RegisterStudent() {
   const [step, setStep] = useState(1);
   const [foto, setFoto] = useState(null);
@@ -41,6 +85,26 @@ export default function RegisterStudent() {
       .then((res) => setInternalAssessors(res.data))
       .catch((err) => console.error('Error al obtener asesores internos:', err));
   }, []);
+
+  // Generar avatar si se omite foto y hay nombre
+  useEffect(() => {
+    const crearAvatar = async () => {
+      if (
+        omitirFoto &&
+        !foto &&
+        formData.firstName.trim() &&
+        formData.firstLastName.trim()
+      ) {
+        const { file, url } = await generateInitialsImage(
+          formData.firstName,
+          formData.firstLastName
+        );
+        setFoto(file);
+        setFotoUrl(url);
+      }
+    };
+    crearAvatar();
+  }, [omitirFoto, formData.firstName, formData.firstLastName]);
 
   const prevFoto = (e) => {
     const file = e.target.files[0];
@@ -78,19 +142,10 @@ export default function RegisterStudent() {
     if (step === 2) {
       if (!formData.email.trim()) newErrors.email = 'Correo requerido';
       else if (!validateEmail(formData.email)) newErrors.email = 'Correo inválido';
-
-      if (!formData.password) {
-        newErrors.password = 'La contraseña es obligatoria';
-      } else if (!validatePassword(formData.password)) {
-        newErrors.password = 'Contraseña débil';
-      }
-
-      if (!formData.passwordConfirm) {
-        newErrors.passwordConfirm = 'Confirma la contraseña';
-      } else if (formData.password !== formData.passwordConfirm) {
-        newErrors.passwordConfirm = 'No coinciden';
-      }
-
+      if (!formData.password) newErrors.password = 'La contraseña es obligatoria';
+      else if (!validatePassword(formData.password)) newErrors.password = 'Contraseña débil';
+      if (!formData.passwordConfirm) newErrors.passwordConfirm = 'Confirma la contraseña';
+      else if (formData.password !== formData.passwordConfirm) newErrors.passwordConfirm = 'No coinciden';
       if (!formData.phone.trim()) newErrors.phone = 'Celular requerido';
       else if (formData.phone.length !== 10) newErrors.phone = 'Debe tener 10 dígitos';
     }
@@ -118,9 +173,8 @@ export default function RegisterStudent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     if (!isStepValid()) return;
-  
+
     if (!omitirFoto && !foto) {
       const result = await Swal.fire({
         icon: 'warning',
@@ -132,11 +186,11 @@ export default function RegisterStudent() {
       });
       if (!result.isConfirmed) return;
     }
-  
+
     const sendData = new FormData();
     Object.entries(formData).forEach(([key, value]) => sendData.append(key, value));
-    if (!omitirFoto && foto) sendData.append("photo", foto);
-  
+    if (foto) sendData.append("photo", foto);
+
     try {
       await api.post('/students/register', sendData);
       Swal.fire({
@@ -145,7 +199,7 @@ export default function RegisterStudent() {
         timer: 1500,
         showConfirmButton: false
       }).then(() => {
-        window.location.href = '/login'; 
+        window.location.href = '/login';
       });
     } catch (err) {
       Swal.fire({
@@ -155,7 +209,6 @@ export default function RegisterStudent() {
       });
     }
   };
-  
 
   const sharedButtonClass = "rounded-lg py-2 px-4 text-sm cursor-pointer transition duration-300";
 
