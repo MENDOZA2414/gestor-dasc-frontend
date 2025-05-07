@@ -198,8 +198,7 @@ export default function RegisterStudent() {
     handleSubmit();
   };
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!isStepValid()) return;
 
     if (!omitirFoto && !foto) {

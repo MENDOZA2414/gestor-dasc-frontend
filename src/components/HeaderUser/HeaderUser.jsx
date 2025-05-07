@@ -73,17 +73,26 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
         {/* DERECHA */}
         <div className="flex items-center gap-5">
           <div className="h-6 w-px bg-gray-300"></div>
+
           <button className="text-gray-600 hover:text-gray-800 transition-colors">
             <HiOutlineBell className="text-2xl" />
           </button>
+
+          {/* Nombre del usuario */}
+          <span className="text-gray-600 text-sm font-medium truncate max-w-[150px]">
+            {user?.firstName} {user?.firstLastName}
+          </span>
+
+          {/* Foto de perfil */}
           <Link to={getProfileLink()}>
             <img
-              src={user?.logo || 'https://i.pravatar.cc/100?u=default'}
-              alt="Perfil"
+              src={user?.logo}
+              alt="Foto de perfil"
               className="w-10 h-10 rounded-full object-cover"
             />
           </Link>
         </div>
+
       </div>
     </header>
   );

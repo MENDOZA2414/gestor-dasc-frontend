@@ -13,6 +13,8 @@ import Header from './components/Header/Header';
 import PreRegister from './components/PreRegister';
 import Sidebar from './components/Sidebar/Sidebar';
 import HeaderUser from './components/HeaderUser/HeaderUser';
+import api from './api';
+
 
 // Nuevo componente Layout
 const Layout = ({ children, userType, user }) => {
@@ -64,20 +66,95 @@ const AppContent = () => {
   const showHeaderRoutes = ['/', '/login', '/register', '/preRegister'];
   const showHeader = showHeaderRoutes.includes(location.pathname);
 
-  // Simulación temporal de usuario
-  const user = { username: 'Usuario Ejemplo', logo: 'https://example.com/user-logo.png' };
-  const userType = 'alumno';
+  const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState(null);
+  const [userChecked, setUserChecked] = useState(false); // nuevo estado
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userTypeID = sessionStorage.getItem('userTypeID');
+      const userID = sessionStorage.getItem('userID');
+      const controlNumber = sessionStorage.getItem('controlNumber');
+
+      if (!userTypeID) {
+        setUserChecked(true);
+        return;
+      }
+
+      let endpoint = '';
+      let type = '';
+
+      switch (parseInt(userTypeID)) {
+        case 1:
+          endpoint = `/internalAssessors/${userID}`;
+          type = 'internalAssessor';
+          break;
+        case 2:
+          if (!controlNumber) return;
+          endpoint = `/students/${controlNumber}`;
+          type = 'student';
+          break;
+        case 3:
+          endpoint = `/externalAssessors/${userID}`;
+          type = 'externalAssessor';
+          break;
+        case 4:
+          endpoint = `/companies/${userID}`;
+          type = 'company';
+          break;
+        default:
+          setUserChecked(true);
+          return;
+      }
+
+      try {
+        const res = await api.get(endpoint);
+        const data = res.data;
+        const fullName = data.firstName + ' ' + data.firstLastName;
+        setUser({
+          username: fullName,
+          firstName: data.firstName,
+          firstLastName: data.firstLastName,
+          logo: data.photo
+        });
+        setUserType(type);
+      } catch (err) {
+        console.error('Error al obtener los datos del usuario:', err);
+      } finally {
+        setUserChecked(true);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Mostrar rutas públicas sin esperar a que cargue el usuario
+  if (showHeader) {
+    return (
+      <div className={`${showHeader ? 'pt-20' : ''} bg-gray-100 min-h-screen w-full overflow-x-hidden`}>
+        {showHeader && <Header />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterStudent />} />
+          <Route path="/preRegister" element={<PreRegister />} />
+        </Routes>
+      </div>
+    );
+  }
+
+  // Mientras carga usuario en rutas privadas
+  if (!userChecked) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <p className="text-gray-600 text-lg">Cargando usuario...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className={`${showHeader ? 'pt-20' : ''} bg-gray-100 min-h-screen w-full overflow-x-hidden`}>
-      {showHeader && <Header />}
+    <div className="bg-gray-100 min-h-screen w-full overflow-x-hidden">
       <Routes>
-        {/* Rutas públicas */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterStudent />} />
-        <Route path="/preRegister" element={<PreRegister />} />
-
         {/* Estudiante */}
         <Route path="/userStudent/*" element={
           <PrivateRoute>
@@ -125,6 +202,7 @@ const AppContent = () => {
     </div>
   );
 };
+
 
 
 const App = () => {

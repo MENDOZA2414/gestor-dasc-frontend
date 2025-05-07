@@ -29,6 +29,9 @@ export default function Login() {
   
       const { userTypeID } = response.data;
       sessionStorage.setItem('userTypeID', userTypeID);
+      sessionStorage.setItem('userID', response.data.userID);
+      sessionStorage.setItem('controlNumber', response.data.controlNumber);
+
       sessionStorage.removeItem('alertShown');
   
       if (routes[userTypeID]) {
@@ -68,6 +71,9 @@ export default function Login() {
   
               const { userTypeID } = secondAttempt.data;
               sessionStorage.setItem('userTypeID', userTypeID);
+              sessionStorage.setItem('userID', secondAttempt.data.userID);
+              sessionStorage.setItem('controlNumber', secondAttempt.data.controlNumber);
+
               sessionStorage.removeItem('alertShown');
   
               if (routes[userTypeID]) {
