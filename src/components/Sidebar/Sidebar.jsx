@@ -79,8 +79,8 @@ const Sidebar = ({
           </div>
 
           {/* MENÚ + CERRAR SESIÓN */}
-          <div className="flex flex-col justify-between h-[calc(100vh-104px)]">
-            {/* MENÚ */}
+          <div className="flex flex-col justify-between h-[calc(100dvh-104px)]">
+          {/* MENÚ */}
             <nav className="mt-6 space-y-1 px-2">
               {menuItems.map(item => (
                 <SidebarItem
@@ -93,7 +93,7 @@ const Sidebar = ({
             </nav>
 
             {/* CERRAR SESIÓN */}
-            <div className="px-2 mb-6">
+            <div className="px-2 mb-6 scroll-mb-20">
               <button
                 onClick={handleLogout}
                 title={collapsed ? 'Cerrar sesión' : ''}
