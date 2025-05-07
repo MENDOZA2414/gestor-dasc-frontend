@@ -34,14 +34,12 @@ const Sidebar = ({ children, userType = 'student' }) => {
         {/* SIDEBAR */}
         <aside className={`fixed top-0 left-0 h-screen bg-[#1B1D2D] text-white shadow-md z-50 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
           {/* LOGO */}
-          <div className="p-4 flex justify-center">
-            <Link to="/dashboard">
+          <div className={`flex ${collapsed ? 'items-center justify-center h-20' : 'items-start justify-start pl-8 pt-7 h-20'}`}>
+            <Link to="/dashboard" title="DASC">
               <img
-                src={collapsed
-                  ? 'https://i.imgur.com/Dd9rZ2E.png'
-                  : 'https://www.uabcs.mx/dasc/wp-content/uploads/2022/08/cropped-logo-dasc.png'}
-                alt="Logo"
-                className={`transition-all duration-300 ${collapsed ? 'w-10 h-10' : 'w-40 h-12'}`}
+                src={collapsed ? '/dasc_icon.png' : '/dasc_blanco.png'}
+                alt="Logo DASC"
+                className={`transition-all duration-300 object-contain h-12`}
               />
             </Link>
           </div>
