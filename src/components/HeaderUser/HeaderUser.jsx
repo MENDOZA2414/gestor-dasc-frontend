@@ -1,9 +1,12 @@
 import React from 'react';
 import { FaBars } from 'react-icons/fa';
 import { HiOutlineBell } from 'react-icons/hi2';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, currentTitle = 'Dashboard' }) => {
+const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   const getProfileLink = () => {
     switch (userType) {
       case 'student': return '/userStudent/profile';
@@ -19,6 +22,27 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, currentTitle
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('es-ES', options);
   };
+
+  const titlesByPath = [
+    { path: '/userStudent/profile', title: 'Perfil' },
+    { path: '/userStudent/practice', title: 'Práctica' },
+    { path: '/userStudent/documents', title: 'Documentos' },
+    { path: '/userStudent', title: 'Inicio' },
+    { path: '/userInternalAssessor/profile', title: 'Perfil' },
+    { path: '/userInternalAssessor/reports', title: 'Reportes' },
+    { path: '/userInternalAssessor', title: 'Inicio' },
+    
+    { path: '/userExternalAssessor/profile', title: 'Perfil' },
+    { path: '/userExternalAssessor/evaluations', title: 'Evaluaciones' },
+    { path: '/userExternalAssessor', title: 'Inicio' },
+    
+    { path: '/userCompany/profile', title: 'Perfil' },
+    { path: '/userCompany/vacancies', title: 'Vacantes' },
+    { path: '/userCompany', title: 'Inicio' },
+      ];
+
+  const match = titlesByPath.find((item) => currentPath.startsWith(item.path));
+  const currentTitle = match ? match.title : 'Dashboard';
 
   return (
     <header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
