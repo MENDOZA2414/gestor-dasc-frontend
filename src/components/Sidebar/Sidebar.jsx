@@ -52,70 +52,75 @@ const Sidebar = ({
       <div className="flex">
           {/* SIDEBAR */}
           <aside className={`
-              fixed top-0 left-0 h-screen z-50
-              bg-[#1B1D2D] text-white transition-transform duration-300
-              ${collapsed ? 'md:w-20' : 'md:w-64'}
-              w-64 md:translate-x-0 
-              ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}
-          >
-          {/* Encabezado con logo */}
-          <div className="flex items-center justify-between md:justify-center h-[104px] px-6 border-b border-white/10">
+          fixed top-0 left-0 h-screen z-50
+          bg-[#1B1D2D] text-white transition-transform duration-300
+          overflow-y-auto
+          ${collapsed ? 'md:w-20' : 'md:w-64'}
+          w-64 md:translate-x-0 
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}>
 
-          <Link
-            to="/dashboard"
-            className={`w-full flex items-center ${
-              collapsed ? 'justify-center' : 'justify-start pl-3'
-            }`}
-          >
-            <img
-              src={collapsed ? '/dasc_icon.png' : '/dasc_blanco.png'}
-              alt="Logo DASC"
-              className={`transition-all duration-300 object-contain ${collapsed ? 'h-10' : 'h-12'}`}
-            />
-          </Link>
-
-
-            {/* BOTÓN DE CERRAR - fuera del sidebar */}
-            {mobileOpen && (
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="md:hidden fixed top-6 left-64 z-50 p-2 bg-white rounded-full shadow"
-                title="Cerrar menú"
+          {/* Encabezado con logo y botón de cerrar (X) */}
+          <div className="relative">
+            <div className="flex items-center justify-between md:justify-center h-[104px] px-6 border-b border-white/10">
+              <Link
+                to="/dashboard"
+                className={`w-full flex items-center ${
+                  collapsed ? 'justify-center' : 'justify-start pl-3'
+                }`}
               >
-                <FaTimes className="text-xl text-gray-800" />
-              </button>
-            )}
+                <img
+                  src={collapsed ? '/dasc_icon.png' : '/dasc_blanco.png'}
+                  alt="Logo DASC"
+                  className={`transition-all duration-300 object-contain ${collapsed ? 'h-10' : 'h-12'}`}
+                />
+              </Link>
+            </div>
           </div>
 
-          {/* MENÚ */}
-          <nav className="mt-6 space-y-1 px-2">
-            {menuItems.map(item => (
-              <SidebarItem
-                key={item.path}
-                item={item}
-                collapsed={collapsed}
-                setMobileOpen={setMobileOpen}
-              />
-            ))}
-          </nav>
+          {/* MENÚ + CERRAR SESIÓN */}
+          <div className="flex flex-col justify-between h-[calc(100vh-104px)]">
+            {/* MENÚ */}
+            <nav className="mt-6 space-y-1 px-2">
+              {menuItems.map(item => (
+                <SidebarItem
+                  key={item.path}
+                  item={item}
+                  collapsed={collapsed}
+                  setMobileOpen={setMobileOpen}
+                />
+              ))}
+            </nav>
 
-          {/* CERRAR SESIÓN */}
-          <div className="absolute bottom-4 w-full px-2">
-            <button
-              onClick={handleLogout}
-              title={collapsed ? 'Cerrar sesión' : ''}
-              className={`flex items-center ${
-                collapsed ? 'justify-center' : 'justify-start'
-              } w-full px-4 py-2 rounded-lg hover:bg-[#2c1c1c] transition-colors duration-200`}
-            >
-              <HiOutlineArrowRightOnRectangle className="text-xl text-red-400" />
-              {!collapsed && (
-                <span className="ml-4 text-red-400">Cerrar sesión</span>
-              )}
-            </button>
+            {/* CERRAR SESIÓN */}
+            <div className="px-2 mb-6">
+              <button
+                onClick={handleLogout}
+                title={collapsed ? 'Cerrar sesión' : ''}
+                className={`flex items-center ${
+                  collapsed ? 'justify-center' : 'justify-start'
+                } w-full px-4 py-2 rounded-lg hover:bg-[#2c1c1c] transition-colors duration-200`}
+              >
+                <HiOutlineArrowRightOnRectangle className="text-xl text-red-400" />
+                {!collapsed && (
+                  <span className="ml-4 text-red-400">Cerrar sesión</span>
+                )}
+              </button>
+            </div>
           </div>
         </aside>
+
+        {/* BOTÓN DE CERRAR MENÚ MÓVIL - ACOMPAÑA AL SIDEBAR */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className={`
+            md:hidden fixed top-6 z-50 p-2 bg-white rounded-full shadow transition-all duration-300
+            ${mobileOpen ? 'left-64' : '-left-64'}
+          `}
+          title="Cerrar menú"
+        >
+          <FaTimes className="text-xl text-gray-800" />
+        </button>
 
         {/* FONDO OSCURO MÓVIL */}
         {mobileOpen && (
