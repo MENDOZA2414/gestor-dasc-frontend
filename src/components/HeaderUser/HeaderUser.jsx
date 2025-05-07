@@ -18,9 +18,25 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
   };
 
   const getCurrentDate = () => {
-    const date = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('es-ES', options);
+    const fechaCompleta = new Date().toLocaleDateString('es-MX', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    const fechaCorta = new Date().toLocaleDateString('es-MX', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+    });
+
+    return (
+      <>
+        <span className="hidden sm:inline">{fechaCompleta}</span>
+        <span className="inline sm:hidden">{fechaCorta}</span>
+      </>
+    );
   };
 
   const titlesByPath = [
@@ -31,15 +47,13 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
     { path: '/userInternalAssessor/profile', title: 'Perfil' },
     { path: '/userInternalAssessor/reports', title: 'Reportes' },
     { path: '/userInternalAssessor', title: 'Inicio' },
-    
     { path: '/userExternalAssessor/profile', title: 'Perfil' },
     { path: '/userExternalAssessor/evaluations', title: 'Evaluaciones' },
     { path: '/userExternalAssessor', title: 'Inicio' },
-    
     { path: '/userCompany/profile', title: 'Perfil' },
     { path: '/userCompany/vacancies', title: 'Vacantes' },
     { path: '/userCompany', title: 'Inicio' },
-      ];
+  ];
 
   const match = titlesByPath.find((item) => currentPath.startsWith(item.path));
   const currentTitle = match ? match.title : 'Dashboard';
@@ -49,11 +63,12 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
       <div className="flex items-center justify-between pr-6 h-[104px] transition-all duration-300">
 
         {/* IZQUIERDA */}
-        <div
-          className={`flex items-center gap-6 pl-6 transition-all duration-300 ${
-            collapsed ? 'ml-[8rem]' : 'ml-[19rem]'
-          }`}
-        >
+          <div
+            className={`flex items-center gap-6 pl-6 transition-all duration-300 ${
+              collapsed ? 'md:ml-[8rem]' : 'md:ml-[19rem]'
+            }`}
+          >
+
           {/* Botón de menú en móvil */}
           <button
             onClick={onMobileMenuClick}
@@ -71,19 +86,18 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
         </div>
 
         {/* DERECHA */}
-        <div className="flex items-center gap-5">
-          <div className="h-6 w-px bg-gray-300"></div>
+        <div className="flex items-center gap-3 sm:gap-5">
+          <div className="h-6 w-px bg-gray-300 hidden sm:block"></div>
 
           <button className="text-gray-600 hover:text-gray-800 transition-colors">
             <HiOutlineBell className="text-2xl" />
           </button>
 
-          {/* Nombre del usuario */}
-          <span className="text-gray-600 text-sm font-medium truncate max-w-[150px]">
+          {/* Nombre visible solo en pantallas sm en adelante */}
+          <span className="hidden sm:inline text-gray-600 text-sm font-medium whitespace-nowrap">
             {user?.firstName} {user?.firstLastName}
           </span>
 
-          {/* Foto de perfil */}
           <Link to={getProfileLink()}>
             <img
               src={user?.logo}
@@ -92,7 +106,6 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
             />
           </Link>
         </div>
-
       </div>
     </header>
   );
