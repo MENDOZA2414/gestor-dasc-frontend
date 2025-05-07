@@ -22,11 +22,18 @@ const Sidebar = ({
 
   const toggleSidebar = () => setCollapsed((prev) => !prev);
 
-  // Avisar al padre cada vez que colapsa
   useEffect(() => {
-    if (onCollapseChange) onCollapseChange(collapsed);
-  }, [collapsed, onCollapseChange]);
-
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setCollapsed(false);
+      }
+    };
+  
+    handleResize(); // asegura al montar
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   const handleLogout = async () => {
     try {
       await api.get('/users/logout');

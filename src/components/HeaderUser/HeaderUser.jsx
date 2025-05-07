@@ -70,7 +70,11 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
           
           {/* Botón de menú en móvil */}
           <button
-            onClick={() => onMobileMenuClick(prev => !prev)}
+            onClick={() => {
+              if (window.innerWidth < 768) {
+                onMobileMenuClick(prev => !prev); // solo abre en móvil
+              }
+            }}
             className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl shadow bg-white"
             title="Menú"
           >
