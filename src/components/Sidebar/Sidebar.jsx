@@ -62,8 +62,8 @@ const Sidebar = ({
 
           {/* Encabezado con logo y botón de cerrar (X) */}
           <div className="relative">
-            <div className={`flex items-center justify-between md:justify-center h-[112px] ${collapsed ? 'px-0' : 'px-6'} border-b border-white/10`}>
-              <Link
+          <div className={`flex items-center justify-between md:justify-center h-[104px] ${collapsed ? 'px-0' : 'px-6'} border-b border-white/10`}>
+          <Link
                 to="/dashboard"
                 className={`w-full flex items-center ${
                   collapsed ? 'justify-center' : 'justify-start pl-3'
@@ -117,7 +117,7 @@ const Sidebar = ({
         <button
           onClick={() => setMobileOpen(false)}
           className={`
-            md:hidden absolute top-[28px] z-50 bg-white text-gray-800 shadow-md rounded-2xl p-2 transition-transform duration-300
+            md:hidden absolute top-[15px] z-50 bg-white text-gray-800 shadow-md rounded-2xl p-2 transition-transform duration-300
             ${mobileOpen ? 'translate-x-[268px]' : '-translate-x-full'}
           `}
           title="Cerrar menú"
