@@ -54,7 +54,7 @@ const Sidebar = ({
           <aside className={`
           fixed top-0 left-0 h-screen z-50
           bg-[#1B1D2D] text-white transition-transform duration-300
-          overflow-y-auto
+          overflow-y-hidden
           ${collapsed ? 'md:w-20' : 'md:w-64'}
           w-64 md:translate-x-0 
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -113,16 +113,16 @@ const Sidebar = ({
           </div>
         </aside>
 
-        {/* BOTÓN DE CERRAR MENÚ MÓVIL - ACOMPAÑA AL SIDEBAR */}
+        {/* FLECHA DE COLAPSAR EN MÓVIL - PEGADA AL SIDEBAR */}
         <button
           onClick={() => setMobileOpen(false)}
           className={`
-            md:hidden fixed top-6 z-50 p-2 bg-white rounded-full shadow transition-all duration-300
-            ${mobileOpen ? 'left-64' : '-left-64'}
+            md:hidden absolute top-[28px] z-50 bg-white text-gray-800 shadow-md rounded-2xl p-2 transition-transform duration-300
+            ${mobileOpen ? 'translate-x-[268px]' : '-translate-x-full'}
           `}
           title="Cerrar menú"
         >
-          <FaTimes className="text-xl text-gray-800" />
+          <FaChevronLeft className="text-[1.25rem]" />
         </button>
 
         {/* FONDO OSCURO MÓVIL */}
