@@ -46,7 +46,7 @@ const AppContent = () => {
         {/* Estudiante */}
         <Route path="/userStudent/*" element={
           <PrivateRoute>
-            <Layout userType="alumno" user={user}>
+            <Layout userType="student" user={user}>
               <Routes>
                 <Route index element={<UserStudent />} />
               </Routes>
@@ -57,7 +57,7 @@ const AppContent = () => {
         {/* Asesor Interno */}
         <Route path="/userInternalAssessor/*" element={
           <PrivateRoute>
-            <Layout userType="asesorInterno" user={user}>
+            <Layout userType="internalAssessor" user={user}>
               <Routes>
                 <Route index element={<UserInternalAssessor />} />
               </Routes>
@@ -68,7 +68,7 @@ const AppContent = () => {
         {/* Asesor Externo */}
         <Route path="/userExternalAssessor/*" element={
           <PrivateRoute>
-            <Layout userType="asesorExterno" user={user}>
+            <Layout userType="externalAssessor" user={user}>
               <Routes>
                 <Route index element={<UserExternalAssessor />} />
               </Routes>
@@ -79,7 +79,7 @@ const AppContent = () => {
         {/* Entidad Receptora */}
         <Route path="/userCompany/*" element={
           <PrivateRoute>
-            <Layout userType="entidadReceptora" user={user}>
+            <Layout userType="company" user={user}>
               <Routes>
                 <Route index element={<UserCompany />} />
               </Routes>

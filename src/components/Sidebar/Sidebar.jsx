@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { HiOutlineArrowRightOnRectangle } from 'react-icons/hi2';
 import { menuByUserType } from './SidebarConfig';
 import SidebarItem from './SidebarItem';
 import api from '../../api';
@@ -39,7 +40,8 @@ const Sidebar = ({ children, userType = 'student' }) => {
               <img
                 src={collapsed ? '/dasc_icon.png' : '/dasc_blanco.png'}
                 alt="Logo DASC"
-                className={`transition-all duration-300 object-contain h-12`}
+                className={`transition-all duration-300 object-contain ${collapsed ? 'h-8' : 'h-12'}`}
+
               />
             </Link>
           </div>
@@ -55,10 +57,12 @@ const Sidebar = ({ children, userType = 'student' }) => {
           <div className="absolute bottom-4 w-full px-2">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-4 py-2 rounded-lg hover:bg-[#292C45] transition-colors"
+              className={`flex items-center ${
+                collapsed ? 'justify-center' : 'justify-start'
+              } w-full px-4 py-2 rounded-lg hover:bg-[#2c1c1c] transition-colors duration-200`}
             >
-              <FaSignOutAlt className="text-xl" />
-              {!collapsed && <span className="ml-4">Cerrar sesión</span>}
+              <HiOutlineArrowRightOnRectangle className="text-xl text-red-400" />
+              {!collapsed && <span className="ml-4 text-red-400">Cerrar sesión</span>}
             </button>
           </div>
         </aside>
