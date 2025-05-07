@@ -66,12 +66,8 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
       <div className="flex items-center justify-between pr-6 h-[104px] transition-all duration-300">
 
         {/* IZQUIERDA */}
-          <div
-            className={`flex items-center gap-6 pl-6 transition-all duration-300 ${
-              collapsed ? 'md:ml-[8rem]' : 'md:ml-[19rem]'
-            }`}
-          >
-
+        <div className="flex items-center gap-6 pl-6 transition-all duration-300 md:ml-20">
+          
           {/* Botón de menú en móvil */}
           <button
             onClick={() => onMobileMenuClick(prev => !prev)}
