@@ -45,22 +45,16 @@ const Sidebar = ({
       <div className="flex">
         {/* SIDEBAR */}
         <aside className={`
-          fixed top-16 md:top-0 left-0 h-[calc(100vh-4rem)] md:h-screen bg-[#1B1D2D] text-white shadow-md z-[60] transition-all duration-300
+          absolute top-[104px] md:fixed md:top-0 left-0
+          h-[calc(100vh-104px)] md:h-screen
+          bg-[#1B1D2D] text-white z-40 transition-all duration-300
           ${collapsed ? 'w-20' : 'w-64'}
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
         `}>
-          {/* Botón cerrar menú (móvil) */}
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="md:hidden absolute top-4 right-4 text-white"
-            title="Cerrar menú"
-          >
-            <FaTimes className="text-2xl" />
-          </button>
-
-          {/* LOGO */}
-          {!mobileOpen && (
-            <div className={`flex ${collapsed ? 'items-center justify-center h-20' : 'items-start justify-start pl-8 pt-7 h-20'}`}>
+          
+          {/* Logo solo visible en escritorio */}
+          <div className="hidden md:flex h-20">
+            <div className={`w-full ${collapsed ? 'items-center justify-center' : 'items-start justify-start pl-8 pt-7'} flex`}>
               <Link to="/dashboard" title="DASC">
                 <img
                   src={collapsed ? '/dasc_icon.png' : '/dasc_blanco.png'}
@@ -69,7 +63,7 @@ const Sidebar = ({
                 />
               </Link>
             </div>
-          )}
+          </div>
 
           {/* MENÚ */}
           <nav className="mt-8 space-y-1">
@@ -96,7 +90,7 @@ const Sidebar = ({
         {mobileOpen && (
           <div
             onClick={() => setMobileOpen(false)}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            className="fixed inset-0 top-[104px] bg-black bg-opacity-50 z-30 md:hidden"
           />
         )}
 
@@ -108,19 +102,17 @@ const Sidebar = ({
         {/* BOTÓN DE COLAPSAR (solo escritorio) */}
 
         <button
-  onClick={toggleSidebar}
-  className={`hidden md:flex items-center justify-center fixed top-[28px] z-50 bg-white text-gray-800 shadow-md rounded-2xl p-2 transition-all duration-300
-    ${collapsed ? 'left-[5.5rem]' : 'left-[16.5rem]'}`}
-  title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
->
-  {collapsed ? (
-    <FaChevronRight className="text-[1.25rem]" />
-  ) : (
-    <FaChevronLeft className="text-[1.25rem]" />
-  )}
-</button>
-
-
+          onClick={toggleSidebar}
+          className={`hidden md:flex items-center justify-center fixed top-[28px] z-50 bg-white text-gray-800 shadow-md rounded-2xl p-2 transition-all duration-300
+            ${collapsed ? 'left-[5.5rem]' : 'left-[16.5rem]'}`}
+          title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+        >
+          {collapsed ? (
+            <FaChevronRight className="text-[1.25rem]" />
+          ) : (
+            <FaChevronLeft className="text-[1.25rem]" />
+          )}
+        </button>
 
       </div>
     </SidebarContext.Provider>

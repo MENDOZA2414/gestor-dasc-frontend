@@ -40,24 +40,26 @@ const Layout = ({ children, userType, user }) => {
   return (
     <div className="flex w-full min-h-screen">
       <Sidebar
-         userType={userType}
-         mobileOpen={mobileOpen}
-         setMobileOpen={setMobileOpen}
-         onCollapseChange={setCollapsed}
+        userType={userType}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+        onCollapseChange={setCollapsed}
       />
-
-      <div className="flex flex-col flex-1 min-w-0 transition-all duration-300">
+  
+      <div className="flex-1 min-w-0 transition-all duration-300">
+        {/* Header fuera del flex-col */}
         <HeaderUser
           user={user}
           userType={userType}
-          onMobileMenuClick={() => setMobileOpen(true)}
+          onMobileMenuClick={() => setMobileOpen(prev => !prev)}
           collapsed={collapsed}
         />
-
-        <main className="pt-20 px-4 flex-1">{children}</main>
+  
+        <main className="pt-20 px-4">{children}</main>
       </div>
     </div>
   );
+  
 };
 
 const AppContent = () => {

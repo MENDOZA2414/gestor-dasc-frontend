@@ -59,7 +59,10 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
   const currentTitle = match ? match.title : 'Dashboard';
 
   return (
-    <header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
+    //<header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
+    <header className="w-full bg-white border-b border-gray-200 shadow-md 
+    fixed top-0 left-0 z-40 md:relative md:top-auto md:left-auto md:z-0">
+
       <div className="flex items-center justify-between pr-6 h-[104px] transition-all duration-300">
 
         {/* IZQUIERDA */}
@@ -71,7 +74,7 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
 
           {/* Botón de menú en móvil */}
           <button
-            onClick={onMobileMenuClick}
+            onClick={() => onMobileMenuClick(prev => !prev)}
             className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl shadow bg-white"
             title="Menú"
           >
