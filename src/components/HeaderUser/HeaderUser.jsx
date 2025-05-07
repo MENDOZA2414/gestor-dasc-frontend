@@ -1,14 +1,9 @@
 import React from 'react';
-import { FaBell, FaEnvelope, FaBars } from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
+import { HiOutlineBell } from 'react-icons/hi2';
 import { Link } from 'react-router-dom';
 
-const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
-  const getCurrentDate = () => {
-    const date = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('es-ES', options);
-  };
-
+const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, currentTitle = 'Dashboard' }) => {
   const getProfileLink = () => {
     switch (userType) {
       case 'student': return '/userStudent/profile';
@@ -19,42 +14,49 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
     }
   };
 
+  const getCurrentDate = () => {
+    const date = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('es-ES', options);
+  };
+
   return (
     <header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
-      <div className="flex items-center justify-between py-3 pr-6 transition-all duration-300">
-        
-        {/* IZQUIERDA - se mueve solo este bloque */}
+      <div className="flex items-center justify-between pr-6 h-[104px] transition-all duration-300">
+
+        {/* IZQUIERDA */}
         <div
-          className={`flex items-center gap-3 transition-all duration-300 ${
-            collapsed ? 'ml-[6rem]' : 'ml-[19rem]'
-          } bg-yellow-100`}
+          className={`flex items-center gap-6 pl-6 transition-all duration-300 ${
+            collapsed ? 'ml-[8rem]' : 'ml-[19rem]'
+          }`}
         >
+          {/* Botón de menú en móvil */}
           <button
             onClick={onMobileMenuClick}
-            className="text-gray-700 md:hidden"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl shadow bg-white"
             title="Menú"
           >
-            <FaBars className="text-2xl" />
+            <FaBars className="text-xl text-gray-700" />
           </button>
+
+          {/* Título y fecha */}
           <div className="flex flex-col">
-            <span className="text-base font-medium truncate">¡Hola {user.username}!</span>
-            <span className="text-sm text-gray-500 truncate">{getCurrentDate()}</span>
+            <span className="text-2xl font-semibold text-gray-900">{currentTitle}</span>
+            <span className="text-sm text-gray-500">{getCurrentDate()}</span>
           </div>
         </div>
 
-        {/* DERECHA - permanece fijo */}
-        <div className="flex items-center gap-3">
-          <button className="p-1 text-gray-600 hover:bg-gray-100 rounded-full">
-            <FaEnvelope className="text-lg" />
-          </button>
-          <button className="p-1 text-gray-600 hover:bg-gray-100 rounded-full">
-            <FaBell className="text-lg" />
+        {/* DERECHA */}
+        <div className="flex items-center gap-5">
+          <div className="h-6 w-px bg-gray-300"></div>
+          <button className="text-gray-600 hover:text-gray-800 transition-colors">
+            <HiOutlineBell className="text-2xl" />
           </button>
           <Link to={getProfileLink()}>
             <img
               src={user?.logo || 'https://i.pravatar.cc/100?u=default'}
               alt="Perfil"
-              className="w-9 h-9 rounded-full object-cover"
+              className="w-10 h-10 rounded-full object-cover"
             />
           </Link>
         </div>

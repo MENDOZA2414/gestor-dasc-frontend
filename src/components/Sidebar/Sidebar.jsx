@@ -106,15 +106,22 @@ const Sidebar = ({
         </div>
 
         {/* BOTÓN DE COLAPSAR (solo escritorio) */}
+
         <button
-          onClick={toggleSidebar}
-          className={`hidden md:block fixed top-4 z-50 bg-white text-gray-800 shadow-md rounded-full p-1 transition-all duration-300 ${
-            collapsed ? 'left-[5.5rem]' : 'left-[16.5rem]'
-          }`}
-          title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
-        >
-          {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
-        </button>
+  onClick={toggleSidebar}
+  className={`hidden md:flex items-center justify-center fixed top-[28px] z-50 bg-white text-gray-800 shadow-md rounded-2xl p-2 transition-all duration-300
+    ${collapsed ? 'left-[5.5rem]' : 'left-[16.5rem]'}`}
+  title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+>
+  {collapsed ? (
+    <FaChevronRight className="text-[1.25rem]" />
+  ) : (
+    <FaChevronLeft className="text-[1.25rem]" />
+  )}
+</button>
+
+
+
       </div>
     </SidebarContext.Provider>
   );
