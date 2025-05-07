@@ -62,7 +62,7 @@ const Sidebar = ({
 
           {/* Encabezado con logo y botón de cerrar (X) */}
           <div className="relative">
-            <div className="flex items-center justify-between md:justify-center h-[104px] px-6 border-b border-white/10">
+            <div className={`flex items-center justify-between md:justify-center h-[112px] ${collapsed ? 'px-0' : 'px-6'} border-b border-white/10`}>
               <Link
                 to="/dashboard"
                 className={`w-full flex items-center ${
@@ -101,7 +101,10 @@ const Sidebar = ({
                   collapsed ? 'justify-center' : 'justify-start'
                 } w-full px-4 py-2 rounded-lg hover:bg-[#2c1c1c] transition-colors duration-200`}
               >
-                <HiOutlineArrowRightOnRectangle className="text-xl text-red-400" />
+                <HiOutlineArrowRightOnRectangle
+                  className="text-[22px] text-red-400"
+                  style={{ flexShrink: 0 }}
+                />
                 {!collapsed && (
                   <span className="ml-4 text-red-400">Cerrar sesión</span>
                 )}
