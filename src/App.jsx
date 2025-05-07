@@ -18,6 +18,7 @@ import HeaderUser from './components/HeaderUser/HeaderUser';
 const Layout = ({ children, userType, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  console.log('Sidebar collapsed:', collapsed);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -37,11 +38,10 @@ const Layout = ({ children, userType, user }) => {
   return (
     <div className="flex w-full min-h-screen">
       <Sidebar
-        userType={userType}
-        mobileOpen={mobileOpen}
-        setMobileOpen={setMobileOpen}
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
+         userType={userType}
+         mobileOpen={mobileOpen}
+         setMobileOpen={setMobileOpen}
+         onCollapseChange={setCollapsed}
       />
 
       <div className="flex flex-col flex-1 min-w-0 transition-all duration-300">

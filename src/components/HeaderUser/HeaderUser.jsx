@@ -21,13 +21,14 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
 
   return (
     <header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
-      <div
-        className={`flex items-center justify-between py-3 pr-6 transition-all duration-300 ${
-          collapsed ? 'pl-[6rem]' : 'pl-[19rem]'
-        }`}
-      >
-        {/* IZQUIERDA */}
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between py-3 pr-6 transition-all duration-300">
+        
+        {/* IZQUIERDA - se mueve solo este bloque */}
+        <div
+          className={`flex items-center gap-3 transition-all duration-300 ${
+            collapsed ? 'ml-[6rem]' : 'ml-[19rem]'
+          } bg-yellow-100`}
+        >
           <button
             onClick={onMobileMenuClick}
             className="text-gray-700 md:hidden"
@@ -41,7 +42,7 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
           </div>
         </div>
 
-        {/* DERECHA */}
+        {/* DERECHA - permanece fijo */}
         <div className="flex items-center gap-3">
           <button className="p-1 text-gray-600 hover:bg-gray-100 rounded-full">
             <FaEnvelope className="text-lg" />
