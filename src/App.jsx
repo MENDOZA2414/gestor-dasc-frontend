@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './components/Login';
 import RegisterStudent from './components/RegisterStudent/RegisterStudent';
@@ -15,10 +15,30 @@ import HeaderUser from './components/HeaderUser/HeaderUser';
 
 // Nuevo componente Layout
 const Layout = ({ children, userType, user }) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+  
   return (
-    <Sidebar userType={userType}>
-      <HeaderUser user={user} userType={userType} />
-      <main className="p-4">{children}</main>
+    <Sidebar userType={userType} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}>
+      <div className="flex flex-col w-full">
+        <HeaderUser
+          user={user}
+          userType={userType}
+          onMobileMenuClick={() => setMobileOpen(true)}
+        />
+        <main className="p-4 flex-1">{children}</main>
+      </div>
     </Sidebar>
   );
 };

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSignOutAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { HiOutlineArrowRightOnRectangle } from 'react-icons/hi2';
 import { menuByUserType } from './SidebarConfig';
 import SidebarItem from './SidebarItem';
@@ -10,7 +10,7 @@ import api from '../../api';
 const SidebarContext = createContext();
 export const useSidebar = () => useContext(SidebarContext);
 
-const Sidebar = ({ children, userType = 'student' }) => {
+const Sidebar = ({ children, userType = 'student', mobileOpen, setMobileOpen }) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
@@ -33,7 +33,21 @@ const Sidebar = ({ children, userType = 'student' }) => {
     <SidebarContext.Provider value={{ collapsed, toggleSidebar }}>
       <div className="flex">
         {/* SIDEBAR */}
-        <aside className={`fixed top-0 left-0 h-screen bg-[#1B1D2D] text-white shadow-md z-50 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
+        <aside className={`
+          fixed top-0 left-0 h-screen bg-[#1B1D2D] text-white shadow-md z-50 transition-all duration-300
+          ${collapsed ? 'w-20' : 'w-64'}
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0
+        `}>
+          {/* Botón cerrar menú (móvil) */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden absolute top-4 right-4 text-white"
+            title="Cerrar menú"
+          >
+            <FaTimes className="text-2xl" />
+          </button>
+
           {/* LOGO */}
           <div className={`flex ${collapsed ? 'items-center justify-center h-20' : 'items-start justify-start pl-8 pt-7 h-20'}`}>
             <Link to="/dashboard" title="DASC">
@@ -41,7 +55,6 @@ const Sidebar = ({ children, userType = 'student' }) => {
                 src={collapsed ? '/dasc_icon.png' : '/dasc_blanco.png'}
                 alt="Logo DASC"
                 className={`transition-all duration-300 object-contain ${collapsed ? 'h-10' : 'h-12'}`}
-
               />
             </Link>
           </div>
@@ -67,17 +80,26 @@ const Sidebar = ({ children, userType = 'student' }) => {
           </div>
         </aside>
 
+        {/* FONDO OSCURO PARA MÓVIL */}
+        {mobileOpen && (
+          <div
+            onClick={() => setMobileOpen(false)}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          />
+        )}
+
         {/* CONTENIDO PRINCIPAL */}
-        <div className={`flex-1 transition-all duration-300 ${collapsed ? 'ml-20' : 'ml-64'}`}>
+        <div className={`flex-1 transition-all duration-300 ${collapsed ? 'ml-20' : 'ml-64'} md:ml-0`}>
           {children}
         </div>
 
-        {/* BOTÓN DE COLAPSAR */}
+        {/* BOTÓN DE COLAPSAR (solo escritorio) */}
         <button
           onClick={toggleSidebar}
-          className={`fixed top-4 z-50 bg-white text-gray-800 shadow-md rounded-full p-1 transition-all duration-300 ${
+          className={`hidden md:block fixed top-4 z-50 bg-white text-gray-800 shadow-md rounded-full p-1 transition-all duration-300 ${
             collapsed ? 'left-[5.5rem]' : 'left-[16.5rem]'
           }`}
+          title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
         >
           {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
         </button>

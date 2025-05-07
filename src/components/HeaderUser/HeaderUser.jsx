@@ -1,9 +1,9 @@
 import React from 'react';
-import { FaBell, FaEnvelope } from 'react-icons/fa';
+import { FaBell, FaEnvelope, FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSidebar } from '../Sidebar/Sidebar';
 
-const HeaderUser = ({ user, userType }) => {
+const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
   const { collapsed } = useSidebar();
 
   const getCurrentDate = () => {
@@ -14,21 +14,30 @@ const HeaderUser = ({ user, userType }) => {
 
   const getProfileLink = () => {
     switch (userType) {
-      case 'alumno':
-        return '/inicioAlumno/perfil';
-      case 'asesorInterno':
-        return '/inicioAsesorInterno/perfil';
-      case 'asesorExterno':
-        return '/inicioAsesorExterno/perfil';
-      case 'entidadReceptora':
-        return '/inicioEntidad/perfil';
+      case 'student':
+        return '/userStudent/profile';
+      case 'internalAssessor':
+        return '/userInternalAssessor/profile';
+      case 'externalAssessor':
+        return '/userExternalAssessor/profile';
+      case 'company':
+        return '/userCompany/profile';
       default:
-        return '/inicioAlumno/perfil';
+        return '/userStudent/profile';
     }
   };
 
   return (
-    <header className={`sticky top-0 z-40 flex items-center justify-between bg-white p-4 border-b border-gray-200 shadow-md transition-all duration-300`}>
+    <header className="sticky top-0 z-40 flex items-center justify-between bg-white p-4 border-b border-gray-200 shadow-md transition-all duration-300">
+      {/* Botón hamburguesa solo en móvil */}
+      <button
+        onClick={onMobileMenuClick}
+        className="md:hidden mr-4 text-gray-700"
+        title="Menú"
+      >
+        <FaBars className="text-2xl" />
+      </button>
+
       <div className="flex items-center">
         <div className="flex flex-col">
           {user && user.username && !collapsed && (
@@ -39,6 +48,7 @@ const HeaderUser = ({ user, userType }) => {
           )}
         </div>
       </div>
+
       <div className="flex items-center">
         <div className="flex items-center mr-4">
           <div className="h-6 w-px bg-gray-300 mr-4"></div>
