@@ -76,13 +76,16 @@ const Sidebar = ({
           </Link>
 
 
-            {/* Botón cerrar en móvil */}
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="md:hidden text-white text-lg"
-            >
-              <FaTimes />
-            </button>
+            {/* BOTÓN DE CERRAR - fuera del sidebar */}
+            {mobileOpen && (
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="md:hidden fixed top-6 left-64 z-50 p-2 bg-white rounded-full shadow"
+                title="Cerrar menú"
+              >
+                <FaTimes className="text-xl text-gray-800" />
+              </button>
+            )}
           </div>
 
           {/* MENÚ */}

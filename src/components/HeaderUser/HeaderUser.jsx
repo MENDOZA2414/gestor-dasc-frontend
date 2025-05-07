@@ -110,9 +110,11 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, mobileOpen }
         </div>
       </header>
 
+      {/* Capa de opacidad que cubre el header también (solo en móvil y cuando está abierto) */}
       {mobileOpen && (
         <div
-         className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => onMobileMenuClick(false)}
         ></div>
       )}
 
