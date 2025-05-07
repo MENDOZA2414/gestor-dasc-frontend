@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSidebar } from './components/Sidebar/Sidebar';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './components/Login';
 import RegisterStudent from './components/RegisterStudent/RegisterStudent';
@@ -16,17 +17,11 @@ import HeaderUser from './components/HeaderUser/HeaderUser';
 // Nuevo componente Layout
 const Layout = ({ children, userType, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-  
-    return () => {
-      document.body.style.overflow = '';
-    };
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => (document.body.style.overflow = '');
   }, [mobileOpen]);
 
   useEffect(() => {
@@ -35,23 +30,31 @@ const Layout = ({ children, userType, user }) => {
         setMobileOpen(false);
       }
     };
-  
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [mobileOpen]);
-  
-  
+
   return (
-    <Sidebar userType={userType} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}>
-      <div className="flex flex-col w-full">
+    <div className="flex w-full min-h-screen">
+      <Sidebar
+        userType={userType}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
+
+      <div className="flex flex-col flex-1 min-w-0 transition-all duration-300">
         <HeaderUser
           user={user}
           userType={userType}
           onMobileMenuClick={() => setMobileOpen(true)}
+          collapsed={collapsed}
         />
-        <main className="pt-16 px-4 flex-1">{children}</main>
+
+        <main className="pt-20 px-4 flex-1">{children}</main>
       </div>
-    </Sidebar>
+    </div>
   );
 };
 

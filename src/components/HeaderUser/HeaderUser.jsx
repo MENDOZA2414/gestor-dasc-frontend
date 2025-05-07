@@ -1,11 +1,8 @@
 import React from 'react';
 import { FaBell, FaEnvelope, FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { useSidebar } from '../Sidebar/Sidebar';
 
 const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
-  const { collapsed } = useSidebar();
-
   const getCurrentDate = () => {
     const date = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -23,11 +20,10 @@ const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-white p-4 shadow-md border-b border-gray-200">
+    <header className="fixed top-0 z-40 bg-white py-4 px-6 shadow-md border-b border-gray-200 w-full transition-all duration-300">
       <div className="flex flex-wrap items-center justify-between gap-4">
         {/* Izquierda: botón y saludo */}
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          {/* Botón hamburguesa solo en móvil */}
           <button
             onClick={onMobileMenuClick}
             className="md:hidden text-gray-700"
@@ -36,7 +32,6 @@ const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
             <FaBars className="text-2xl" />
           </button>
 
-          {/* Saludo y fecha */}
           <div className="flex flex-col min-w-0">
             {user?.username && (
               <>
