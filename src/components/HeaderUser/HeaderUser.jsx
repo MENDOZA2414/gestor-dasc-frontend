@@ -2,7 +2,7 @@ import React from 'react';
 import { FaBell, FaEnvelope, FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
+const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
   const getCurrentDate = () => {
     const date = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -20,45 +20,42 @@ const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
   };
 
   return (
-    <header className="fixed top-0 z-40 bg-white py-4 px-6 shadow-md border-b border-gray-200 w-full transition-all duration-300">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {/* Izquierda: botón y saludo */}
-        <div className="flex items-center gap-4 flex-1 min-w-0">
+    <header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
+      <div
+        className={`flex items-center justify-between py-3 pr-6 transition-all duration-300 ${
+          collapsed ? 'pl-[6rem]' : 'pl-[19rem]'
+        }`}
+      >
+        {/* IZQUIERDA */}
+        <div className="flex items-center gap-3">
           <button
             onClick={onMobileMenuClick}
-            className="md:hidden text-gray-700"
+            className="text-gray-700 md:hidden"
             title="Menú"
           >
             <FaBars className="text-2xl" />
           </button>
-
-          <div className="flex flex-col min-w-0">
-            {user?.username && (
-              <>
-                <span className="text-base font-medium truncate">¡Hola {user.username}!</span>
-                <span className="text-sm text-gray-500 truncate">{getCurrentDate()}</span>
-              </>
-            )}
+          <div className="flex flex-col">
+            <span className="text-base font-medium truncate">¡Hola {user.username}!</span>
+            <span className="text-sm text-gray-500 truncate">{getCurrentDate()}</span>
           </div>
         </div>
 
-        {/* Derecha: iconos y perfil */}
-        <div className="flex items-center gap-4">
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200">
-            <FaEnvelope className="text-lg md:text-xl" />
+        {/* DERECHA */}
+        <div className="flex items-center gap-3">
+          <button className="p-1 text-gray-600 hover:bg-gray-100 rounded-full">
+            <FaEnvelope className="text-lg" />
           </button>
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200">
-            <FaBell className="text-lg md:text-xl" />
+          <button className="p-1 text-gray-600 hover:bg-gray-100 rounded-full">
+            <FaBell className="text-lg" />
           </button>
-          {user?.logo && (
-            <Link to={getProfileLink()}>
-              <img
-                src={user.logo}
-                alt="Perfil"
-                className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover cursor-pointer"
-              />
-            </Link>
-          )}
+          <Link to={getProfileLink()}>
+            <img
+              src={user?.logo || 'https://i.pravatar.cc/100?u=default'}
+              alt="Perfil"
+              className="w-9 h-9 rounded-full object-cover"
+            />
+          </Link>
         </div>
       </div>
     </header>
