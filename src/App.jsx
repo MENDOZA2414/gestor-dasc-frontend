@@ -53,6 +53,7 @@ const Layout = ({ children, userType, user }) => {
           userType={userType}
           onMobileMenuClick={() => setMobileOpen(prev => !prev)}
           collapsed={collapsed}
+          mobileOpen={mobileOpen}
         />
   
         <main className="pt-20 px-4">{children}</main>

@@ -3,7 +3,7 @@ import { FaBars } from 'react-icons/fa';
 import { HiOutlineBell } from 'react-icons/hi2';
 import { Link, useLocation } from 'react-router-dom';
 
-const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
+const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, mobileOpen }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -59,11 +59,10 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
   const currentTitle = match ? match.title : 'Dashboard';
 
   return (
-    //<header className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200 shadow-md">
     <header className="w-full bg-white border-b border-gray-200 shadow-md 
     fixed top-0 left-0 z-40 md:relative md:top-auto md:left-auto md:z-0">
 
-      <div className="flex items-center justify-between pr-6 h-[104px] transition-all duration-300">
+      <div className="flex items-center justify-between pr-4 h-[64px] md:h-[104px] transition-all duration-300">
 
         {/* IZQUIERDA */}
         <div className="flex items-center gap-6 pl-6 transition-all duration-300 md:ml-20">
@@ -72,19 +71,20 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed }) => {
           <button
             onClick={() => {
               if (window.innerWidth < 768) {
-                onMobileMenuClick(prev => !prev); // solo abre en móvil
+                onMobileMenuClick(prev => !prev);
               }
             }}
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl shadow bg-white"
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg shadow bg-white"
             title="Menú"
           >
-            <FaBars className="text-xl text-gray-700" />
+            <FaBars className="text-lg text-gray-700" />
           </button>
+
 
           {/* Título y fecha */}
           <div className="flex flex-col">
-            <span className="text-2xl font-semibold text-gray-900">{currentTitle}</span>
-            <span className="text-sm text-gray-500">{getCurrentDate()}</span>
+            <span className="text-lg md:text-2xl font-semibold text-gray-900">{currentTitle}</span>
+            <span className="text-xs md:text-sm text-gray-500">{getCurrentDate()}</span>
           </div>
         </div>
 
