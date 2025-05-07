@@ -59,58 +59,64 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, mobileOpen }
   const currentTitle = match ? match.title : 'Dashboard';
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 shadow-md 
-    fixed top-0 left-0 z-40 md:relative md:top-auto md:left-auto md:z-0">
+    <>
+      <header className="w-full bg-white border-b border-gray-200 shadow-md 
+      fixed top-0 left-0 z-40 md:relative md:top-auto md:left-auto md:z-0">
+        <div className="flex items-center justify-between pr-4 h-[64px] md:h-[104px] transition-all duration-300">
 
-      <div className="flex items-center justify-between pr-4 h-[64px] md:h-[104px] transition-all duration-300">
+          {/* IZQUIERDA */}
+          <div className="flex items-center gap-6 pl-6 transition-all duration-300 md:ml-20">
+            {/* Botón de menú en móvil */}
+            <button
+              onClick={() => {
+                if (window.innerWidth < 768) {
+                  onMobileMenuClick(prev => !prev);
+                }
+              }}
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg shadow bg-white"
+              title="Menú"
+            >
+              <FaBars className="text-lg text-gray-700" />
+            </button>
 
-        {/* IZQUIERDA */}
-        <div className="flex items-center gap-6 pl-6 transition-all duration-300 md:ml-20">
-          
-          {/* Botón de menú en móvil */}
-          <button
-            onClick={() => {
-              if (window.innerWidth < 768) {
-                onMobileMenuClick(prev => !prev);
-              }
-            }}
-            className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg shadow bg-white"
-            title="Menú"
-          >
-            <FaBars className="text-lg text-gray-700" />
-          </button>
+            {/* Título y fecha */}
+            <div className="flex flex-col">
+              <span className="text-lg md:text-2xl font-semibold text-gray-900">{currentTitle}</span>
+              <span className="text-xs md:text-sm text-gray-500">{getCurrentDate()}</span>
+            </div>
+          </div>
 
+          {/* DERECHA */}
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="h-6 w-px bg-gray-300 hidden sm:block"></div>
 
-          {/* Título y fecha */}
-          <div className="flex flex-col">
-            <span className="text-lg md:text-2xl font-semibold text-gray-900">{currentTitle}</span>
-            <span className="text-xs md:text-sm text-gray-500">{getCurrentDate()}</span>
+            <button className="text-gray-600 hover:text-gray-800 transition-colors">
+              <HiOutlineBell className="text-2xl" />
+            </button>
+
+            {/* Nombre visible solo en pantallas sm en adelante */}
+            <span className="hidden sm:inline text-gray-600 text-sm font-medium whitespace-nowrap">
+              {user?.firstName} {user?.firstLastName}
+            </span>
+
+            <Link to={getProfileLink()}>
+              <img
+                src={user?.logo}
+                alt="Foto de perfil"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            </Link>
           </div>
         </div>
+      </header>
 
-        {/* DERECHA */}
-        <div className="flex items-center gap-3 sm:gap-5">
-          <div className="h-6 w-px bg-gray-300 hidden sm:block"></div>
+      {mobileOpen && (
+        <div
+         className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+        ></div>
+      )}
 
-          <button className="text-gray-600 hover:text-gray-800 transition-colors">
-            <HiOutlineBell className="text-2xl" />
-          </button>
-
-          {/* Nombre visible solo en pantallas sm en adelante */}
-          <span className="hidden sm:inline text-gray-600 text-sm font-medium whitespace-nowrap">
-            {user?.firstName} {user?.firstLastName}
-          </span>
-
-          <Link to={getProfileLink()}>
-            <img
-              src={user?.logo}
-              alt="Foto de perfil"
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          </Link>
-        </div>
-      </div>
-    </header>
+    </>
   );
 };
 

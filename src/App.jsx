@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSidebar } from './components/Sidebar/Sidebar';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './components/Login';
 import RegisterStudent from './components/RegisterStudent/RegisterStudent';
@@ -15,12 +14,10 @@ import Sidebar from './components/Sidebar/Sidebar';
 import HeaderUser from './components/HeaderUser/HeaderUser';
 import api from './api';
 
-
 // Nuevo componente Layout
 const Layout = ({ children, userType, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  console.log('Sidebar collapsed:', collapsed);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -45,9 +42,8 @@ const Layout = ({ children, userType, user }) => {
         setMobileOpen={setMobileOpen}
         onCollapseChange={setCollapsed}
       />
-  
+
       <div className="flex-1 min-w-0 transition-all duration-300">
-        {/* Header fuera del flex-col */}
         <HeaderUser
           user={user}
           userType={userType}
@@ -55,23 +51,22 @@ const Layout = ({ children, userType, user }) => {
           collapsed={collapsed}
           mobileOpen={mobileOpen}
         />
-  
-        <main className="pt-20 px-4">{children}</main>
+
+        <main className="pt-20 px-4 bg-inherit">{children}</main>
+
       </div>
     </div>
   );
-  
 };
 
 const AppContent = () => {
   const location = useLocation();
-
   const showHeaderRoutes = ['/', '/login', '/register', '/preRegister'];
   const showHeader = showHeaderRoutes.includes(location.pathname);
 
   const [user, setUser] = useState(null);
   const [userType, setUserType] = useState(null);
-  const [userChecked, setUserChecked] = useState(false); // nuevo estado
+  const [userChecked, setUserChecked] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -156,57 +151,53 @@ const AppContent = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen w-full overflow-x-hidden">
-      <Routes>
-        {/* Estudiante */}
-        <Route path="/userStudent/*" element={
-          <PrivateRoute>
-            <Layout userType="student" user={user}>
-              <Routes>
-                <Route index element={<UserStudent />} />
-              </Routes>
-            </Layout>
-          </PrivateRoute>
-        } />
+    <Routes>
+      {/* Estudiante */}
+      <Route path="/userStudent/*" element={
+        <PrivateRoute>
+          <Layout userType="student" user={user}>
+            <Routes>
+              <Route index element={<UserStudent />} />
+            </Routes>
+          </Layout>
+        </PrivateRoute>
+      } />
 
-        {/* Asesor Interno */}
-        <Route path="/userInternalAssessor/*" element={
-          <PrivateRoute>
-            <Layout userType="internalAssessor" user={user}>
-              <Routes>
-                <Route index element={<UserInternalAssessor />} />
-              </Routes>
-            </Layout>
-          </PrivateRoute>
-        } />
+      {/* Asesor Interno */}
+      <Route path="/userInternalAssessor/*" element={
+        <PrivateRoute>
+          <Layout userType="internalAssessor" user={user}>
+            <Routes>
+              <Route index element={<UserInternalAssessor />} />
+            </Routes>
+          </Layout>
+        </PrivateRoute>
+      } />
 
-        {/* Asesor Externo */}
-        <Route path="/userExternalAssessor/*" element={
-          <PrivateRoute>
-            <Layout userType="externalAssessor" user={user}>
-              <Routes>
-                <Route index element={<UserExternalAssessor />} />
-              </Routes>
-            </Layout>
-          </PrivateRoute>
-        } />
+      {/* Asesor Externo */}
+      <Route path="/userExternalAssessor/*" element={
+        <PrivateRoute>
+          <Layout userType="externalAssessor" user={user}>
+            <Routes>
+              <Route index element={<UserExternalAssessor />} />
+            </Routes>
+          </Layout>
+        </PrivateRoute>
+      } />
 
-        {/* Entidad Receptora */}
-        <Route path="/userCompany/*" element={
-          <PrivateRoute>
-            <Layout userType="company" user={user}>
-              <Routes>
-                <Route index element={<UserCompany />} />
-              </Routes>
-            </Layout>
-          </PrivateRoute>
-        } />
-      </Routes>
-    </div>
+      {/* Entidad Receptora */}
+      <Route path="/userCompany/*" element={
+        <PrivateRoute>
+          <Layout userType="company" user={user}>
+            <Routes>
+              <Route index element={<UserCompany />} />
+            </Routes>
+          </Layout>
+        </PrivateRoute>
+      } />
+    </Routes>
   );
 };
-
-
 
 const App = () => {
   return (
