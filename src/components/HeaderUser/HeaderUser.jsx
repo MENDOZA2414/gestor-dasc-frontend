@@ -14,56 +14,57 @@ const HeaderUser = ({ user, userType, onMobileMenuClick }) => {
 
   const getProfileLink = () => {
     switch (userType) {
-      case 'student':
-        return '/userStudent/profile';
-      case 'internalAssessor':
-        return '/userInternalAssessor/profile';
-      case 'externalAssessor':
-        return '/userExternalAssessor/profile';
-      case 'company':
-        return '/userCompany/profile';
-      default:
-        return '/userStudent/profile';
+      case 'student': return '/userStudent/profile';
+      case 'internalAssessor': return '/userInternalAssessor/profile';
+      case 'externalAssessor': return '/userExternalAssessor/profile';
+      case 'company': return '/userCompany/profile';
+      default: return '/userStudent/profile';
     }
   };
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between bg-white p-4 border-b border-gray-200 shadow-md transition-all duration-300">
-      {/* Botón hamburguesa solo en móvil */}
-      <button
-        onClick={onMobileMenuClick}
-        className="md:hidden mr-4 text-gray-700"
-        title="Menú"
-      >
-        <FaBars className="text-2xl" />
-      </button>
+    <header className="fixed top-0 left-0 w-full z-50 bg-white p-4 shadow-md border-b border-gray-200">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Izquierda: botón y saludo */}
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          {/* Botón hamburguesa solo en móvil */}
+          <button
+            onClick={onMobileMenuClick}
+            className="md:hidden text-gray-700"
+            title="Menú"
+          >
+            <FaBars className="text-2xl" />
+          </button>
 
-      <div className="flex items-center">
-        <div className="flex flex-col">
-          {user && user.username && !collapsed && (
-            <>
-              <span className="text-lg font-medium">¡Hola {user.username}!</span>
-              <span className="text-sm text-gray-500">{getCurrentDate()}</span>
-            </>
+          {/* Saludo y fecha */}
+          <div className="flex flex-col min-w-0">
+            {user?.username && (
+              <>
+                <span className="text-base font-medium truncate">¡Hola {user.username}!</span>
+                <span className="text-sm text-gray-500 truncate">{getCurrentDate()}</span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Derecha: iconos y perfil */}
+        <div className="flex items-center gap-4">
+          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200">
+            <FaEnvelope className="text-lg md:text-xl" />
+          </button>
+          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200">
+            <FaBell className="text-lg md:text-xl" />
+          </button>
+          {user?.logo && (
+            <Link to={getProfileLink()}>
+              <img
+                src={user.logo}
+                alt="Perfil"
+                className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover cursor-pointer"
+              />
+            </Link>
           )}
         </div>
-      </div>
-
-      <div className="flex items-center">
-        <div className="flex items-center mr-4">
-          <div className="h-6 w-px bg-gray-300 mr-4"></div>
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200">
-            <FaEnvelope className="text-xl" />
-          </button>
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200 ml-2">
-            <FaBell className="text-xl" />
-          </button>
-        </div>
-        {user && user.logo && (
-          <Link to={getProfileLink()}>
-            <img src={user.logo} alt="Profile" className="w-12 h-12 rounded-full object-cover cursor-pointer" />
-          </Link>
-        )}
       </div>
     </header>
   );

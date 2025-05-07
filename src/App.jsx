@@ -28,6 +28,18 @@ const Layout = ({ children, userType, user }) => {
       document.body.style.overflow = '';
     };
   }, [mobileOpen]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth < 768 && mobileOpen) {
+        setMobileOpen(false);
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [mobileOpen]);
+  
   
   return (
     <Sidebar userType={userType} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}>
@@ -37,7 +49,7 @@ const Layout = ({ children, userType, user }) => {
           userType={userType}
           onMobileMenuClick={() => setMobileOpen(true)}
         />
-        <main className="p-4 flex-1">{children}</main>
+        <main className="pt-16 px-4 flex-1">{children}</main>
       </div>
     </Sidebar>
   );
@@ -54,7 +66,7 @@ const AppContent = () => {
   const userType = 'alumno';
 
   return (
-    <div className={`${showHeader ? 'pt-20' : ''} bg-gray-100 min-h-screen`}>
+    <div className={`${showHeader ? 'pt-20' : ''} bg-gray-100 min-h-screen w-full overflow-x-hidden`}>
       {showHeader && <Header />}
       <Routes>
         {/* Rutas públicas */}
