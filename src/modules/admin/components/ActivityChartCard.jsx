@@ -32,7 +32,7 @@ const ActivityChartCard = () => {
   const data = range === '7D' ? data7D : data1M;
 
   return (
-    <Card className="col-span-6 h-64">
+    <Card className="col-span-5 h-64">
       {/* Header con título y botones alineados */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-gray-700 font-medium text-base md:text-lg">

@@ -4,6 +4,7 @@ import Card from '../../../shared/components/Card';
 import { HiOutlineUser } from 'react-icons/hi';
 import ActivityChartCard from '../components/ActivityChartCard';
 import StudentsPerEntityChart from '../components/StudentsPerEntityChart';
+import PracticeStatusChart from '../components/PracticeStatusChart';
 
 const Dashboard = () => {
   const user = {
@@ -70,7 +71,7 @@ const Dashboard = () => {
         {/* Resto de cards */}
         <ActivityChartCard />
         <StudentsPerEntityChart />
-        <Card title="Prácticas activas / concluidas" className="col-span-12 md:col-span-3 h-64" />
+        <PracticeStatusChart />
         <Card title="Actividad reciente" className="col-span-12 md:col-span-9 h-64" />
         <Card title="Reportes generados" className="col-span-12 md:col-span-3 h-64" />
 
