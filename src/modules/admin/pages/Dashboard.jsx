@@ -3,6 +3,7 @@ import Layout from '../../../shared/components/Layout';
 import Card from '../../../shared/components/Card';
 import { HiOutlineUser } from 'react-icons/hi';
 import ActivityChartCard from '../components/ActivityChartCard';
+import StudentsPerEntityChart from '../components/StudentsPerEntityChart';
 
 const Dashboard = () => {
   const user = {
@@ -68,7 +69,7 @@ const Dashboard = () => {
 
         {/* Resto de cards */}
         <ActivityChartCard />
-        <Card title="Alumnos por entidad" className="col-span-12 md:col-span-3 h-64" />
+        <StudentsPerEntityChart />
         <Card title="Prácticas activas / concluidas" className="col-span-12 md:col-span-3 h-64" />
         <Card title="Actividad reciente" className="col-span-12 md:col-span-9 h-64" />
         <Card title="Reportes generados" className="col-span-12 md:col-span-3 h-64" />
