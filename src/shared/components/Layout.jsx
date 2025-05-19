@@ -24,7 +24,7 @@ const Layout = ({ children, user, userType }) => {
           />
 
           {/* Contenido dinámico */}
-          <main className="flex-1 p-4 pt-[80px] overflow-y-auto">
+          <main className="flex-1 p-4 pt-8 overflow-y-auto">
             {children}
           </main>
         </div>
