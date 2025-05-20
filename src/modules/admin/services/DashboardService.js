@@ -15,3 +15,8 @@ export const getDashboardStats = async () => {
     companies: companies.data.total,
   };
 };
+
+export const getTopCompaniesWithStudents = async () => {
+  const response = await api.get('/professional-practices/stats/top-companies');
+  return response.data;
+};

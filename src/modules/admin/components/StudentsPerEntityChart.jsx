@@ -1,17 +1,46 @@
-import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import ChartCard from '../../../shared/components/ChartCard';
+import { getTopCompaniesWithStudents } from '../services/DashboardService';
 
-const data = [
-  { name: 'Entidad A', value: 35, color: '#60F27D' },
-  { name: 'Entidad B', value: 30, color: '#2196F3' },
-  { name: 'Entidad C', value: 25, color: '#FF4D4F' },
-  { name: 'Entidad D', value: 20, color: '#FF69C1' },
-  { name: 'Entidad E', value: 24, color: '#1F1F5C' }
-];
+const COLORS = ['#60F27D', '#2196F3', '#FF4D4F', '#FF69C1', '#1F1F5C'];
+
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const { name, value } = payload[0];
+    return (
+      <div className="bg-white border border-neutral-300 rounded px-2 py-1 text-sm shadow-md">
+        <span className="text-neutral-800 font-medium">{name}</span>
+        <span className="ml-1 text-neutral-600">: {value} alumno{value !== 1 && 's'}</span>
+      </div>
+    );
+  }
+  return null;
+};
 
 const StudentsPerEntityChart = () => {
-  const total = data.reduce((acc, cur) => acc + cur.value, 0);
+  const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { totalStudents, topCompanies } = await getTopCompaniesWithStudents();
+        const chartData = topCompanies.map((item, index) => ({
+          name: item.companyName,
+          value: item.studentCount,
+          color: COLORS[index % COLORS.length],
+        }));
+
+        setData(chartData);
+        setTotal(totalStudents);
+      } catch (error) {
+        console.error('Error al cargar los datos de empresas:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ChartCard title="Alumnos por entidad" className="col-span-3 h-[256px]">
@@ -26,21 +55,22 @@ const StudentsPerEntityChart = () => {
             paddingAngle={2}
             labelLine={false}
             label={({ cx, cy }) => (
-                <text
+              <text
                 x={cx}
                 y={cy}
                 textAnchor="middle"
                 dominantBaseline="central"
                 className="text-xl font-bold text-neutral-900"
-                >
+              >
                 {total}
-                </text>
+              </text>
             )}
-            >
+          >
             {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
+              <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
-            </Pie>
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>
     </ChartCard>

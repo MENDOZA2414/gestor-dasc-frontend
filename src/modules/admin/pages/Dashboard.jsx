@@ -41,7 +41,7 @@ const Dashboard = () => {
 
   return (
     <Layout user={user} userType={userType}>
-      <div className="grid grid-cols-12 gap-4">
+      <div className="grid grid-cols-12 sm:grid-cols-12 gap-4">
 
         <SummaryCard
           icon={<HiOutlineAcademicCap />}
