@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import Card from '../../../shared/components/Card';
+import { Card } from "../../../../shared/components";
 
 const data7D = [
   { name: 'D', value: 6 },

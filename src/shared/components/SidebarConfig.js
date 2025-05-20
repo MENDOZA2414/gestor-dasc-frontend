@@ -40,9 +40,9 @@ export const menuByUserType = {
 
   admin: [
     { path: '/admin/dashboard', icon: HiOutlineHome, label: 'Inicio' },
-    { path: '/admin/users', icon: HiOutlineUserGroup, label: 'Usuarios' },
-    { path: '/admin/formats', icon: HiOutlineDocumentDuplicate, label: 'Formatos' },
+    { path: '/admin/students', icon: HiOutlineUserGroup, label: 'Alumnos' },
     { path: '/admin/assessors', icon: HiOutlineIdentification, label: 'Asesores' },
+    { path: '/admin/companies', icon: HiOutlineDocumentDuplicate, label: 'Entidades' },
     { path: '/admin/reports', icon: HiOutlineClipboardDocumentList, label: 'Reportes' },
   ]
 };

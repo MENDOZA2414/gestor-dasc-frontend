@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../shared/components/Layout';
 import SummaryCard from '../../../shared/components/SummaryCard';
 import { HiOutlineAcademicCap, HiOutlineOfficeBuilding } from 'react-icons/hi';
-import { FiUserCheck, FiUserPlus } from 'react-icons/fi';
+import { FaChalkboardTeacher, FaUserTie } from 'react-icons/fa';
 import ActivityChartCard from '../components/ActivityChartCard';
 import StudentsPerEntityChart from '../components/StudentsPerEntityChart';
 import PracticeStatusChart from '../components/PracticeStatusChart';
 import RecentActivityTable from '../components/RecentActivityTable';
 import GeneratedReportsTable from '../components/GeneratedReportsTable';
-import { getDashboardStats } from '../services/DashboardService';
+import { getDashboardStats } from '../services/dashboardService';
+import { FaPersonShelter } from "react-icons/fa6";
+import { GoMortarBoard } from "react-icons/go";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -44,21 +46,21 @@ const Dashboard = () => {
       <div className="grid grid-cols-12 sm:grid-cols-12 gap-4">
 
         <SummaryCard
-          icon={<HiOutlineAcademicCap />}
+          icon={<GoMortarBoard />}
           label="Total de alumnos"
           value={stats.students}
           color="bg-sky-500"
         />
 
         <SummaryCard
-          icon={<FiUserCheck />}
+          icon={<FaPersonShelter />}
           label="Asesores Internos"
           value={stats.internalAssessors}
           color="bg-blue-700"
         />
 
         <SummaryCard
-          icon={<FiUserPlus />}
+          icon={<FaUserTie />}
           label="Asesores Externos"
           value={stats.externalAssessors}
           color="bg-purple-600"
