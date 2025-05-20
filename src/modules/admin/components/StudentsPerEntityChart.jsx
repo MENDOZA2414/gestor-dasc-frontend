@@ -14,7 +14,7 @@ const StudentsPerEntityChart = () => {
   const total = data.reduce((acc, cur) => acc + cur.value, 0);
 
   return (
-    <ChartCard title="Alumnos por entidad" className="col-span-3 h-64">
+    <ChartCard title="Alumnos por entidad" className="col-span-3 h-[256px]">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie

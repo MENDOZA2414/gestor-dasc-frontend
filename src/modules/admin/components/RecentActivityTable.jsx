@@ -31,7 +31,7 @@ const data = [
 
 const RecentActivityTable = () => {
   return (
-    <Card title="Actividad reciente" className="col-span-12 md:col-span-9 h-64">
+    <Card title="Actividad reciente" className="col-span-12 md:col-span-9 h-[300px]">
       <div className="overflow-hidden rounded-xl">
         <div className="grid grid-cols-3 bg-gray-100 text-gray-700 font-medium text-sm px-4 py-2">
           <div>Usuario</div>

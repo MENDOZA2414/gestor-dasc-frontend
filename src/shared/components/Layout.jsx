@@ -24,8 +24,10 @@ const Layout = ({ children, user, userType }) => {
           />
 
           {/* Contenido dinámico */}
-          <main className="flex-1 p-4 pt-24 md:pt-16 lg:pt-8 overflow-y-auto">
-            {children}
+          <main className="flex-1 px-4 md:px-6 lg:px-8 md:pt-16 lg:pt-8 pb-8 overflow-y-auto">
+            <div className="max-w-[1600px] mx-auto w-full">
+              {children}
+            </div>
           </main>
         </div>
       </Sidebar>
