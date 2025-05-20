@@ -1,8 +1,6 @@
-import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { BsCheckCircleFill, BsDashCircleFill } from 'react-icons/bs';
-import ChartCard from '../../../shared/components/ChartCard';
-
+import { ChartCard } from "../../../../shared/components";
 const data = [
   { name: 'Concluidas', value: 17, color: '#60F27D' },
   { name: 'Activas', value: 134, color: '#1F1F5C' },

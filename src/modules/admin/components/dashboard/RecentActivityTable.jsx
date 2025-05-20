@@ -1,5 +1,4 @@
-import React from 'react';
-import Card from '../../../shared/components/Card';
+import { Card } from "../../../../shared/components";
 import { BsDownload, BsEyeFill, BsEnvelopeFill } from 'react-icons/bs';
 
 const data = [

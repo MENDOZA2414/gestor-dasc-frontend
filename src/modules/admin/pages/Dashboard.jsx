@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../../../shared/components/Layout';
-import SummaryCard from '../../../shared/components/SummaryCard';
-import { HiOutlineAcademicCap, HiOutlineOfficeBuilding } from 'react-icons/hi';
-import { FaChalkboardTeacher, FaUserTie } from 'react-icons/fa';
-import ActivityChartCard from '../components/ActivityChartCard';
-import StudentsPerEntityChart from '../components/StudentsPerEntityChart';
-import PracticeStatusChart from '../components/PracticeStatusChart';
-import RecentActivityTable from '../components/RecentActivityTable';
-import GeneratedReportsTable from '../components/GeneratedReportsTable';
-import { getDashboardStats } from '../services/dashboardService';
-import { FaPersonShelter } from "react-icons/fa6";
-import { GoMortarBoard } from "react-icons/go";
+
+import { Layout, SummaryCard } from '../../../shared/components';
+import {
+  FaPersonShelter,
+  FaUserTie,
+  GoMortarBoard,
+  HiOutlineOfficeBuilding
+} from '../../../shared/icons';
+
+import {
+  StudentsPerEntityChart,
+  PracticeStatusChart,
+  RecentActivityTable,
+  GeneratedReportsTable,
+  ActivityChartCard
+} from '../components/dashboard';
+
+import { getDashboardStats } from "../services/dashboardService";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -36,7 +42,7 @@ const Dashboard = () => {
   const user = {
     firstName: 'José Miguel',
     firstLastName: 'Mendoza',
-    logo: 'https://via.placeholder.com/100'
+    logo: 'https://placehold.co/100x100'
   };
 
   const userType = 'admin';

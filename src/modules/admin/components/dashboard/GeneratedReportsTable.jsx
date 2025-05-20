@@ -1,6 +1,5 @@
-import React from 'react';
 import { FaFilePdf, FaDownload, FaEye } from 'react-icons/fa';
-import Card from '../../../shared/components/Card';
+import { Card } from "../../../../shared/components";
 
 const reports = [
   { name: 'Reporte 12/06...pdf' },
