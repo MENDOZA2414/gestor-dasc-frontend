@@ -43,7 +43,7 @@ const StudentsPerEntityChart = () => {
   }, []);
 
   return (
-    <ChartCard title="Alumnos por entidad" className="col-span-3 h-[256px]">
+    <ChartCard title="Alumnos por entidad" className="col-span-12 sm:col-span-6 lg:col-span-3 h-[256px]">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie

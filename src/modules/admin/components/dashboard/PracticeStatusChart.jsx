@@ -11,7 +11,7 @@ const percent = Math.round((data[0].value / total) * 100);
 
 const PracticeStatusChart = () => {
   return (
-    <ChartCard title="Prácticas activas / concluidas" className="col-span-4 h-[256px]">
+    <ChartCard title="Prácticas activas / concluidas" className="col-span-12 sm:col-span-6 lg:col-span-4 h-[256px]">
         <div className="flex items-center h-full px-4 gap-x-4"> 
         {/* Gráfico */}
         <div className="flex flex-col items-center justify-center flex-1 min-w-0">

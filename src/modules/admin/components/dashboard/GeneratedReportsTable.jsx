@@ -44,7 +44,7 @@ const actions = [
 
 const GeneratedReportsTable = () => {
   return (
-    <Card title="Reportes generados" className="col-span-12 md:col-span-3 h-[300px]">
+    <Card title="Reportes generados" className="col-span-12 md:col-span-4 h-[300px]">
       <DataTable
         columns={columns}
         data={reports}a

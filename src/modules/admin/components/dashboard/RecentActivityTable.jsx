@@ -90,7 +90,7 @@ const columns = [
 
 const RecentActivityTable = () => {
   return (
-    <Card title="Actividad reciente" className="col-span-12 md:col-span-9 h-[300px]">
+    <Card title="Actividad reciente" className="col-span-12 md:col-span-8 h-[300px]">
       <DataTable columns={columns} data={data} />
     </Card>
   );
