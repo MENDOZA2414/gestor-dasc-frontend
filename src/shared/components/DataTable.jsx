@@ -6,76 +6,68 @@ const DataTable = ({
   maxHeight,
 }) => {
   return (
-  <div className="rounded-xl border border-gray-200 shadow-sm h-full flex flex-col overflow-hidden">
-    {/* Tabla encabezado */}
-    <div className="w-full text-sm table-fixed">
-      <table className="w-full table-fixed">
-        <thead className="bg-gray-100 text-gray-700 font-semibold">
-          <tr>
-            {columns.map((col, idx) => (
-              <th
-                key={idx}
-                className={`px-4 py-2 ${col.center ? 'text-center' : 'text-left'} truncate`}
-              >
-                {col.label}
-              </th>
-            ))}
-            {actions.length > 0 && (
-              <th className="px-4 py-2 text-center w-[96px] min-w-[96px]">Acciones</th>
-            )}
-          </tr>
-        </thead>
-      </table>
-    </div>
-
-    {/* Cuerpo scrollable que ocupa todo el espacio restante */}
-    <div className="overflow-y-auto flex-grow">
-      <table className="w-full table-fixed text-sm">
-        <tbody className="divide-y text-gray-700">
-          {data.length === 0 ? (
+    <div className="rounded-xl border border-gray-200 shadow-sm h-full flex flex-col overflow-hidden">
+<div className="overflow-y-scroll flex-grow scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200 scrollbar-thumb-rounded-md">
+        <table className="w-full text-sm table-fixed">
+          <thead className="bg-gray-100 text-gray-700 font-semibold sticky top-0 z-10">
             <tr>
-              <td
-                colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
-                className="text-center py-6 text-gray-400"
-              >
-                {emptyMessage}
-              </td>
+              {columns.map((col, idx) => (
+                <th
+                  key={idx}
+                  className={`px-4 py-2 ${col.center ? 'text-center' : 'text-left'} truncate`}
+                >
+                  {col.label}
+                </th>
+              ))}
+              {actions.length > 0 && (
+                <th className="px-4 py-2 text-center w-[96px] min-w-[96px]">Acciones</th>
+              )}
             </tr>
-          ) : (
-            data.map((row, rowIndex) => (
-              <tr key={rowIndex} className="hover:bg-gray-50 transition">
-                {columns.map((col, colIndex) => (
-                  <td key={colIndex} className="px-4 py-2 max-w-[220px]">
-                    <div className="flex items-center gap-2 truncate whitespace-nowrap overflow-hidden text-ellipsis">
-                      {col.render ? col.render(row) : (
-                        <span className="truncate">{row[col.key]}</span>
-                      )}
-                    </div>
-                  </td>
-                ))}
-                {actions.length > 0 && (
-                  <td className="px-4 py-2 flex gap-2 justify-center items-center w-[96px] min-w-[96px]">
-                    {actions.map((action, aIdx) => (
-                      <button
-                        key={aIdx}
-                        title={action.label}
-                        onClick={() => action.onClick(row)}
-                        className={`p-1 rounded ${action.color || 'bg-gray-200'} ${action.textColor || 'text-white'}`}
-                      >
-                        {action.icon}
-                      </button>
-                    ))}
-                  </td>
-                )}
+          </thead>
+          <tbody className="divide-y text-gray-700">
+            {data.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
+                  className="text-center py-6 text-gray-400"
+                >
+                  {emptyMessage}
+                </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              data.map((row, rowIndex) => (
+                <tr key={rowIndex} className="hover:bg-gray-50 transition">
+                  {columns.map((col, colIndex) => (
+                    <td key={colIndex} className="px-4 py-2 max-w-[220px]">
+                      <div className="flex items-center gap-2 truncate whitespace-nowrap overflow-hidden text-ellipsis">
+                        {col.render ? col.render(row) : (
+                          <span className="truncate">{row[col.key]}</span>
+                        )}
+                      </div>
+                    </td>
+                  ))}
+                  {actions.length > 0 && (
+                    <td className="px-4 py-2 flex gap-2 justify-center items-center w-[96px] min-w-[96px]">
+                      {actions.map((action, aIdx) => (
+                        <button
+                          key={aIdx}
+                          title={action.label}
+                          onClick={() => action.onClick(row)}
+                          className={`p-1 rounded ${action.color || 'bg-gray-200'} ${action.textColor || 'text-white'}`}
+                        >
+                          {action.icon}
+                        </button>
+                      ))}
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default DataTable;

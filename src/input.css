@@ -1,8 +1,8 @@
-/* styles/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Reset básico */
-
-
+/* === Estilos globales personalizados === */
 
 * {
   margin: 0;
@@ -32,4 +32,3 @@ input, select {
   font-family: inherit;
 }
 
-/* Añade aquí estilos globales que quieras que afecten a todo el sitio */

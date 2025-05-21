@@ -9,12 +9,6 @@ const reports = [
   { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
   { name: 'Reporte 09/06_dsfsdfsf.pdf' },
   { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
-  { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
-  { name: 'Reporte 09/06_dsfsdfsf.pdf' },
-  { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
-  { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
-  { name: 'Reporte 09/06_dsfsdfsf.pdf' },
-  { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
 ];
 
 const columns = [
