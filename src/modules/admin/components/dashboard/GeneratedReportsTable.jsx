@@ -6,6 +6,15 @@ const reports = [
   { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
   { name: 'Reporte 09/06_dsfsdfsf.pdf' },
   { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
+  { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
+  { name: 'Reporte 09/06_dsfsdfsf.pdf' },
+  { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
+  { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
+  { name: 'Reporte 09/06_dsfsdfsf.pdf' },
+  { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
+  { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
+  { name: 'Reporte 09/06_dsfsdfsf.pdf' },
+  { name: 'Reporte 02/06_sfdsffdsfsdsdf.pdf' },
 ];
 
 const columns = [
@@ -42,7 +51,12 @@ const actions = [
 const GeneratedReportsTable = () => {
   return (
     <Card title="Reportes generados" className="col-span-12 md:col-span-3 h-[300px]">
-      <DataTable columns={columns} data={reports} actions={actions} />
+      <DataTable
+        columns={columns}
+        data={reports}a
+        actions={actions}
+        maxHeight="300px"
+      />
     </Card>
   );
 };

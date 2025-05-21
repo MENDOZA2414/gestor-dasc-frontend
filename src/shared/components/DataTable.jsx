@@ -1,10 +1,16 @@
-import { FaEye, FaDownload, FaFilePdf } from 'react-icons/fa';
-
-const DataTable = ({ columns, data, actions = [], emptyMessage = 'No hay datos disponibles.' }) => {
+const DataTable = ({
+  columns,
+  data,
+  actions = [],
+  emptyMessage = 'No hay datos disponibles.',
+  maxHeight,
+}) => {
   return (
-    <div className="rounded-xl border border-gray-200 shadow-sm">
-      <table className="w-full text-sm table-fixed">
-        <thead className="sticky top-0 bg-gray-100 text-gray-700 font-semibold">
+  <div className="rounded-xl border border-gray-200 shadow-sm h-full flex flex-col overflow-hidden">
+    {/* Tabla encabezado */}
+    <div className="w-full text-sm table-fixed">
+      <table className="w-full table-fixed">
+        <thead className="bg-gray-100 text-gray-700 font-semibold">
           <tr>
             {columns.map((col, idx) => (
               <th
@@ -19,7 +25,12 @@ const DataTable = ({ columns, data, actions = [], emptyMessage = 'No hay datos d
             )}
           </tr>
         </thead>
+      </table>
+    </div>
 
+    {/* Cuerpo scrollable que ocupa todo el espacio restante */}
+    <div className="overflow-y-auto flex-grow">
+      <table className="w-full table-fixed text-sm">
         <tbody className="divide-y text-gray-700">
           {data.length === 0 ? (
             <tr>
@@ -34,13 +45,13 @@ const DataTable = ({ columns, data, actions = [], emptyMessage = 'No hay datos d
             data.map((row, rowIndex) => (
               <tr key={rowIndex} className="hover:bg-gray-50 transition">
                 {columns.map((col, colIndex) => (
-                 <td key={colIndex} className="px-4 py-2 max-w-[220px]">
-                  <div className="flex items-center gap-2 truncate whitespace-nowrap overflow-hidden text-ellipsis">
-                    {col.render ? col.render(row) : (
-                      <span>{truncateMiddle(row[col.key])}</span>
-                    )}
-                  </div>
-                </td>
+                  <td key={colIndex} className="px-4 py-2 max-w-[220px]">
+                    <div className="flex items-center gap-2 truncate whitespace-nowrap overflow-hidden text-ellipsis">
+                      {col.render ? col.render(row) : (
+                        <span className="truncate">{row[col.key]}</span>
+                      )}
+                    </div>
+                  </td>
                 ))}
                 {actions.length > 0 && (
                   <td className="px-4 py-2 flex gap-2 justify-center items-center w-[96px] min-w-[96px]">
@@ -49,9 +60,7 @@ const DataTable = ({ columns, data, actions = [], emptyMessage = 'No hay datos d
                         key={aIdx}
                         title={action.label}
                         onClick={() => action.onClick(row)}
-                        className={`p-1 rounded ${action.color || 'bg-gray-200'} ${
-                          action.textColor || 'text-white'
-                        }`}
+                        className={`p-1 rounded ${action.color || 'bg-gray-200'} ${action.textColor || 'text-white'}`}
                       >
                         {action.icon}
                       </button>
@@ -64,7 +73,9 @@ const DataTable = ({ columns, data, actions = [], emptyMessage = 'No hay datos d
         </tbody>
       </table>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default DataTable;
