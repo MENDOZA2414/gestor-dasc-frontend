@@ -53,7 +53,7 @@ const Dashboard = () => {
     "default" (o no pasar nada) → scroll vertical permitido, horizontal bloqueado.
   */
   return (
-    <Layout user={user} userType={userType} scroll="default">
+    <Layout user={user} userType={userType} scroll="vertical">
 
       <div className="grid grid-cols-12 sm:grid-cols-12 gap-4">
 
