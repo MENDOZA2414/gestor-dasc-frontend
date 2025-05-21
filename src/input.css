@@ -25,7 +25,6 @@ a {
 button {
   font-family: inherit;
   cursor: pointer;
-  border: none;
 }
 
 input, select {

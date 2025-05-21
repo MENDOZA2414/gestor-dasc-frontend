@@ -58,7 +58,8 @@ const DataTable = ({
                     </td>
                   ))}
                   {actions.length > 0 && (
-                    <td className="px-4 py-2 flex gap-2 justify-center items-center w-[96px] min-w-[96px]">
+                      <td className="px-4 py-2 flex gap-2 justify-center items-center min-w-fit">
+
                       {actions.map((action, aIdx) => (
                         <IconButton
                           key={aIdx}
