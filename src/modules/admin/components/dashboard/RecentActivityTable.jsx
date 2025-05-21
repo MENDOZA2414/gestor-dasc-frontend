@@ -1,12 +1,13 @@
 import { Card, DataTable } from "../../../../shared/components";
-import { BsDownload, BsEyeFill, BsEnvelopeFill } from 'react-icons/bs';
+import { BsDownload, BsEnvelopeFill } from 'react-icons/bs';
+import IconButton from '../../../../shared/components/IconButton';
 
 const data = [
   {
     role: 'A. Interno',
     name: 'Eduardo Enrique Cota',
     icon: <BsEnvelopeFill className="text-blue-500" />,
-    action: 'Subido C...pdf',
+    action: 'Subido Cjskdjfbskjdnfkjsdnjksdjsnkjfdnskj.pdf',
   },
   {
     role: 'A. Interno',
@@ -18,7 +19,7 @@ const data = [
     role: 'Alumno',
     name: 'José Flores García',
     icon: <BsDownload className="text-blue-500" />,
-    action: 'Subido C...pdf',
+    action: 'Subido Casasasasasasas.pdf',
   },
   {
     role: 'A. Externo',
@@ -30,7 +31,7 @@ const data = [
     role: 'Alumno',
     name: 'José Flores García',
     icon: <BsDownload className="text-blue-500" />,
-    action: 'Subido C...pdf',
+    action: 'Subido Casasasasasass.pdf',
   },
   {
     role: 'A. Externo',
@@ -42,7 +43,7 @@ const data = [
     role: 'Alumno',
     name: 'José Flores García',
     icon: <BsDownload className="text-blue-500" />,
-    action: 'Subido C...pdf',
+    action: 'Subido Cajosidjaoidjoasid.pdf',
   },
   {
     role: 'A. Externo',
@@ -62,18 +63,29 @@ const columns = [
     key: 'name',
   },
   {
-    label: 'Acción',
+    label: 'Actividad', 
     key: 'action',
     render: (row) => (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-fit">
         {row.icon}
-        <span className="truncate">{row.action}</span>
-        <button title="Ver" className="ml-auto text-gray-700 hover:text-black">
-          <BsEyeFill className="text-lg" />
-        </button>
+        <span className="truncate max-w-[110px]">{row.action}</span>
       </div>
-    ),
+    )
   },
+  {
+    label: 'Acción',
+    key: 'view',
+    center: true,
+    render: (row) => (
+      <div className="flex justify-center">
+        <IconButton
+          icon="eye"
+          title="Ver"
+          onClick={() => console.log('Ver:', row)}
+        />
+      </div>
+    )
+  }
 ];
 
 const RecentActivityTable = () => {

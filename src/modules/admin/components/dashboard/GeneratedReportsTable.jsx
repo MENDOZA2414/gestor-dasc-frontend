@@ -1,6 +1,7 @@
 import { FaFilePdf, FaDownload, FaEye } from 'react-icons/fa';
 import { Card, DataTable } from '../../../../shared/components';
 import { truncateMiddle } from '../../../../utils/truncate';
+import IconButton from '../../../../shared/components/IconButton';
 
 const reports = [
   { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },
@@ -28,19 +29,18 @@ const columns = [
 
 const actions = [
   {
-    label: 'Descargar',
-    icon: <FaDownload className="text-white" />,
-    color: 'bg-blue-500',
-    onClick: (row) => console.log('Descargar:', row),
+    type: 'download',
+    title: 'Descargar',
+    onClick: (row) => console.log('Descargar', row)
   },
   {
-    label: 'Ver',
-    icon: <FaEye className="text-black" />,
-    color: 'bg-gray-300',
-    textColor: 'text-black',
-    onClick: (row) => console.log('Ver:', row),
-  },
+    type: 'eye',
+    title: 'Ver',
+    onClick: (row) => console.log('Ver', row)
+  }
 ];
+
+
 
 const GeneratedReportsTable = () => {
   return (
