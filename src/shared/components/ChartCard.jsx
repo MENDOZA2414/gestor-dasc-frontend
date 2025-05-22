@@ -1,28 +1,17 @@
-import React from 'react';
-
-/**
- * Componente base para tarjetas que contienen gráficos.
- *
- * @param {string|ReactNode} title - Título del gráfico.
- * @param {ReactNode} actions - Botones o filtros al lado derecho del título.
- * @param {ReactNode} children - Contenido principal (ej. la gráfica).
- * @param {string} className - Clases extra para tamaño o posición.
- */
-const ChartCard = ({ title, children, className = '' }) => {
+const ChartCard = ({ title, actions, children, className = "" }) => {
   return (
     <div className={`bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 ${className}`}>
-  {title && (
-    <div className="text-gray-700 font-medium text-base md:text-lg mb-4">
-      {title}
+      <div className="flex flex-col h-full">
+        {(title || actions) && (
+          <div className="flex justify-between items-center mb-4 shrink-0">
+            {title && <p className="text-base md:text-lg text-gray-700 font-medium">{title}</p>}
+            {actions && <div className="flex items-center">{actions}</div>}
+          </div>
+        )}
+        <div className="flex-grow overflow-hidden flex items-center justify-center">{children}</div>
+      </div>
     </div>
-  )}
-  <div className="flex items-center justify-center h-[calc(100%-2rem)]">
-    {children}
-  </div>
-</div>
+  )
+}
 
-  );
-};
-
-
-export default ChartCard;
+export default ChartCard
