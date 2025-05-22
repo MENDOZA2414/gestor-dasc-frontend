@@ -13,6 +13,7 @@ import PreRegister from '../components/PreRegister';
 import Sidebar from '../components/Sidebar/Sidebar';
 import HeaderUser from '../components/HeaderUser/HeaderUser';
 import Dashboard from '../modules/admin/pages/Dashboard'; 
+import Students from '../modules/admin/pages/Students'; 
 import api from '../api';
 
 
@@ -200,6 +201,13 @@ const AppContent = () => {
           <Dashboard />
         </PrivateRoute>
       } />
+
+      {/* Página de estudiantes */}
+  <Route path="/admin/students" element={
+    <PrivateRoute>
+      <Students />
+    </PrivateRoute>
+  } />
     </Routes>
   );
 };
