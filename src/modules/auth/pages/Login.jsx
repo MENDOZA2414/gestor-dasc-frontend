@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '@utils/api';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';  
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -11,7 +12,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const routes = {
     1: '/userInternalAssessor',
@@ -20,53 +20,36 @@ export default function Login() {
     4: '/userCompany'
   };
 
-  // Redirigir si ya tiene sesión activa
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userTypeID = sessionStorage.getItem('userTypeID');
-    if (token && userTypeID && routes[userTypeID]) {
-      window.location.replace(routes[userTypeID]);
-    }
-  }, []);
-
-  // Mostrar alerta si la sesión expiró
-  useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    const expired = query.get('expired');
-
-    if (expired === 'true') {
-      Swal.fire({
-        icon: 'info',
-        title: 'Sesión expirada',
-        text: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
-        confirmButtonText: 'Entendido',
-        confirmButtonColor: '#049774'
-      });
-    }
-  }, [location]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await api.post('/users/login', { email, password, rememberMe });
+      console.log('Sesión Iniciada:', response.data);
       localStorage.setItem('token', response.data.token);
-
-      const { userTypeID, userID, controlNumber } = response.data;
+  
+      const { userTypeID } = response.data;
       sessionStorage.setItem('userTypeID', userTypeID);
-      sessionStorage.setItem('userID', userID);
-      sessionStorage.setItem('controlNumber', controlNumber);
-      sessionStorage.removeItem('alertShown');
+      sessionStorage.setItem('userID', response.data.userID);
+      sessionStorage.setItem('controlNumber', response.data.controlNumber);
 
+      sessionStorage.removeItem('alertShown');
+  
       if (routes[userTypeID]) {
         window.location.replace(routes[userTypeID]);
+  
         Swal.fire({
           icon: 'success',
           title: 'Sesión Iniciada',
           showConfirmButton: false,
           timer: 1500
         });
+      } else {
+        console.error('userTypeID no coincide con ninguno de los casos esperados.');
       }
+  
     } catch (err) {
+      const message = err?.response?.data?.message;
+  
       if (err.response?.status === 409 && err.response?.data?.code === 'SESSION_ACTIVE') {
         Swal.fire({
           icon: 'warning',
@@ -85,15 +68,17 @@ export default function Login() {
                 override: true
               });
               localStorage.setItem('token', secondAttempt.data.token);
-
-              const { userTypeID, userID, controlNumber } = secondAttempt.data;
+  
+              const { userTypeID } = secondAttempt.data;
               sessionStorage.setItem('userTypeID', userTypeID);
-              sessionStorage.setItem('userID', userID);
-              sessionStorage.setItem('controlNumber', controlNumber);
-              sessionStorage.removeItem('alertShown');
+              sessionStorage.setItem('userID', secondAttempt.data.userID);
+              sessionStorage.setItem('controlNumber', secondAttempt.data.controlNumber);
 
+              sessionStorage.removeItem('alertShown');
+  
               if (routes[userTypeID]) {
                 window.location.replace(routes[userTypeID]);
+  
                 Swal.fire({
                   icon: 'success',
                   title: 'Sesión Iniciada',
@@ -101,6 +86,7 @@ export default function Login() {
                   timer: 1500
                 });
               }
+  
             } catch (secondErr) {
               console.error('Error al reemplazar sesión:', secondErr);
               setError('No se pudo iniciar sesión.');
@@ -113,7 +99,7 @@ export default function Login() {
       }
     }
   };
-
+  
   return (
     <div className="flex justify-center items-start pt-6 min-h-[calc(100vh-80px)] bg-gray-100 font-poppins overflow-auto px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-sm">
@@ -163,7 +149,7 @@ export default function Login() {
           </div>
 
           <div className="flex items-center justify-start mb-4">
-            <input
+           <input
               type="checkbox"
               id="rememberMe"
               checked={rememberMe}
