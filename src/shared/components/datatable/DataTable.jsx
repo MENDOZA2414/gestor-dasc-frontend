@@ -1,10 +1,9 @@
-import React from "react"
-
+import React from "react";
 import IconButton from '@shared/components/buttons/IconButton';
 
-const DataTable = ({ columns, data, actions = [], emptyMessage = "No hay datos disponibles.", maxHeight }) => {
+const DataTable = React.forwardRef(({ columns, data, actions = [], emptyMessage = "No hay datos disponibles.", maxHeight }, ref) => {
   return (
-    <div className="rounded-xl border border-gray-200 shadow-sm h-full flex flex-col overflow-hidden">
+    <div ref={ref} className="rounded-xl border border-gray-200 shadow-sm h-full flex flex-col overflow-hidden">
       <div className="overflow-y-auto flex-grow scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200 scrollbar-thumb-rounded-md">
         <table className="w-full text-sm table-fixed">
           <thead className="bg-gray-100 text-gray-700 font-semibold sticky top-0 z-10">
@@ -60,7 +59,7 @@ const DataTable = ({ columns, data, actions = [], emptyMessage = "No hay datos d
         </table>
       </div>
     </div>
-  )
-}
+  );
+});
 
-export default React.forwardRef(DataTable)
+export default DataTable;
