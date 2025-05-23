@@ -85,7 +85,7 @@ const PrivateRoute = ({ children, allowedRoles = [] }) => {
 
   if (authorized === null) {
     return (
-      <div className="flex justify-center items-center h-screen bg-white">
+      <div className="flex justify-center items-center min-h-screen bg-white font-poppins flex-col px-4">
         <div className="w-8 h-8 border-4 border-[#049774] border-t-transparent rounded-full animate-spin mb-3"></div>
         <p className="text-gray-600 text-lg">Verificando sesión...</p>
       </div>
