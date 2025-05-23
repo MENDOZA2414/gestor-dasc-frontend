@@ -201,17 +201,17 @@ const AppContent = () => {
 
       {/* Admin Dashboard nueva ruta */}
       <Route path="/admin/dashboard" element={
-        <PrivateRoute>
+        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
           <Dashboard />
         </PrivateRoute>
       } />
 
       {/* Página de estudiantes */}
-  <Route path="/admin/students" element={
-    <PrivateRoute>
-      <Students />
-    </PrivateRoute>
-  } />
+      <Route path="/admin/students" element={
+        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+          <Students />
+        </PrivateRoute>
+      } />
     </Routes>
   );
 };
