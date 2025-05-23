@@ -4,7 +4,7 @@ import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { HiOutlineArrowRightOnRectangle } from 'react-icons/hi2';
 import { menuByUserType } from './SidebarConfig';
 import SidebarItem from './SidebarItem';
-import api from '../../api';
+import api from '../../../api';
 
 // CONTEXTO Y HOOK
 const SidebarContext = createContext();

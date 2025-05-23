@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Login from '../components/Login';
-import RegisterStudent from '../components/RegisterStudent/RegisterStudent';
-import PrivateRoute from '../components/PrivateRoute';
-import Home from '../components/Home';
-import UserStudent from '../components/UserStudent';
-import UserInternalAssessor from '../components/UserInternalAssessor';
-import UserExternalAssessor from '../components/UserExternalAssessor';
-import UserCompany from '../components/UserCompany';
-import Header from '../components/Header/Header';
-import PreRegister from '../components/PreRegister';
-import Sidebar from '../components/Sidebar/Sidebar';
-import HeaderUser from '../components/HeaderUser/HeaderUser';
-import Dashboard from '../modules/admin/pages/Dashboard'; 
-import Students from '../modules/admin/pages/Students'; 
-import api from '../api';
 
+import Login from '@modules/auth/pages/Login';
+import RegisterStudent from '@modules/auth/components/RegisterStudent/RegisterStudent';
+import PreRegister from '@modules/auth/pages/PreRegister';
+
+import Home from '@modules/public/pages/Home';
+import UserStudent from '@modules/user/pages/UserStudent';
+import UserInternalAssessor from '@modules/user/pages/UserInternalAssessor';
+import UserExternalAssessor from '@modules/user/pages/UserExternalAssessor';
+import UserCompany from '@modules/user/pages/UserCompany';
+
+import Dashboard from '@modules/admin/pages/Dashboard';
+import Students from '@modules/admin/pages/Students';
+
+import Header from '@shared/components/layout/HeaderUser';
+import Sidebar from '@shared/components/layout/Sidebar';
+import HeaderUser from '@shared/components/layout/HeaderUser';
+
+import PrivateRoute from '@router/PrivateRoute';
+import api from '@utils/api';
 
 const Layout = ({ children, userType, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
