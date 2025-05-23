@@ -14,7 +14,7 @@ import UserCompany from '@modules/user/pages/UserCompany';
 import Dashboard from '@modules/admin/pages/Dashboard';
 import Students from '@modules/admin/pages/Students';
 
-import Header from '@shared/components/layout/HeaderUser';
+import Header from "@modules/public/components/Header";
 import Sidebar from '@shared/components/layout/Sidebar';
 import HeaderUser from '@shared/components/layout/HeaderUser';
 
@@ -133,8 +133,8 @@ const AppContent = () => {
 
   if (showHeader) {
     return (
-      <div className={`${showHeader ? 'pt-20' : ''} bg-gray-100 min-h-screen w-full overflow-x-hidden`}>
-        {showHeader && <Header />}
+      <div className="pt-20 bg-gray-100 min-h-screen w-full overflow-x-hidden">
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
