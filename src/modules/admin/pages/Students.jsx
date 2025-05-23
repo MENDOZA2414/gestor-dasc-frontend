@@ -5,140 +5,135 @@ import { Card } from '@shared/components/cards';
 import { Search, Filters } from '@shared/components/filters';
 import { DataTable } from '@shared/components/datatable';
 import IconButton from '@shared/components/buttons/IconButton';
+import { getAllStudents } from '@modules/admin/services/studentsService';
 
 const Students = () => {
-  const [search, setSearch] = useState("")
-  const [activeFilters, setActiveFilters] = useState([])
+  const [search, setSearch] = useState('');
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [students] = useState([
-    {
-      id: 1,
-      name: "Alan Agúndez Meza",
-      matricula: "2021123456",
-      carrera: "IDS",
-      semestre: "8vo",
-      turno: "TM",
-      asesor: "MT. Alejandro Leyva",
-    },
-  ])
+  const tableRef = useRef(null);
+  const cardRef = useRef(null);
 
-  // Función para filtrar estudiantes basado en búsqueda y filtros activos
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getAllStudents();
+        setStudents(data);
+      } catch (error) {
+        console.error('Error al cargar estudiantes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
   const getFilteredStudents = () => {
-    return students.filter((student) => {
-      // Filtrar por búsqueda
-      const matchSearch = student.name.toLowerCase().includes(search.toLowerCase())
+  return students.filter((student) => {
+    const matchSearch = (student.name || '').toLowerCase().includes(search.toLowerCase());
 
-      // Filtrar por filtros activos
-      const matchFilters =
-        activeFilters.length === 0 ||
-        activeFilters.includes(student.carrera) ||
-        activeFilters.includes(student.semestre) ||
-        activeFilters.includes(student.turno) ||
-        activeFilters.includes(student.asesor)
+    const matchFilters =
+      activeFilters.length === 0 ||
+      activeFilters.includes(student.career) ||
+      activeFilters.includes(student.semester) ||
+      activeFilters.includes(student.shift) ||
+      activeFilters.includes(student.internalAssessor);
 
-      return matchSearch && matchFilters
-    })
-  }
+    return matchSearch && matchFilters;
+  });
+};
 
-  const filtered = getFilteredStudents()
+  const filtered = getFilteredStudents();
+  const minRows = 10;
+  const filledData = [...filtered];
 
-  // Aumentamos el número mínimo de filas para llenar mejor la card
-  const minRows = 10 // Número mínimo de filas que queremos mostrar
-  const filledData = [...filtered]
-
-  // Calcular cuántas filas vacías necesitamos para llenar la card
   if (filtered.length < minRows) {
-    // Crear filas vacías para completar hasta minRows
     const emptyRows = Array(minRows - filtered.length)
       .fill()
       .map((_, index) => {
-        const isLastRow = index === minRows - filtered.length - 1
+        const isLastRow = index === minRows - filtered.length - 1;
         return {
           id: `empty-${index}`,
-          name: "",
-          matricula: "",
-          carrera: "",
-          semestre: "",
-          turno: "",
-          asesor: "",
-          isEmpty: true, // Marcador para identificar filas vacías
-          isLastRow, // Marcador para identificar la última fila
-        }
-      })
+          name: '',
+          matricula: '',
+          career: '',
+          semester: '',
+          shift: '',
+          internalAssessor: '',
+          isEmpty: true,
+          isLastRow,
+        };
+      });
 
-    filledData.push(...emptyRows)
+    filledData.push(...emptyRows);
   }
 
-  // Referencia para acceder al elemento de la tabla después de renderizar
-  const tableRef = useRef(null)
-  const cardRef = useRef(null)
-
-  // Efecto para eliminar la línea divisoria de la última fila
   useEffect(() => {
     if (tableRef.current) {
-      const lastRow = tableRef.current.querySelector("tbody tr:last-child")
+      const lastRow = tableRef.current.querySelector('tbody tr:last-child');
       if (lastRow) {
-        lastRow.style.borderBottom = "none"
+        lastRow.style.borderBottom = 'none';
       }
     }
-  }, [filledData])
+  }, [filledData]);
 
   const columns = [
     {
-      label: "Nombre",
-      key: "name",
+      label: 'Nombre',
+      key: 'name',
       render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>),
     },
     {
-      label: "Matrícula",
-      key: "matricula",
+      label: 'Matrícula',
+      key: 'matricula',
       render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>),
     },
     {
-      label: "Carrera",
-      key: "carrera",
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.carrera}</span>),
+      label: 'Carrera',
+      key: 'career',
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.career}</span>),
     },
     {
-      label: "Semestre",
-      key: "semestre",
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.semestre}</span>),
+      label: 'Semestre',
+      key: 'semester',
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.semester}</span>),
     },
     {
-      label: "Turno",
-      key: "turno",
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.turno}</span>),
+      label: 'Turno',
+      key: 'shift',
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.shift}</span>),
     },
     {
-      label: "Asesor Asignado",
-      key: "asesor",
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.asesor}</span>),
+      label: 'Asesor Asignado',
+      key: 'internalAssessor',
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.internalAssessor}</span>),
     },
-    // Añadir una columna adicional para las acciones que solo se muestra si la fila no está vacía
     {
-      label: "Acciones",
-      key: "actions",
+      label: 'Acciones',
+      key: 'actions',
       center: true,
       render: (row) => {
-        if (row.isEmpty) {
-          return <div className="h-9"></div>
-        }
+        if (row.isEmpty) return <div className="h-9"></div>;
         return (
           <div className="flex gap-2 justify-center">
-            <IconButton icon="eye" title="Ver" onClick={() => console.log("Ver alumno", row)} />
-            <IconButton icon="edit" title="Editar" onClick={() => console.log("Editar alumno", row)} />
+            <IconButton icon="eye" title="Ver" onClick={() => console.log('Ver alumno', row)} />
+            <IconButton icon="edit" title="Editar" onClick={() => console.log('Editar alumno', row)} />
           </div>
-        )
+        );
       },
     },
-  ]
+  ];
 
   const user = {
-    firstName: "José Miguel",
-    firstLastName: "Mendoza",
-    logo: "https://via.placeholder.com/100",
-  }
-  const userType = "admin"
+    firstName: 'José Miguel',
+    firstLastName: 'Mendoza',
+    logo: 'https://via.placeholder.com/100',
+  };
+
+  const userType = 'admin';
 
   return (
     <Layout user={user} userType={userType}>
@@ -156,7 +151,7 @@ const Students = () => {
               <DataTable
                 columns={columns}
                 data={filledData}
-                emptyMessage="No hay estudiantes para mostrar."
+                emptyMessage={loading ? 'Cargando estudiantes...' : 'No hay estudiantes para mostrar.'}
                 ref={tableRef}
               />
             </div>
@@ -167,7 +162,7 @@ const Students = () => {
         </Card>
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Students
+export default Students;
