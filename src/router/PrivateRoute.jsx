@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import api from '../api';
+import api from '../utils/api';
 import Swal from 'sweetalert2';
 
 const PrivateRoute = ({ children }) => {

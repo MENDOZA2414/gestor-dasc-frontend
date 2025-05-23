@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import api from '@utils/api';
 import { FaFacebook, FaInstagram } from 'react-icons/fa';
+import Header from '@modules/public/components/Header';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -39,6 +40,8 @@ export default function Home() {
   return (
     <div className="font-poppins flex flex-col min-h-screen">
       <main className="flex-grow">
+        <Header />
+
         <div className="mt-16 text-center px-4">
           <h1 className="text-4xl font-bold mb-4">
             La <span className="text-blue-600">gestión de prácticas</span> del DASC bajo control

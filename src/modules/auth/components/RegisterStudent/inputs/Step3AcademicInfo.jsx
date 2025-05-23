@@ -1,7 +1,7 @@
 // src/components/RegisterStudent/Step3AcademicInfo.jsx
 import React, { useState } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
-import SelectGroup from './inputs/SelectGroup';
+import SelectGroup from './SelectGroup';
 
 export default function Step3AcademicInfo({ data, onChange, internalAssessors, errors }) {
   const [showTooltip, setShowTooltip] = useState(false);

@@ -1,7 +1,8 @@
 import { FaFilePdf, FaDownload, FaEye } from 'react-icons/fa';
-import { Card, DataTable } from '../../../../shared/components';
-import { truncateMiddle } from '../../../../utils/truncate';
-import IconButton from '../../../../shared/components/IconButton';
+import { Card } from '@shared/components/cards';
+import { DataTable } from '@shared/components/datatable';
+import IconButton from '@shared/components/buttons/IconButton';
+import { truncateMiddle } from '@utils/truncate';
 
 const reports = [
   { name: 'Reporte 12/06_saknsfnakjfnaksjnfkjaandskjnksdajkdspdf.pdf' },

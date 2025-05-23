@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, Tooltip } from "recharts"
-import { Card } from "../../../../shared/components"
+import { Card } from '@shared/components/cards';
 
 // Datos de logins diarios
 const loginData7D = [

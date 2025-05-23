@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api';
+import api from '@utils/api';
 
 const UserStudent = () => {
   const [user, setUser] = useState({});

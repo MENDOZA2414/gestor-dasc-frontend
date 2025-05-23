@@ -1,6 +1,6 @@
 import React from 'react';
-import InputGroup from './inputs/InputGroup';
-import DateInputGroup from './inputs/DateInputGroup';
+import InputGroup from './InputGroup';
+import DateInputGroup from './DateInputGroup';
 
 export default function Step1BasicInfo({ data, onChange, errors }) {
   return (

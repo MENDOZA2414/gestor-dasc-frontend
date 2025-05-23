@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react"
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
-import { ChartCard } from "../../../../shared/components"
-import { getTopCompaniesWithStudents } from "../../services/dashboardService"
+import { useEffect, useState, useRef } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { ChartCard } from '@shared/components/cards';
+import { getTopCompaniesWithStudents } from '@modules/admin/services/dashboardService';
 
 const COLORS = ["#60F27D", "#2196F3", "#FF4D4F", "#FF69C1", "#1F1F5C"]
 

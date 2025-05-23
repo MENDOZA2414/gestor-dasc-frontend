@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Step1BasicInfo from './Step1BasicInfo';
-import Step2Credentials from './Step2Credentials';
-import Step3AcademicInfo from './Step3AcademicInfo';
-import Step4PhotoUpload from './Step4PhotoUpload';
+import Step1BasicInfo from "./inputs/Step1BasicInfo";
+import Step2Credentials from "./inputs/Step2Credentials";
+import Step3AcademicInfo from "./inputs/Step3AcademicInfo";
+import Step4PhotoUpload from "./inputs/Step4PhotoUpload";
+
 import { validateEmail, validatePassword, validateAge } from './validations';
-import api from '../../api';
+import api from '@utils/api';
 import Swal from 'sweetalert2';
 
 // Función que genera imagen con iniciales y color aleatorio

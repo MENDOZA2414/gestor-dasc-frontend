@@ -1,6 +1,7 @@
-import { Card, DataTable } from "../../../../shared/components";
+import { Card } from '@shared/components/cards';
+import { DataTable } from '@shared/components/datatable';
+import IconButton from '@shared/components/buttons/IconButton';
 import { BsDownload, BsEnvelopeFill } from 'react-icons/bs';
-import IconButton from '../../../../shared/components/IconButton';
 
 const data = [
   {

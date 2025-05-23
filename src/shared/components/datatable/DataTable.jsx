@@ -1,8 +1,6 @@
-"use client"
-
 import React from "react"
 
-import IconButton from "./IconButton"
+import IconButton from '@shared/components/buttons/IconButton';
 
 const DataTable = ({ columns, data, actions = [], emptyMessage = "No hay datos disponibles.", maxHeight }) => {
   return (

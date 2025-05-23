@@ -1,4 +1,4 @@
-import api from '../../../api';
+import api from '@utils/api';
 
 export const getDashboardStats = async () => {
   const [students, internal, external, companies] = await Promise.all([

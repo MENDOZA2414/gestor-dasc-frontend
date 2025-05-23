@@ -1,12 +1,10 @@
-"use client"
+import { useState, useEffect, useRef } from 'react';
 
-import { useState, useEffect, useRef } from "react"
-import Layout from "../../../shared/components/Layout"
-import Card from "../../../shared/components/Card"
-import Search from "../../../shared/components/Search"
-import Filters from "../../../shared/components/Filters"
-import DataTable from "../../../shared/components/DataTable"
-import IconButton from "../../../shared/components/IconButton"
+import { Layout } from '@shared/components/layout';
+import { Card } from '@shared/components/cards';
+import { Search, Filters } from '@shared/components/filters';
+import { DataTable } from '@shared/components/datatable';
+import IconButton from '@shared/components/buttons/IconButton';
 
 const Students = () => {
   const [search, setSearch] = useState("")

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import { Layout, SummaryCard } from '../../../shared/components';
+import { SummaryCard } from '@shared/components/cards';
+import { Layout } from '@shared/components/layout';
 import {
   FaPersonShelter,
   FaUserTie,
   GoMortarBoard,
   HiOutlineOfficeBuilding
-} from '../../../shared/icons';
+} from '@shared/icons';
 
 import {
   StudentsPerEntityChart,
@@ -14,9 +15,9 @@ import {
   RecentActivityTable,
   GeneratedReportsTable,
   ActivityChartCard
-} from '../components/dashboard';
+} from '@modules/admin/components/dashboard';
 
-import { getDashboardStats } from "../services/dashboardService";
+import { getDashboardStats } from '@modules/admin/services/dashboardService';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({

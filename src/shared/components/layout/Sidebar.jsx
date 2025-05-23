@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { HiOutlineArrowRightOnRectangle } from 'react-icons/hi2';
-import { menuByUserType } from './SidebarConfig';
+import { menuByUserType } from '@shared/components/layout';
 import SidebarItem from './SidebarItem';
-import api from '../../../api';
+import api from '@utils/api';
 
 // CONTEXTO Y HOOK
 const SidebarContext = createContext();

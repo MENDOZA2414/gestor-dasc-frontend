@@ -1,7 +1,7 @@
 import React from 'react';
-import InputGroup from './inputs/InputGroup';
-import PasswordInputGroup from './inputs/PasswordInputGroup';
-import ConfirmPasswordInputGroup from './inputs/ConfirmPasswordInputGroup';
+import InputGroup from './InputGroup';
+import PasswordInputGroup from './PasswordInputGroup';
+import ConfirmPasswordInputGroup from './ConfirmPasswordInputGroup';
 
 export default function Step2Credentials({ data, onChange, showPassword, setShowPassword, showPasswordConfirm, setShowPasswordConfirm, errors }) {
   return (
