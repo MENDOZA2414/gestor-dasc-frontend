@@ -13,6 +13,8 @@ import UserCompany from '@modules/user/pages/UserCompany';
 
 import Dashboard from '@modules/admin/pages/Dashboard';
 import Students from '@modules/admin/pages/Students';
+import Assessors from '@modules/admin/pages/Assessors';
+import Companies from '@modules/admin/pages/Companies';
 
 import Header from "@modules/public/components/Header";
 import Sidebar from '@shared/components/layout/Sidebar';
@@ -210,6 +212,20 @@ const AppContent = () => {
       <Route path="/admin/students" element={
         <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
           <Students />
+        </PrivateRoute>
+      } />
+
+      {/* Página de asesores */}
+      <Route path="/admin/assessors" element={
+        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+          <Assessors />
+        </PrivateRoute>
+      } />
+
+      {/* Página de entidades */}
+      <Route path="/admin/companies" element={
+        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+          <Companies />
         </PrivateRoute>
       } />
     </Routes>

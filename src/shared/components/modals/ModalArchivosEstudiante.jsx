@@ -1,14 +1,39 @@
 import { useState, useEffect, useRef } from 'react';
 
 import ModalContext from '@shared/ModalContext';
-import { Layout } from '@shared/components/layout';
-import { Card } from '@shared/components/cards';
-import { Search, Filters } from '@shared/components/filters';
+import Modal from "./Modal"
 import { DataTable } from '@shared/components/datatable';
-import IconButton from '@shared/components/buttons/IconButton';
-import { getAllStudents } from '@modules/admin/services/studentsService';
+import { Search, Filters } from '@shared/components/filters';
 
-const Assessors = () => {
+/**
+ * Modal especializado para mostrar información de estudiante.
+ *
+ * @param {boolean} isOpen
+ * @param {function} onClose
+ * @param {object} user - Información del usuario: firstName, firstLastName, logo
+ * @param {ReactNode} children - Contenido adicional si es necesario
+ */
+const ModalArchivosEstudiante = ({ isOpen, onClose, user }) => {
+
+  const studentData = {
+    fullName: "Alan Martín Agúndez Meza",
+    id: "2023456702",
+    email: "aagundez_21@alu.uabcs.mx",
+    phone: "6121587915",
+    about: "Estudiante casi-egresado de la UABCS! Estudiante de Ingeniería en Desarrollo de Software.",
+    skills: "Especializado en programación Orientada a Objetos, Animación 3D y Diseñador Gráfico Digital.",
+    career: "IDS",
+    semester: "8vo",
+    shift: "TM",
+    period: "2025/I",
+    gender: "H",
+    status: "A",
+    practice: {
+      name: "Administrador de Base de Datos",
+      progress: 66,
+    },
+  }
+
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [students, setStudents] = useState([]);
@@ -50,7 +75,7 @@ const Assessors = () => {
   };
 
   const filtered = getFilteredStudents();
-  const minRows = 10;
+  const minRows = 6;
   const filledData = [...filtered];
 
   if (filtered.length < minRows) {
@@ -61,9 +86,9 @@ const Assessors = () => {
         return {
           id: `empty-${index}`,
           name: '',
-          tipo: '',
-          contacto: '',
-          alumnosAsignados: '',
+          tamano: '',
+          fecha: '',
+          estado: '',
           isEmpty: true,
           isLastRow,
         };
@@ -88,32 +113,19 @@ const Assessors = () => {
       render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>),
     },
     {
-      label: 'Tipo',
-      key: 'tipo',
+      label: 'Tamaño del archivo',
+      key: 'tamano',
       render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>),
     },
     {
-      label: 'Contacto',
-      key: 'contacto',
+      label: 'Fecha',
+      key: 'fecha',
       render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.career}</span>),
     },
     {
-      label: 'Alumnos Asignados',
-      key: 'alumnosAsignados',
-      render: (row) => {
-        if (row.isEmpty) return <div className="h-9"></div>;
-        return (
-          <div className="flex gap-2 justify-center">
-            <div className="flex gap-2 justify-center">
-                <span className="truncate">{row.semester}</span>
-            </div>
-            <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'assignedStudents', props: { user }, })} />
-            <IconButton icon="add" title="Agregar Estudiante"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
-          </div>
-        );
-      },
+      label: 'Estado',
+      key: 'estado',
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.semester}</span>),
     },
     {
       label: 'Acciones',
@@ -123,54 +135,40 @@ const Assessors = () => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
           <div className="flex gap-2 justify-center">
-            <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'student', props: { user }, })} />
-            <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+            <IconButton icon="eye" title="Ver" />
+            <IconButton icon="edit" title="Editar" onClick={() => console.log('Editar alumno', row)} />
           </div>
         );
       },
     },
   ];
 
-  const user = {
-    firstName: 'José Miguel',
-    firstLastName: 'Mendoza',
-    logo: 'https://via.placeholder.com/100',
-  };
-
-  const userType = 'admin';
-
   return (
-    <Layout user={user} userType={userType}>
+    <Modal isOpen={isOpen} onClose={onClose} title={'Archivos subidos por ' + studentData.fullName} >
       <ModalContext modal={modal} setModal={setModal} />
 
-      <div className="flex flex-col gap-4 h-full">
-        {/* Encabezado de búsqueda y filtros */}
-        <div className="flex gap-3 items-center text-left">
-          <Search value={search} onChange={(e) => setSearch(e.target.value)} />
-          <Filters onFilterChange={setActiveFilters} />
-        </div>
+      {/* Encabezado de búsqueda y filtros */}
+      <div className="flex gap-3 items-center">
+        <Search value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Filters onFilterChange={setActiveFilters} />
+      </div>
 
-        {/* Card fija con tabla expandida visualmente */}
-        <Card className="min-h-[540px] flex flex-col justify-between" ref={cardRef}>
-          <div className="flex-grow overflow-hidden">
-            <div className="h-full flex flex-col">
-              <DataTable
-                columns={columns}
-                data={filledData}
-                emptyMessage={loading ? 'Cargando estudiantes...' : 'No hay estudiantes para mostrar.'}
-                ref={tableRef}
-              />
-            </div>
-          </div>
+      {/* Tabs */}
+      <div className="flex flex-col">
+        <div className="mx-8 flex-shrink-0 w-full md:w-[900px] pr-6 my-8">
+          <DataTable
+            columns={columns}
+            data={filledData}
+            emptyMessage={loading ? 'Cargando archivos...' : 'No hay archivos para mostrar.'}
+            ref={tableRef}
+          />
           <div className="px-4 py-3 text-sm text-gray-500 flex justify-between items-center">
             <span>Página 1 de 51</span>
           </div>
-        </Card>
+        </div>
       </div>
-    </Layout>
-  );
-};
+    </Modal>
+  )
+}
 
-export default Assessors;
+export default ModalArchivosEstudiante

@@ -1,15 +1,42 @@
 import { useState, useEffect, useRef } from 'react';
 
 import ModalContext from '@shared/ModalContext';
-import { Layout } from '@shared/components/layout';
-import { Card } from '@shared/components/cards';
-import { Search, Filters } from '@shared/components/filters';
+import Modal from "./Modal"
 import { DataTable } from '@shared/components/datatable';
-import IconButton from '@shared/components/buttons/IconButton';
-import SwitchButton from '@shared/components/buttons/SwitchButton';
+import { Search, Filters } from '@shared/components/filters';
 import { getAllStudents } from '@modules/admin/services/studentsService';
+import IconButton from '@shared/components/buttons/IconButton';
+import ProgressBar from '@shared/components/ProgressBar';
 
-const Students = () => {
+/**
+ * Modal especializado para mostrar información de estudiante.
+ *
+ * @param {boolean} isOpen
+ * @param {function} onClose
+ * @param {object} user - Información del usuario: firstName, firstLastName, logo
+ * @param {ReactNode} children - Contenido adicional si es necesario
+ */
+const ModalEstudiantesEnVacante = ({ isOpen, onClose, user }) => {
+
+  const studentData = {
+    fullName: "Administrador de Base de datos",
+    id: "2023456702",
+    email: "aagundez_21@alu.uabcs.mx",
+    phone: "6121587915",
+    about: "Estudiante casi-egresado de la UABCS! Estudiante de Ingeniería en Desarrollo de Software.",
+    skills: "Especializado en programación Orientada a Objetos, Animación 3D y Diseñador Gráfico Digital.",
+    career: "IDS",
+    semester: "8vo",
+    shift: "TM",
+    period: "2025/I",
+    gender: "H",
+    status: "A",
+    practice: {
+      name: "Administrador de Base de Datos",
+      progress: 66,
+    },
+  }
+
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [students, setStudents] = useState([]);
@@ -19,7 +46,7 @@ const Students = () => {
   const cardRef = useRef(null);
 
   const [modal, setModal] = useState({ name: null, props: {} });
-  
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -51,7 +78,7 @@ const Students = () => {
   };
 
   const filtered = getFilteredStudents();
-  const minRows = 10;
+  const minRows = 6;
   const filledData = [...filtered];
 
   if (filtered.length < minRows) {
@@ -111,9 +138,20 @@ const Students = () => {
       render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.shift}</span>),
     },
     {
-      label: 'Asesor Asignado',
-      key: 'internalAssessor',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.internalAssessor}</span>),
+      label: 'Avance',
+      key: 'Progress',
+      center: true,
+      render: (row) => {
+        if (row.isEmpty) return <div className="h-9"></div>;
+        return (
+          <div className="flex gap-2 justify-center">
+            <ProgressBar percentage={studentData.practice.progress} height={15} />
+            <div className="text-right text-sm text-gray-500 mt-1">
+              {studentData.practice.progress}%
+            </div>
+          </div>
+        );
+      },
     },
     {
       label: 'Acciones',
@@ -122,68 +160,47 @@ const Students = () => {
       render: (row) => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
-          <div className="flex gap-2 justify-center">
-            <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'student', props: { user }, })} />
-            <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+          <div className="-mx-2">
+            <div className="flex gap-2 justify-center">
+              <IconButton icon="eye" title="Ver"
+                onClick={() => setModal({ name: 'student', props: { user }, })} />
+              <IconButton icon="delete" title="Ver"
+                onClick={() => setModal({ name: 'delete', props: { user }, })} />
+              <IconButton icon="edit" title="Editar"
+                onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+            </div>
           </div>
         );
       },
     },
   ];
 
-  const user = {
-    firstName: 'José Miguel',
-    firstLastName: 'Mendoza',
-    logo: 'https://via.placeholder.com/100',
-  };
-
-  const userType = 'admin';
-
   return (
-    <Layout user={user} userType={userType}>
+    <Modal isOpen={isOpen} onClose={onClose} title={'Estudiantes asignados a ' + studentData.fullName} >
       <ModalContext modal={modal} setModal={setModal} />
 
-      <div className="flex flex-col gap-4 h-full">
-        {/* Encabezado de búsqueda y filtros */}
-        <div className="flex gap-3 items-center text-left">
-          <Search value={search} onChange={(e) => setSearch(e.target.value)} />
-          <Filters onFilterChange={setActiveFilters} />
+      {/* Encabezado de búsqueda y filtros */}
+      <div className="flex gap-3 items-center">
+        <Search value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Filters onFilterChange={setActiveFilters} />
+      </div>
 
-          <div className="w-full relative">
-            <div className="flex items-center justify-right absolute -top-5 right-0" >
-              <SwitchButton icon="add" title="Estudiantes pendientes"
-                onClick={() => setModal({ name: 'student', props: { user }, })} />
-            </div>
-
-            <div className="flex items-center justify-right absolute -top-5 right-12" >
-              <SwitchButton icon="edit" title="Estudiantes aceptados"
-                onClick={() => setModal({ name: 'student', props: { user }, })} />
-            </div>
-          </div>
-
-        </div>
-
-        {/* Card fija con tabla expandida visualmente */}
-        <Card className="min-h-[540px] flex flex-col justify-between" ref={cardRef}>
-          <div className="flex-grow overflow-hidden">
-            <div className="h-full flex flex-col">
-              <DataTable
-                columns={columns}
-                data={filledData}
-                emptyMessage={loading ? 'Cargando estudiantes...' : 'No hay estudiantes para mostrar.'}
-                ref={tableRef}
-              />
-            </div>
-          </div>
+      {/* Tabs */}
+      <div className="flex flex-col">
+        <div className="mx-8 flex-shrink-0 w-full md:w-[900px] pr-6 my-8">
+          <DataTable
+            columns={columns}
+            data={filledData}
+            emptyMessage={loading ? 'Cargando archivos...' : 'No hay archivos para mostrar.'}
+            ref={tableRef}
+          />
           <div className="px-4 py-3 text-sm text-gray-500 flex justify-between items-center">
             <span>Página 1 de 51</span>
           </div>
-        </Card>
+        </div>
       </div>
-    </Layout>
-  );
-};
+    </Modal>
+  )
+}
 
-export default Students;
+export default ModalEstudiantesEnVacante

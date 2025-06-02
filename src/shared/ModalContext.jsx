@@ -1,0 +1,67 @@
+import React from 'react';
+
+import ModalEstudiante from '@shared/components/modals/ModalEstudiante';
+import ModalArchivosEstudiante from '@shared/components/modals/ModalArchivosEstudiante';
+import ModalPracticaEstudiante from '@shared/components/modals/ModalPracticaEstudiante';
+import ModalEditarEstudiante from '@shared/components/modals/ModalEditarEstudiante';
+
+import ModalEstudiantesAsignadosA from '@shared/components/modals/ModalEstudiantesAsignadosA';
+
+import ModalEstudiantesEnVacante from '@shared/components/modals/ModalEstudiantesEnVacante';
+
+const ModalContext = ({ modal, setModal }) => {
+    switch (modal.name) {
+        case 'student':
+            return (
+                <ModalEstudiante
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'studentEdit':
+            return (
+                <ModalEditarEstudiante
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'studentFiles':
+            return (
+                <ModalArchivosEstudiante
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'studentPractice':
+            return (
+                <ModalPracticaEstudiante
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'assignedStudents':
+            return (
+                <ModalEstudiantesAsignadosA
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'studentsInPractice':
+            return (
+                <ModalEstudiantesEnVacante
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        default:
+            return null;
+    }
+};
+
+export default ModalContext;

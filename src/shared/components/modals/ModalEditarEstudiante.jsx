@@ -1,7 +1,9 @@
-"use client"
+import { useState, useEffect, useRef } from 'react';
 
+import ModalContext from '@shared/ModalContext';
 import Modal from "./Modal"
-import ProgressBar from './ProgressBar';
+import ProgressBar from '@shared/components/ProgressBar';
+import InputField from '@shared/components/InputField';
 import { FaUser, FaEnvelope, FaPhone, FaDatabase } from "react-icons/fa"
 
 /**
@@ -12,8 +14,12 @@ import { FaUser, FaEnvelope, FaPhone, FaDatabase } from "react-icons/fa"
  * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalEstudiante = ({ isOpen, onClose, user }) => {
-  // Datos de ejemplo basados en la imagen
+const ModalEditarEstudiante = ({ isOpen, onClose, user }) => {
+  const [modal, setModal] = useState({ name: null, props: {} });
+
+  const [aboutMe, setAboutMe] = useState("")
+  const [knowledge, setKnowledge] = useState("")
+
   const studentData = {
     fullName: "Alan Martín Agúndez Meza",
     id: "2023456702",
@@ -33,7 +39,6 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
     },
   }
 
-  // Obtener iniciales para el avatar
   const getInitials = (name) => {
     const nameParts = name.split(" ")
     if (nameParts.length >= 2) {
@@ -43,10 +48,11 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="max-w-5xl">
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalContext modal={modal} setModal={setModal} />
       <div className="flex flex-col md:flex-row">
         {/* Información de estudiante */}
-        <div className="flex-shrink-0 w-full md:w-[450px] pr-6">
+        <div className="mx-8 flex-shrink-0 w-full md:w-[500px] pr-6">
           <div className="flex flex-col">
             {/* Datos personales  y Foto*/}
             <div className="flex flex-col md:flex-row items-center md:items-start mb-6">
@@ -92,7 +98,13 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
                 <span className="text-2xl mr-2">"</span>
                 Sobre mí
               </h3>
-              <p className="mt-2 text-gray-600">{studentData.about}</p>
+              <InputField
+                placeholder="¡Escribe qué te gustaría que la gente supiera de ti!"
+                value={aboutMe}
+                onChange={setAboutMe}
+                multiline={true}
+                rows={2}
+              />
             </div>
 
             <div className="w-full mt-6">
@@ -100,25 +112,22 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
                 <span className="mr-2">💻</span>
                 Conocimientos
               </h3>
-              <p className="mt-2 text-gray-600">{studentData.skills}</p>
-            </div>
-
-            <div className="w-full mt-20 mx-2 flex items-center justify-center space-x-6">
-              <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                <FaUser className="mr-2" /> Editar información
-              </button>
-              <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                <span className="mr-2">📄</span> Documentos alumno
-              </button>
+              <InputField
+                placeholder="¡Descríbele a las entidades qué es lo que puedes hacer!"
+                value={knowledge}
+                onChange={setKnowledge}
+                multiline={true}
+                rows={2}
+              />
             </div>
           </div>
         </div>
 
         {/* Línea divisoria vertical */}
-        <div className="hidden md:block w-px bg-gray-200 mx-4"></div>
+        <div className="hidden md:block w-px bg-gray-200 mx-6"></div>
 
         {/* Columna derecha con información académica - ahora más estrecha */}
-        <div className="flex-1 mt-6 md:mt-0 md:pl-6">
+        <div className="flex-1 mt-0 md:mt-0 md:pl-0  mx-8">
           <h3 className="text-xl font-medium mb-6">Información del alumno:</h3>
 
           <div className="grid grid-cols-2 gap-y-6">
@@ -148,30 +157,32 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
             </div>
           </div>
 
+          {/* Práctica en curso y ver datos */}
           <div className="mt-10">
             <h3 className="text-xl font-medium mb-6">Práctica en curso:</h3>
-              <div className="flex items-center mb-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                  <FaDatabase className="text-blue-500" />
-                </div>
-                <span className="font-medium">{studentData.practice.name}</span>
-              </div>
 
-              <div className="bg-gray-50 p-4 rounded-lg">
-              <ProgressBar percentage={studentData.practice.progress} />
-              <div className="text-right text-sm text-gray-500 mt-1">
-                {studentData.practice.progress}% finalizada
+            <div className="flex items-center mb-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                <FaDatabase className="text-blue-500" />
               </div>
+              <span className="font-medium">{studentData.practice.name}</span>
+            </div>
 
-              <button className="w-full flex items-center justify-center py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition mt-5">
-                <span className="mr-2">📊</span> Ver datos de la práctica
-              </button>
+            <ProgressBar percentage={studentData.practice.progress} height={15} />
+            <div className="text-right text-sm text-gray-500 mt-1">
+              {studentData.practice.progress}% finalizada
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="w-full mt-6 mx-2 flex items-center justify-center space-x-6">
+        <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+          <FaUser className="mr-2" /> Guardar Información
+        </button>
       </div>
     </Modal>
   )
 }
 
-export default ModalEstudiante
+export default ModalEditarEstudiante
