@@ -13,27 +13,8 @@ import { FaUser, FaEnvelope, FaPhone, FaDatabase } from "react-icons/fa"
  * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalEstudiante = ({ isOpen, onClose, user }) => {
+const ModalEstudiante = ({ isOpen, onClose, studentData }) => {
   const [modal, setModal] = useState({ name: null, props: {} });
-
-  const studentData = {
-    fullName: "Alan Martín Agúndez Meza",
-    id: "2023456702",
-    email: "aagundez_21@alu.uabcs.mx",
-    phone: "6121587915",
-    about: "Estudiante casi-egresado de la UABCS! Estudiante de Ingeniería en Desarrollo de Software.",
-    skills: "Especializado en programación Orientada a Objetos, Animación 3D y Diseñador Gráfico Digital.",
-    career: "IDS",
-    semester: "8vo",
-    shift: "TM",
-    period: "2025/I",
-    gender: "H",
-    status: "A",
-    practice: {
-      name: "Administrador de Base de Datos",
-      progress: 66,
-    },
-  }
 
   const getInitials = (name) => {
     const nameParts = name.split(" ")
@@ -53,7 +34,9 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
             {/* Datos personales  y Foto*/}
             <div className="flex flex-col md:flex-row items-center md:items-start mb-6">
               {/* Avatar */}
-              {user.logo ? (
+              <div className="w-[150px] h-[150px] rounded-full bg-blue-200 flex items-center justify-center text-6xl text-gray-500 flex-shrink-0">
+              </div>
+              {/*{user.logo ? (
                 <div className="w-[150px] h-[150px] rounded-full overflow-hidden border border-gray-300 flex-shrink-0">
                   <img
                     src={user.logo || "/placeholder.svg"}
@@ -65,24 +48,24 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
                 <div className="w-[150px] h-[150px] rounded-full bg-blue-200 flex items-center justify-center text-6xl text-gray-500 flex-shrink-0">
                   {getInitials(studentData.fullName)}
                 </div>
-              )}
+              )}*/}
 
               {/* Datos personales */}
               <div className="mt-4 md:mt-0 md:ml-6 flex-1">
-                <h2 className="text-xl font-medium text-center md:text-left">{studentData.fullName}</h2>
+                <h2 className="text-xl font-medium text-center md:text-left">{studentData.name}</h2>
 
                 <div className="w-full mt-4 space-y-2">
                   <div className="flex items-center text-gray-600">
                     <FaUser className="mr-2 text-gray-400" />
-                    <span>ID: {studentData.id}</span>
+                    <span>ID: {studentData.matricula}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <FaEnvelope className="mr-2 text-gray-400" />
-                    <span>{studentData.email}</span>
+                    <span>{"studentData.mail"}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <FaPhone className="mr-2 text-gray-400" />
-                    <span>{studentData.phone}</span>
+                    <span>{"studentData.phone"}</span>
                   </div>
                 </div>
               </div>
@@ -94,7 +77,7 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
                 <span className="text-2xl mr-2">"</span>
                 Sobre mí
               </h3>
-              <p className="mt-2 text-gray-600">{studentData.about}</p>
+              <p className="mt-2 text-gray-600">{"studentData.aboutMe"}</p>
             </div>
 
             <div className="w-full mt-6">
@@ -102,19 +85,19 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
                 <span className="mr-2">💻</span>
                 Conocimientos
               </h3>
-              <p className="mt-2 text-gray-600">{studentData.skills}</p>
+              <p className="mt-2 text-gray-600">{"studentData.knowledge"}</p>
             </div>
 
             <div className="w-full mt-16 mx-2 flex items-center justify-center space-x-6">
               <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                 onClick={() => {
-                  setModal({ name: 'studentEdit', props: { user }, })
+                  setModal({ name: 'studentEdit', props: { studentData }, })
                 }}>
                 <FaUser className="mr-2" /> Editar información
               </button>
               <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                 onClick={() => {
-                  setModal({ name: 'studentFiles', props: { user }, })
+                  setModal({ name: 'studentFiles', props: { studentData }, })
                 }}>
                 <span className="mr-2">📄</span> Documentos alumno
               </button>
@@ -144,15 +127,15 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
             </div>
             <div>
               <p className="text-gray-500">Periodo:</p>
-              <p className="font-medium">{studentData.period}</p>
+              <p className="font-medium">{"studentData.period"}</p>
             </div>
             <div>
               <p className="text-gray-500">Sexo:</p>
-              <p className="font-medium">{studentData.gender}</p>
+              <p className="font-medium">{"studentData.gender"}</p>
             </div>
             <div>
               <p className="text-gray-500">Estado:</p>
-              <p className="font-medium">{studentData.status}</p>
+              <p className="font-medium">{"studentData.status"}</p>
             </div>
           </div>
 
@@ -164,16 +147,16 @@ const ModalEstudiante = ({ isOpen, onClose, user }) => {
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                 <FaDatabase className="text-blue-500" />
               </div>
-              <span className="font-medium">{studentData.practice.name}</span>
+              <span className="font-medium">{"studentData.practice.name"}</span>
             </div>
 
-            <ProgressBar percentage={studentData.practice.progress} height={15} />
+            <ProgressBar percentage={66} height={15} />
             <div className="text-right text-sm text-gray-500 mt-1">
-              {studentData.practice.progress}% finalizada
+              {66}% finalizada
             </div>
 
             <button className="w-full flex items-center justify-center py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition mt-5" onClick={() => {
-              setModal({ name: 'studentPractice', props: { user }, })
+              setModal({ name: 'studentPractice', props: { studentData }, })
             }}>
               <span className="mr-2">📊</span> Ver datos de la práctica
             </button>

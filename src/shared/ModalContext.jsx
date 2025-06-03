@@ -9,6 +9,9 @@ import ModalEstudiantesAsignadosA from '@shared/components/modals/ModalEstudiant
 
 import ModalEstudiantesEnVacante from '@shared/components/modals/ModalEstudiantesEnVacante';
 
+import ModalCarruselVacantes from '@shared/components/modals/ModalCarruselVacantes';
+import ModalVacante from '@shared/components/modals/ModalVacante';
+
 const ModalContext = ({ modal, setModal }) => {
     switch (modal.name) {
         case 'student':
@@ -54,6 +57,22 @@ const ModalContext = ({ modal, setModal }) => {
         case 'studentsInPractice':
             return (
                 <ModalEstudiantesEnVacante
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'practiceCarousel':
+            return (
+                <ModalCarruselVacantes
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'practiceSlot':
+            return (
+                <ModalVacante
                     isOpen={true}
                     onClose={() => setModal({ name: null, props: {} })}
                     {...modal.props}
