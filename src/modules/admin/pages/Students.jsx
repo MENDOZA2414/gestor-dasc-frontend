@@ -11,7 +11,7 @@ import { getAllStudents } from '@modules/admin/services/studentsService';
 
 const Students = () => {
   const [search, setSearch] = useState('');
-  const [activeFilters, setActiveFilters] = useState([]);
+  const [activeFilters, setActiveFilters] = useState({});
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +19,7 @@ const Students = () => {
   const cardRef = useRef(null);
 
   const [modal, setModal] = useState({ name: null, props: {} });
-  
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -35,18 +35,67 @@ const Students = () => {
     fetchStudents();
   }, []);
 
+  const filterSchema = {
+    Carrera: {
+      type: "multi",
+      options: ["LATI", "IDS", "ITC", "LITI", "IC"],
+    },
+    Semestre: {
+      type: "multi",
+      options: ["7mo", "8vo", "9no"],
+    },
+    Turno: {
+      type: "multi",
+      options: ["TM", "TV"],
+    },
+    Asesor: {
+      type: "multi-step",
+      steps: {
+        typeOptions: ["Interno", "Externo"],
+        Interno: {
+          searchable: true,
+          options: [
+            "Dr. Italia Estrada C.",
+            "MT. Alejandro Leyva",
+            "MT. Roberto Sánchez",
+            "MT. Carmen Vázquez",
+          ],
+        },
+        Externo: {
+          searchable: true,
+          options: [
+            "Ing. Luis Ramírez",
+            "Lic. María Gómez",
+            "Dr. Jorge Mendoza",
+          ],
+        },
+      },
+    },
+    Matrícula: {
+      type: "searchOnly",
+    },
+  };
+
   const getFilteredStudents = () => {
     return students.filter((student) => {
-      const matchSearch = (student.name || '').toLowerCase().includes(search.toLowerCase());
+      const lowerSearch = search.toLowerCase();
+      const matchSearch =
+        (student.name || '').toLowerCase().includes(lowerSearch) ||
+        (student.matricula || '').toLowerCase().includes(lowerSearch);
 
-      const matchFilters =
-        activeFilters.length === 0 ||
-        activeFilters.includes(student.career) ||
-        activeFilters.includes(student.semester) ||
-        activeFilters.includes(student.shift) ||
-        activeFilters.includes(student.internalAssessor);
+      const filters = activeFilters;
 
-      return matchSearch && matchFilters;
+      const matchCareer = !filters.Carrera || filters.Carrera.includes(student.career);
+      const matchSemester = !filters.Semestre || filters.Semestre.includes(student.semester);
+      const matchShift = !filters.Turno || filters.Turno.includes(student.shift);
+
+      const allAssessorFilters = [
+        ...(filters.Asesor?.Interno || []),
+        ...(filters.Asesor?.Externo || []),
+      ];
+      const matchAssessor = allAssessorFilters.length === 0 || allAssessorFilters.includes(student.internalAssessor);
+
+      return matchSearch && matchCareer && matchSemester && matchShift && matchAssessor;
     });
   };
 
@@ -149,7 +198,7 @@ const Students = () => {
         {/* Encabezado de búsqueda y filtros */}
         <div className="flex gap-3 items-center text-left">
           <Search value={search} onChange={(e) => setSearch(e.target.value)} />
-          <Filters onFilterChange={setActiveFilters} />
+          <Filters schema={filterSchema} onFilterChange={setActiveFilters} />
 
           <div className="w-full relative">
             <div className="flex items-center justify-right absolute -top-5 right-0" >
@@ -162,7 +211,6 @@ const Students = () => {
                 onClick={() => setModal({ name: 'student', props: { user }, })} />
             </div>
           </div>
-
         </div>
 
         {/* Card fija con tabla expandida visualmente */}
