@@ -25,7 +25,7 @@ const PrivateRoute = ({ children, allowedRoles = [] }) => {
           if (!hasPermission) {
             // Cierra sesión (mientras uses GET)
             try {
-              await api.get('/users/logout');
+              await api.post('/users/logout');
             } catch (logoutErr) {
               if (logoutErr?.response?.status !== 401) {
                 console.warn('Error al cerrar sesión por acceso no autorizado:', logoutErr);

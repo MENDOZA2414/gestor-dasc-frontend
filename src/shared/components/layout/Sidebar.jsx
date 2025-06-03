@@ -36,7 +36,7 @@ const Sidebar = ({
 
   const handleLogout = async () => {
     try {
-      await api.get('/users/logout');
+      await api.post('/users/logout');
       localStorage.removeItem('token');
       sessionStorage.clear();
       window.location.href = '/';

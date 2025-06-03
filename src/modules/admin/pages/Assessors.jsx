@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 
 import ModalContext from '@shared/ModalContext';
-import { Layout } from '@shared/components/layout';
 import { Card } from '@shared/components/cards';
 import { Search, Filters } from '@shared/components/filters';
 import { DataTable } from '@shared/components/datatable';
 import IconButton from '@shared/components/buttons/IconButton';
 import { getAllStudents } from '@modules/admin/services/studentsService';
 
-const Assessors = ({ user }) => {
+const Assessors = () => {
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [students, setStudents] = useState([]);
@@ -16,13 +15,12 @@ const Assessors = ({ user }) => {
 
   const tableRef = useRef(null);
   const cardRef = useRef(null);
-
   const [modal, setModal] = useState({ name: null, props: {} });
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const data = await getAllStudents();
+        const data = await getAllStudents(); // Este endpoint es solo temporal
         setStudents(data);
       } catch (error) {
         console.error('Error al cargar estudiantes:', error);
@@ -85,17 +83,20 @@ const Assessors = ({ user }) => {
     {
       label: 'Nombre',
       key: 'name',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>),
+      render: (row) =>
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>,
     },
     {
       label: 'Tipo',
       key: 'tipo',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>),
+      render: (row) =>
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>,
     },
     {
       label: 'Contacto',
       key: 'contacto',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.career}</span>),
+      render: (row) =>
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.career}</span>,
     },
     {
       label: 'Alumnos Asignados',
@@ -104,13 +105,17 @@ const Assessors = ({ user }) => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
           <div className="flex gap-2 justify-center">
-            <div className="flex gap-2 justify-center">
-                <span className="truncate">{row.semester}</span>
-            </div>
-            <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'assignedStudents', props: { user }, })} />
-            <IconButton icon="add" title="Agregar Estudiante"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+            <span className="truncate">{row.semester}</span>
+            <IconButton
+              icon="eye"
+              title="Ver"
+              onClick={() => setModal({ name: 'assignedStudents', props: { user: row } })}
+            />
+            <IconButton
+              icon="add"
+              title="Agregar Estudiante"
+              onClick={() => setModal({ name: 'studentEdit', props: { user: row } })}
+            />
           </div>
         );
       },
@@ -123,20 +128,24 @@ const Assessors = ({ user }) => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
           <div className="flex gap-2 justify-center">
-            <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'student', props: { user }, })} />
-            <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+            <IconButton
+              icon="eye"
+              title="Ver"
+              onClick={() => setModal({ name: 'student', props: { user: row } })}
+            />
+            <IconButton
+              icon="edit"
+              title="Editar"
+              onClick={() => setModal({ name: 'studentEdit', props: { user: row } })}
+            />
           </div>
         );
       },
     },
   ];
 
-  const userType = 'admin';
-
   return (
-    <Layout user={user} userType={userType}>
+    <>
       <ModalContext modal={modal} setModal={setModal} />
 
       <div className="flex flex-col gap-4 h-full">
@@ -153,7 +162,7 @@ const Assessors = ({ user }) => {
               <DataTable
                 columns={columns}
                 data={filledData}
-                emptyMessage={loading ? 'Cargando estudiantes...' : 'No hay estudiantes para mostrar.'}
+                emptyMessage={loading ? 'Cargando asesores...' : 'No hay asesores para mostrar.'}
                 ref={tableRef}
               />
             </div>
@@ -163,7 +172,7 @@ const Assessors = ({ user }) => {
           </div>
         </Card>
       </div>
-    </Layout>
+    </>
   );
 };
 

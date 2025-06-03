@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
 import ModalContext from '@shared/ModalContext';
-import { Layout } from '@shared/components/layout';
 import { Card } from '@shared/components/cards';
 import { Search, Filters } from '@shared/components/filters';
 import { DataTable } from '@shared/components/datatable';
@@ -17,7 +16,6 @@ const Students = () => {
 
   const tableRef = useRef(null);
   const cardRef = useRef(null);
-
   const [modal, setModal] = useState({ name: null, props: {} });
 
   useEffect(() => {
@@ -84,7 +82,6 @@ const Students = () => {
         (student.matricula || '').toLowerCase().includes(lowerSearch);
 
       const filters = activeFilters;
-
       const matchCareer = !filters.Carrera || filters.Carrera.includes(student.career);
       const matchSemester = !filters.Semestre || filters.Semestre.includes(student.semester);
       const matchShift = !filters.Turno || filters.Turno.includes(student.shift);
@@ -93,7 +90,8 @@ const Students = () => {
         ...(filters.Asesor?.Interno || []),
         ...(filters.Asesor?.Externo || []),
       ];
-      const matchAssessor = allAssessorFilters.length === 0 || allAssessorFilters.includes(student.internalAssessor);
+      const matchAssessor =
+        allAssessorFilters.length === 0 || allAssessorFilters.includes(student.internalAssessor);
 
       return matchSearch && matchCareer && matchSemester && matchShift && matchAssessor;
     });
@@ -182,16 +180,8 @@ const Students = () => {
     },
   ];
 
-  const user = {
-    firstName: 'José Miguel',
-    firstLastName: 'Mendoza',
-    logo: 'https://via.placeholder.com/100',
-  };
-
-  const userType = 'admin';
-
   return (
-    <Layout user={user} userType={userType}>
+    <>
       <ModalContext modal={modal} setModal={setModal} />
 
       <div className="flex flex-col gap-4 h-full">
@@ -203,12 +193,12 @@ const Students = () => {
           <div className="w-full relative">
             <div className="flex items-center justify-right absolute -top-5 right-0" >
               <SwitchButton icon="add" title="Estudiantes pendientes"
-                onClick={() => setModal({ name: 'student', props: { studentData: row }, })} />
+                onClick={() => setModal({ name: 'student', props: { studentData: null } })} />
             </div>
 
             <div className="flex items-center justify-right absolute -top-5 right-12" >
               <SwitchButton icon="edit" title="Estudiantes aceptados"
-                onClick={() => setModal({ name: 'student', props: { studentData: row }, })} />
+                onClick={() => setModal({ name: 'student', props: { studentData: null } })} />
             </div>
           </div>
         </div>
@@ -230,7 +220,7 @@ const Students = () => {
           </div>
         </Card>
       </div>
-    </Layout>
+    </>
   );
 };
 

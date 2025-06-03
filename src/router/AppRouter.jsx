@@ -19,52 +19,10 @@ import Companies from '@modules/admin/pages/Companies';
 import Header from "@modules/public/components/Header";
 import Sidebar from '@shared/components/layout/Sidebar';
 import HeaderUser from '@shared/components/layout/HeaderUser';
+import Layout from '@shared/components/layout/Layout';
 
 import PrivateRoute from '@router/PrivateRoute';
 import api from '@utils/api';
-
-const Layout = ({ children, userType, user }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => (document.body.style.overflow = '');
-  }, [mobileOpen]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerWidth < 768 && mobileOpen) {
-        setMobileOpen(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [mobileOpen]);
-
-  return (
-    <div className="flex w-full min-h-screen">
-      <Sidebar
-        userType={userType}
-        mobileOpen={mobileOpen}
-        setMobileOpen={setMobileOpen}
-        onCollapseChange={setCollapsed}
-      />
-
-      <div className="flex-1 min-w-0 transition-all duration-300">
-        <HeaderUser
-          user={user}
-          userType={userType}
-          onMobileMenuClick={() => setMobileOpen(prev => !prev)}
-          collapsed={collapsed}
-          mobileOpen={mobileOpen}
-        />
-
-        <main className="pt-20 px-4 bg-inherit">{children}</main>
-      </div>
-    </div>
-  );
-};
 
 const AppContent = () => {
   const location = useLocation();
@@ -76,83 +34,95 @@ const AppContent = () => {
   const [userChecked, setUserChecked] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userTypeID = sessionStorage.getItem('userTypeID');
-      const userID = sessionStorage.getItem('userID');
-      const controlNumber = sessionStorage.getItem('controlNumber');
+  const fetchUserData = async () => {
+    const userTypeID = sessionStorage.getItem('userTypeID');
+    const userID = sessionStorage.getItem('userID');
+    const controlNumber = sessionStorage.getItem('controlNumber');
 
-      if (!userTypeID) {
+    if (!userTypeID) {
+      setUserChecked(true);
+      return;
+    }
+
+    let endpoint = '';
+    let type = '';
+
+    switch (parseInt(userTypeID)) {
+      case 1:
+        endpoint = `/internalAssessors/${userID}`;
+        type = 'internalAssessor';
+        break;
+      case 2:
+        if (!controlNumber) return;
+        endpoint = `/students/${controlNumber}`;
+        type = 'student';
+        break;
+      case 3:
+        endpoint = `/externalAssessors/${userID}`;
+        type = 'externalAssessor';
+        break;
+      case 4:
+        endpoint = `/companies/${userID}`;
+        type = 'company';
+        break;
+      case 99: {
+        type = 'admin';
+
+        try {
+          const res = await api.get('/users/me');
+          console.log('Respuesta /me:', res.data);
+
+          const data = res.data.user || {};
+          const fullName = data.fullName || '';
+          const [firstName, ...resto] = fullName.split(' ');
+          const firstLastName = resto.join(' ');
+
+          setUser({
+            username: fullName,
+            firstName,
+            firstLastName,
+            logo: '/default_admin.png' // Imagen local
+          });
+
+          setUserType(type);
+        } catch (err) {
+          console.error('Error al obtener los datos del admin:', err);
+        } finally {
+          setUserChecked(true);
+        }
+
+        return; // Salir del fetchUserData
+      }
+      default:
         setUserChecked(true);
         return;
-      }
+    }
 
-      let endpoint = '';
-      let type = '';
+    // Para estudiantes, asesores y empresa
+    try {
+      const res = await api.get(endpoint);
+      const data = res.data;
 
-      switch (parseInt(userTypeID)) {
-        case 1:
-          endpoint = `/internalAssessors/${userID}`;
-          type = 'internalAssessor';
-          break;
-        case 2:
-          if (!controlNumber) return;
-          endpoint = `/students/${controlNumber}`;
-          type = 'student';
-          break;
-        case 3:
-          endpoint = `/externalAssessors/${userID}`;
-          type = 'externalAssessor';
-          break;
-        case 4:
-          endpoint = `/companies/${userID}`;
-          type = 'company';
-          break;
-        default:
-          setUserChecked(true);
-          return;
-        case 99: {
-          const userID = sessionStorage.getItem('userID');
-          endpoint = `/users/${userID}`;
-          type = 'admin';
-          break;
-        }
-      }
+      const fullName = `${data.firstName} ${data.firstLastName}`;
 
-      try {
-        const res = await api.get('/users/me');
-        const data = res.data.user || {};
-        const roles = res.data.roles || [];
+      setUser({
+        username: fullName,
+        firstName: data.firstName,
+        firstLastName: data.firstLastName,
+        logo: data.photo
+      });
 
-        let firstName = data.firstName;
-        let firstLastName = data.firstLastName;
-        let fullName = '';
+      setUserType(type);
+    } catch (err) {
+      console.error('Error al obtener los datos del usuario:', err);
+    } finally {
+      setUserChecked(true);
+    }
+  };
 
-        if (type === 'admin' && data.fullName) {
-          fullName = data.fullName;
-          const [nombre, ...resto] = fullName.split(' ');
-          firstName = nombre;
-          firstLastName = resto.join(' ');
-        } else {
-          fullName = `${firstName || ''} ${firstLastName || ''}`;
-        }
-
-        setUser({
-          username: fullName,
-          firstName,
-          firstLastName,
-          logo: data.photo || '/default_admin.png'
-        });
-
-        setUserType(type);
-      } catch (err) {
-        console.error('Error al obtener los datos del usuario:', err);
-      } finally {
-        setUserChecked(true);
-      }
-    };
-
-    fetchUserData();
+  fetchUserData();
   }, []);
+
 
   if (showHeader) {
     return (
@@ -222,33 +192,38 @@ const AppContent = () => {
         </PrivateRoute>
       } />
 
-      {/* Admin Dashboard nueva ruta */}
-      <Route path="/admin/dashboard" element={
-        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+     <Route path="/admin/dashboard" element={
+      <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+        <Layout user={user} userType={userType}>
           <Dashboard />
-        </PrivateRoute>
-      } />
+        </Layout>
+      </PrivateRoute>
+    } />
 
-      {/* Página de estudiantes */}
-      <Route path="/admin/students" element={
-        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+    <Route path="/admin/students" element={
+      <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+        <Layout user={user} userType={userType}>
           <Students />
-        </PrivateRoute>
-      } />
+        </Layout>
+      </PrivateRoute>
+    } />
 
-      {/* Página de asesores */}
-      <Route path="/admin/assessors" element={
-        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+    <Route path="/admin/assessors" element={
+      <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+        <Layout user={user} userType={userType}>
           <Assessors />
-        </PrivateRoute>
-      } />
+        </Layout>
+      </PrivateRoute>
+    } />
 
-      {/* Página de entidades */}
-      <Route path="/admin/companies" element={
-        <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+    <Route path="/admin/companies" element={
+      <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+        <Layout user={user} userType={userType}>
           <Companies />
-        </PrivateRoute>
-      } />
+        </Layout>
+      </PrivateRoute>
+    } />
+
     </Routes>
   );
 };

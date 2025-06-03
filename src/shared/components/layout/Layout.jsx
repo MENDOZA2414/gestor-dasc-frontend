@@ -1,88 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import HeaderUser from './HeaderUser';
 
-const Layout = ({ children, user, userType, scroll = 'default' }) => {
+const Layout = ({ children, userType, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
-useEffect(() => {
-  const body = document.body;
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => (document.body.style.overflow = '');
+  }, [mobileOpen]);
 
-  const applyScrollBehavior = () => {
-    const isDesktop = window.innerWidth >= 768;
-
-    // Limpia todas las clases de scroll
-    body.classList.remove(
-      'overflow-hidden',
-      'overflow-x-hidden',
-      'overflow-y-hidden',
-      'overflow-y-auto'
-    );
-
-    switch (scroll) {
-      case 'none':
-        body.classList.add('overflow-hidden');
-        break;
-
-      case 'vertical':
-        body.classList.add('overflow-x-hidden');
-        if (isDesktop) {
-          body.classList.add('overflow-y-hidden');
-        } else {
-          body.classList.add('overflow-y-auto');
-        }
-        break;
-
-      case 'horizontal':
-        body.classList.add('overflow-y-auto', 'overflow-x-hidden');
-        break;
-
-      default:
-        body.classList.add('overflow-y-auto', 'overflow-x-hidden');
-        break;
-    }
-  };
-
-  // Ejecutar al montar
-  applyScrollBehavior();
-
-  // Escuchar cambios de tamaño
-  window.addEventListener('resize', applyScrollBehavior);
-
-  return () => {
-    window.removeEventListener('resize', applyScrollBehavior);
-    body.classList.remove(
-      'overflow-hidden',
-      'overflow-x-hidden',
-      'overflow-y-hidden',
-      'overflow-y-auto'
-    );
-  };
-}, [scroll]);
-
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth < 768 && mobileOpen) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [mobileOpen]);
 
   return (
-    <div className="flex min-h-screen w-full bg-gray-100 overflow-hidden">
+    <div className="flex w-full min-h-screen bg-[#f7f8fa]">
       <Sidebar
         userType={userType}
         mobileOpen={mobileOpen}
         setMobileOpen={setMobileOpen}
-      >
-        <div className="flex flex-col flex-1 min-w-0">
-          <HeaderUser
-            user={user}
-            userType={userType}
-            onMobileMenuClick={setMobileOpen}
-            mobileOpen={mobileOpen}
-          />
+        onCollapseChange={setCollapsed}
+      />
 
-          <main className="flex-1 px-4 md:px-6 lg:px-8 md:pt-16 lg:pt-8 pb-8">
-            <div className="max-w-[1600px] mx-auto w-full">
-              {children}
-            </div>
-          </main>
-        </div>
-      </Sidebar>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <HeaderUser
+          user={user}
+          userType={userType}
+          onMobileMenuClick={() => setMobileOpen(prev => !prev)}
+          collapsed={collapsed}
+          mobileOpen={mobileOpen}
+        />
+
+        <main className="flex-1 pt-[80px] md:pt-4 pb-8 px-4 sm:px-6 lg:px-8 bg-[#f7f8fa]">
+          <div className="max-w-[1600px] mx-auto w-full">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

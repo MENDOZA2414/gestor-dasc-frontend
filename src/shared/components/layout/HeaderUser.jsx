@@ -54,6 +54,12 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, mobileOpen }
     { path: '/userCompany/profile', title: 'Perfil' },
     { path: '/userCompany/vacancies', title: 'Vacantes' },
     { path: '/userCompany', title: 'Inicio' },
+    // Admin
+    { path: '/admin/dashboard', title: 'Dashboard' },
+    { path: '/admin/students', title: 'Alumnos' },
+    { path: '/admin/assessors', title: 'Asesores' },
+    { path: '/admin/companies', title: 'Entidades' },
+    { path: '/admin/reports', title: 'Reportes' }, 
   ];
 
   const match = titlesByPath.find((item) => currentPath.startsWith(item.path));
