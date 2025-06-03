@@ -8,7 +8,6 @@ import { validateEmail, validatePassword, validateAge } from './validations';
 import api from '@utils/api';
 import Swal from 'sweetalert2';
 
-// Función que genera imagen con iniciales y color aleatorio
 function generateInitialsImage(name, lastName) {
   const canvas = document.createElement('canvas');
   canvas.width = 256;
@@ -60,6 +59,7 @@ export default function RegisterStudent() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -87,7 +87,6 @@ export default function RegisterStudent() {
       .catch((err) => console.error('Error al obtener asesores internos:', err));
   }, []);
 
-  // Generar avatar si se omite foto y hay nombre
   useEffect(() => {
     const crearAvatar = async () => {
       if (
@@ -107,6 +106,11 @@ export default function RegisterStudent() {
     crearAvatar();
   }, [omitirFoto, formData.firstName, formData.firstLastName]);
 
+  const handleChange = (field) => (e) => {
+    setFormData({ ...formData, [field]: e.target.value });
+    setErrors((prev) => ({ ...prev, [field]: '' }));
+  };
+
   const prevFoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -116,11 +120,6 @@ export default function RegisterStudent() {
       setFotoUrl(lector.result);
       setFoto(file);
     };
-  };
-
-  const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
-    setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
   const isStepValid = () => {
@@ -172,7 +171,6 @@ export default function RegisterStudent() {
     return true;
   };
 
-  
   const handleFinalSubmit = async () => {
     if (!isStepValid()) return;
 
@@ -189,8 +187,6 @@ export default function RegisterStudent() {
       if (!result.isConfirmed) return;
 
       setOmitirFoto(true);
-
-      const initials = `${formData.firstName[0] || ''}${formData.firstLastName[0] || ''}`.toUpperCase();
       const { file, url } = await generateInitialsImage(formData.firstName, formData.firstLastName);
       setFoto(file);
       setFotoUrl(url);
@@ -214,6 +210,30 @@ export default function RegisterStudent() {
       if (!result.isConfirmed) return;
     }
 
+    setLoading(true);
+
+    // Validación final de duplicado de teléfono
+    try {
+      const res = await api.get(`/users/verify-phone/${formData.phone}`);
+      if (res.data.exists) {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Número duplicado',
+          text: 'Este número de celular ya está registrado en otra cuenta.'
+        });
+        return;
+      }
+    } catch (error) {
+      setLoading(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo verificar el número de celular. Intenta más tarde.'
+      });
+      return;
+    }
+
     const sendData = new FormData();
     Object.entries(formData).forEach(([key, value]) => sendData.append(key, value));
     if (foto) sendData.append("photo", foto);
@@ -232,8 +252,10 @@ export default function RegisterStudent() {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: err.response?.data?.message || 'Error al registrar alumno'
+        text: err.response?.data?.message || 'Error al registrar el alumno'
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -243,6 +265,7 @@ export default function RegisterStudent() {
     <div className="flex justify-center items-start pt-6 min-h-screen bg-gray-100 font-poppins px-4">
       <form className="bg-white p-6 rounded-xl shadow-md w-full max-w-sm" onSubmit={handleSubmit}>
         <h2 className="text-xl font-bold text-center mb-4">Registro de Alumno</h2>
+
         {step === 1 && <Step1BasicInfo data={formData} onChange={handleChange} errors={errors} />}
         {step === 2 && <Step2Credentials data={formData} onChange={handleChange} showPassword={showPassword} setShowPassword={setShowPassword} showPasswordConfirm={showPasswordConfirm} setShowPasswordConfirm={setShowPasswordConfirm} errors={errors} />}
         {step === 3 && <Step3AcademicInfo data={formData} onChange={handleChange} internalAssessors={internalAssessors} errors={errors} />}
@@ -253,12 +276,35 @@ export default function RegisterStudent() {
             <button type="button" onClick={() => setStep(step - 1)} className={`bg-slate-300 text-black hover:bg-slate-400 ${sharedButtonClass}`}>Anterior</button>
           )}
           {step < 4 ? (
-            <button type="button" onClick={() => isStepValid() && setStep(step + 1)} className={`bg-blue-600 text-white hover:bg-blue-700 ${sharedButtonClass}`}>Siguiente</button>
+            <button
+              type="button"
+              onClick={() => isStepValid() && setStep(step + 1)}
+              className={`bg-blue-600 text-white hover:bg-blue-700 ${sharedButtonClass}`}
+            >
+              Siguiente
+            </button>
           ) : (
-            <button type="button" onClick={handleFinalSubmit} className={`bg-[#049774] text-white hover:bg-[#037d5e] ${sharedButtonClass}`}>Registrar Alumno</button>
+            <button
+              type="button"
+              onClick={handleFinalSubmit}
+              className={`bg-[#049774] text-white hover:bg-[#037d5e] disabled:opacity-60 disabled:cursor-not-allowed ${sharedButtonClass}`}
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Registrando...
+                </div>
+              ) : (
+                'Registrar Alumno'
+              )}
+            </button>
           )}
         </div>
-        <p className="mt-4 text-sm text-center">¿Ya tienes una cuenta? <a href="/login" className="text-blue-600 hover:underline">Inicia sesión</a></p>
+
+        <p className="mt-4 text-sm text-center">
+          ¿Ya tienes una cuenta? <a href="/login" className="text-blue-600 hover:underline">Inicia sesión</a>
+        </p>
       </form>
     </div>
   );

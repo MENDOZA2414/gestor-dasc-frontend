@@ -4,6 +4,12 @@ import PasswordInputGroup from './PasswordInputGroup';
 import ConfirmPasswordInputGroup from './ConfirmPasswordInputGroup';
 
 export default function Step2Credentials({ data, onChange, showPassword, setShowPassword, showPasswordConfirm, setShowPasswordConfirm, errors }) {
+  // Entrada estricta para números de 10 dígitos
+  const handleNumericInput = (field) => (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    onChange(field)({ target: { value } });
+  };
+
   return (
     <>
       <InputGroup
@@ -35,11 +41,10 @@ export default function Step2Credentials({ data, onChange, showPassword, setShow
       />
       <InputGroup
         label="Número Celular"
-        type="tel"
+        type="text"
         value={data.phone}
-        onChange={onChange('phone')}
+        onChange={handleNumericInput('phone')}
         required
-        pattern="\d{10}"
         error={errors?.phone}
       />
     </>
