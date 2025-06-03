@@ -64,7 +64,7 @@ const Sidebar = ({
           <div className="relative">
           <div className={`flex items-center justify-between md:justify-center h-[104px] ${collapsed ? 'px-0' : 'px-6'} border-b border-white/10`}>
           <Link
-                to="/dashboard"
+                to={userType === 'admin' || userType === 'superadmin' ? '/admin/dashboard' : '/dashboard'}
                 className={`w-full flex items-center ${
                   collapsed ? 'justify-center' : 'justify-start pl-3'
                 }`}
