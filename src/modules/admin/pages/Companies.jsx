@@ -139,11 +139,6 @@ const Companies = () => {
               title="Ver"
               onClick={() => setModal({ name: 'student', props: { user: row } })}
             />
-            <IconButton
-              icon="edit"
-              title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user: row } })}
-            />
           </div>
         );
       },

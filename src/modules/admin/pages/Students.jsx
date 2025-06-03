@@ -22,7 +22,6 @@ const Students = () => {
     const fetchStudents = async () => {
       try {
         const data = await getAllStudents();
-        console.log(data)
         setStudents(data);
       } catch (error) {
         console.error('Error al cargar estudiantes:', error);
@@ -201,7 +200,7 @@ const Students = () => {
           <Search value={search} onChange={(e) => setSearch(e.target.value)} />
           <Filters schema={filterSchema} onFilterChange={setActiveFilters} />
 
-          <div className="w-full relative">
+          {/*<div className="w-full relative">
             <div className="flex items-center justify-right absolute -top-5 right-0" >
               <SwitchButton icon="add" title="Estudiantes pendientes"
                 onClick={() => setModal({
@@ -221,7 +220,7 @@ const Students = () => {
                   }
                 })} />
             </div>
-          </div>
+          </div>*/}
         </div>
 
         {/* Card fija con tabla expandida visualmente */}

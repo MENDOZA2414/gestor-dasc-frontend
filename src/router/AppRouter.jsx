@@ -15,6 +15,7 @@ import Dashboard from '@modules/admin/pages/Dashboard';
 import Students from '@modules/admin/pages/Students';
 import Assessors from '@modules/admin/pages/Assessors';
 import Companies from '@modules/admin/pages/Companies';
+import Reports from '@modules/admin/pages/Reports';
 
 import Header from "@modules/public/components/Header";
 import Sidebar from '@shared/components/layout/Sidebar';
@@ -220,6 +221,14 @@ const AppContent = () => {
       <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
         <Layout user={user} userType={userType}>
           <Companies />
+        </Layout>
+      </PrivateRoute>
+    } />
+
+    <Route path="/admin/reports" element={
+      <PrivateRoute allowedRoles={['Admin', 'SuperAdmin']}>
+        <Layout user={user} userType={userType}>
+          <Reports />
         </Layout>
       </PrivateRoute>
     } />
