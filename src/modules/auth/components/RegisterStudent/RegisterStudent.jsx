@@ -171,6 +171,16 @@ export default function RegisterStudent() {
     return true;
   };
 
+  const verificarTelefonoDuplicado = async (telefono) => {
+    try {
+      const res = await api.get(`/users/verify-phone/${telefono}`);
+      return res.data.exists;
+    } catch (error) {
+      console.error("Error al verificar teléfono:", error);
+      return false;
+    }
+  };
+
   const handleFinalSubmit = async () => {
     if (!isStepValid()) return;
 
@@ -211,28 +221,6 @@ export default function RegisterStudent() {
     }
 
     setLoading(true);
-
-    // Validación final de duplicado de teléfono
-    try {
-      const res = await api.get(`/users/verify-phone/${formData.phone}`);
-      if (res.data.exists) {
-        setLoading(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Número duplicado',
-          text: 'Este número de celular ya está registrado en otra cuenta.'
-        });
-        return;
-      }
-    } catch (error) {
-      setLoading(false);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudo verificar el número de celular. Intenta más tarde.'
-      });
-      return;
-    }
 
     const sendData = new FormData();
     Object.entries(formData).forEach(([key, value]) => sendData.append(key, value));
@@ -278,7 +266,23 @@ export default function RegisterStudent() {
           {step < 4 ? (
             <button
               type="button"
-              onClick={() => isStepValid() && setStep(step + 1)}
+              onClick={async () => {
+                if (!isStepValid()) return;
+
+                if (step === 2) {
+                  const telefonoDuplicado = await verificarTelefonoDuplicado(formData.phone);
+                  if (telefonoDuplicado) {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Número duplicado',
+                      text: 'Este número de celular ya está registrado en otra cuenta.'
+                    });
+                    return;
+                  }
+                }
+
+                setStep(step + 1);
+              }}
               className={`bg-blue-600 text-white hover:bg-blue-700 ${sharedButtonClass}`}
             >
               Siguiente
