@@ -20,3 +20,8 @@ export const getTopCompaniesWithStudents = async () => {
   const response = await api.get('/professional-practices/stats/top-companies');
   return response.data;
 };
+
+export const getPracticeStatusCounts = async () => {
+  const response = await api.get('/professional-practices/count-by-status');
+  return response.data;
+};

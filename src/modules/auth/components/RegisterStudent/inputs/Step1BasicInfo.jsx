@@ -3,6 +3,12 @@ import InputGroup from './InputGroup';
 import DateInputGroup from './DateInputGroup';
 
 export default function Step1BasicInfo({ data, onChange, errors }) {
+  // Limitar entrada numérica de exactamente 10 caracteres
+  const handleNumericInput = (field) => (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    onChange(field)({ target: { value } });
+  };
+
   return (
     <>
       <InputGroup
@@ -34,11 +40,10 @@ export default function Step1BasicInfo({ data, onChange, errors }) {
       />
       <InputGroup
         label="Número de Control"
+        type="text"
         value={data.controlNumber}
-        onChange={onChange('controlNumber')}
+        onChange={handleNumericInput('controlNumber')}
         required
-        maxLength={10}
-        pattern="\d*"
         error={errors?.controlNumber}
       />
     </>
