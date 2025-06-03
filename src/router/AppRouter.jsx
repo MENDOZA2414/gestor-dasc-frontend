@@ -110,18 +110,39 @@ const AppContent = () => {
         default:
           setUserChecked(true);
           return;
+        case 99: {
+          const userID = sessionStorage.getItem('userID');
+          endpoint = `/users/${userID}`;
+          type = 'admin';
+          break;
+        }
       }
 
       try {
-        const res = await api.get(endpoint);
-        const data = res.data;
-        const fullName = data.firstName + ' ' + data.firstLastName;
+        const res = await api.get('/users/me');
+        const data = res.data.user || {};
+        const roles = res.data.roles || [];
+
+        let firstName = data.firstName;
+        let firstLastName = data.firstLastName;
+        let fullName = '';
+
+        if (type === 'admin' && data.fullName) {
+          fullName = data.fullName;
+          const [nombre, ...resto] = fullName.split(' ');
+          firstName = nombre;
+          firstLastName = resto.join(' ');
+        } else {
+          fullName = `${firstName || ''} ${firstLastName || ''}`;
+        }
+
         setUser({
           username: fullName,
-          firstName: data.firstName,
-          firstLastName: data.firstLastName,
-          logo: data.photo
+          firstName,
+          firstLastName,
+          logo: data.photo || '/default_admin.png'
         });
+
         setUserType(type);
       } catch (err) {
         console.error('Error al obtener los datos del usuario:', err);

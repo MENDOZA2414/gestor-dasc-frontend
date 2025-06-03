@@ -19,7 +19,7 @@ import {
 
 import { getDashboardStats } from '@modules/admin/services/dashboardService';
 
-const Dashboard = () => {
+const Dashboard = ({ user }) => {
   const [stats, setStats] = useState({
     students: 0,
     internalAssessors: 0,
@@ -39,12 +39,6 @@ const Dashboard = () => {
 
     fetchStats();
   }, []);
-
-  const user = {
-    firstName: 'José Miguel',
-    firstLastName: 'Mendoza',
-    logo: 'https://placehold.co/100x100'
-  };
 
   const userType = 'admin';
   /* 

@@ -8,7 +8,7 @@ import { DataTable } from '@shared/components/datatable';
 import IconButton from '@shared/components/buttons/IconButton';
 import { getAllStudents } from '@modules/admin/services/studentsService';
 
-const Assessors = () => {
+const Assessors = ({ user }) => {
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [students, setStudents] = useState([]);
@@ -132,12 +132,6 @@ const Assessors = () => {
       },
     },
   ];
-
-  const user = {
-    firstName: 'José Miguel',
-    firstLastName: 'Mendoza',
-    logo: 'https://via.placeholder.com/100',
-  };
 
   const userType = 'admin';
 

@@ -13,6 +13,7 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, mobileOpen }
       case 'internalAssessor': return '/userInternalAssessor/profile';
       case 'externalAssessor': return '/userExternalAssessor/profile';
       case 'company': return '/userCompany/profile';
+      case 'admin': return null; // Admin no tiene perfil
       default: return '/userStudent/profile';
     }
   };
@@ -96,16 +97,26 @@ const HeaderUser = ({ user, userType, onMobileMenuClick, collapsed, mobileOpen }
 
             {/* Nombre visible solo en pantallas sm en adelante */}
             <span className="hidden sm:inline text-gray-600 text-sm font-medium whitespace-nowrap">
-              {user?.firstName} {user?.firstLastName}
+              {userType === 'admin' ? user?.username : `${user?.firstName} ${user?.firstLastName}`}
             </span>
 
-            <Link to={getProfileLink()}>
-              <img
-                src={user?.logo}
-                alt="Foto de perfil"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-            </Link>
+            {userType === 'admin' ? (
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-400 text-white font-bold text-lg select-none"
+                title="Administrador"
+              >
+                A
+              </div>
+            ) : (
+              <Link to={getProfileLink()}>
+                <img
+                  src={user?.logo}
+                  alt="Foto de perfil"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              </Link>
+            )}
+
           </div>
         </div>
       </header>
