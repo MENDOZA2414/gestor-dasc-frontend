@@ -22,6 +22,7 @@ const Students = () => {
     const fetchStudents = async () => {
       try {
         const data = await getAllStudents();
+        console.log(data)
         setStudents(data);
       } catch (error) {
         console.error('Error al cargar estudiantes:', error);
@@ -171,9 +172,19 @@ const Students = () => {
         return (
           <div className="flex gap-2 justify-center">
             <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'student', props: { studentData: row }, })} />
+              onClick={() => setModal({
+                name: 'student', props: {
+                  matricula: row.matricula,
+                  userID: row.userID,
+                }
+              })} />
             <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { studentData: row }, })} />
+              onClick={() => setModal({
+                name: 'studentEdit', props: {
+                  matricula: row.matricula,
+                  userID: row.userID,
+                }
+              })} />
           </div>
         );
       },
@@ -193,12 +204,22 @@ const Students = () => {
           <div className="w-full relative">
             <div className="flex items-center justify-right absolute -top-5 right-0" >
               <SwitchButton icon="add" title="Estudiantes pendientes"
-                onClick={() => setModal({ name: 'student', props: { studentData: null } })} />
+                onClick={() => setModal({
+                  name: 'student', props: {
+                    matricula: row.matricula,
+                    userID: row.userID,
+                  }
+                })} />
             </div>
 
             <div className="flex items-center justify-right absolute -top-5 right-12" >
               <SwitchButton icon="edit" title="Estudiantes aceptados"
-                onClick={() => setModal({ name: 'student', props: { studentData: null } })} />
+                onClick={() => setModal({
+                  name: 'student', props: {
+                    matricula: row.matricula,
+                    userID: row.userID,
+                  }
+                })} />
             </div>
           </div>
         </div>

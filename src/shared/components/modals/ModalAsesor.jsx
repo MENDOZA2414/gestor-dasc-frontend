@@ -3,9 +3,9 @@ import { useState, useEffect, useRef } from 'react';
 import ModalContext from '@shared/ModalContext';
 import Modal from "./Modal"
 import ProgressBar from '@shared/components/ProgressBar';
-import InputField from '@shared/components/InputField';
 import { FaUser, FaEnvelope, FaPhone, FaDatabase } from "react-icons/fa"
 import { getStudentById } from '@modules/admin/services/studentsService';
+import { getUserById } from '@modules/admin/services/usersService';
 
 /**
  * Modal especializado para mostrar información de estudiante.
@@ -15,14 +15,11 @@ import { getStudentById } from '@modules/admin/services/studentsService';
  * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
+const ModalAsesor = ({ isOpen, onClose, matricula }) => {
   const [modal, setModal] = useState({ name: null, props: {} });
 
   const [student, setStudent] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [aboutMe, setAboutMe] = useState("")
-  const [knowledge, setKnowledge] = useState("")
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -38,6 +35,29 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
 
     fetchStudent();
   }, []);
+
+  /*useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getUserById(userID);
+        setUser(data);
+      } catch (error) {
+        console.error('Error al cargar usuario:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);*/
+
+  const getInitials = (name) => {
+    const nameParts = name.split(" ")
+    if (nameParts.length >= 2) {
+      return `${nameParts[0][0]}${nameParts[1][0]}`
+    }
+    return nameParts[0][0]
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -89,13 +109,7 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
                 <span className="text-2xl mr-2">"</span>
                 Sobre mí
               </h3>
-              <InputField
-                placeholder="¡Escribe qué te gustaría que la gente supiera de ti!"
-                value={aboutMe}
-                onChange={setAboutMe}
-                multiline={true}
-                rows={2}
-              />
+              <p className="mt-2 text-gray-600">{"studentData.aboutMe"}</p>
             </div>
 
             <div className="w-full mt-6">
@@ -103,13 +117,22 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
                 <span className="mr-2">💻</span>
                 Conocimientos
               </h3>
-              <InputField
-                placeholder="¡Descríbele a las entidades qué es lo que puedes hacer!"
-                value={knowledge}
-                onChange={setKnowledge}
-                multiline={true}
-                rows={2}
-              />
+              <p className="mt-2 text-gray-600">{"studentData.knowledge"}</p>
+            </div>
+
+            <div className="w-full mt-16 mx-2 flex items-center justify-center space-x-6">
+              <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                onClick={() => {
+                  setModal({ name: 'studentEdit', props: { matricula }, })
+                }}>
+                <FaUser className="mr-2" /> Editar información
+              </button>
+              <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                onClick={() => {
+                  setModal({ name: 'studentFiles', props: { matricula }, })
+                }}>
+                <span className="mr-2">📄</span> Documentos alumno
+              </button>
             </div>
           </div>
         </div>
@@ -136,11 +159,11 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
             </div>
             <div>
               <p className="text-gray-500">Periodo:</p>
-              <p className="font-medium">{2025/1}</p>
+              <p className="font-medium">{2025 / 1}</p>
             </div>
             <div>
               <p className="text-gray-500">Sexo:</p>
-              <p className="font-medium">{"student.gender"}</p>
+              <p className="font-medium">{"studentData.gender"}</p>
             </div>
             <div>
               <p className="text-gray-500">Estado:</p>
@@ -163,17 +186,17 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
             <div className="text-right text-sm text-gray-500 mt-1">
               {66}% finalizada
             </div>
+
+            <button className="w-full flex items-center justify-center py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition mt-5" onClick={() => {
+              setModal({ name: 'studentPractice', props: { matricula }, })
+            }}>
+              <span className="mr-2">📊</span> Ver datos de la práctica
+            </button>
           </div>
         </div>
-      </div>
-
-      <div className="w-full mt-6 mx-2 flex items-center justify-center space-x-6">
-        <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-          <FaUser className="mr-2" /> Guardar Información
-        </button>
       </div>
     </Modal>
   )
 }
 
-export default ModalEditarEstudiante
+export default ModalAsesor

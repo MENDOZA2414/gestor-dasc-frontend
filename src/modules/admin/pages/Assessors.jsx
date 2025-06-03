@@ -5,12 +5,12 @@ import { Card } from '@shared/components/cards';
 import { Search, Filters } from '@shared/components/filters';
 import { DataTable } from '@shared/components/datatable';
 import IconButton from '@shared/components/buttons/IconButton';
-import { getAllStudents } from '@modules/admin/services/studentsService';
+import { getAllInternalAssessors } from '@modules/admin/services/assessorsService';
 
 const Assessors = () => {
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [internalAssessors, setInternalAssessors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const tableRef = useRef(null);
@@ -18,22 +18,22 @@ const Assessors = () => {
   const [modal, setModal] = useState({ name: null, props: {} });
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchInternalAssessors = async () => {
       try {
-        const data = await getAllStudents(); // Este endpoint es solo temporal
-        setStudents(data);
+        const data = await getAllInternalAssessors();
+        setInternalAssessors(data);
       } catch (error) {
-        console.error('Error al cargar estudiantes:', error);
+        console.error('Error al cargar asesores internos:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudents();
+    fetchInternalAssessors();
   }, []);
 
-  const getFilteredStudents = () => {
-    return students.filter((student) => {
+  const getFilteredInternalAssessors = () => {
+    return internalAssessors.filter((student) => {
       const matchSearch = (student.name || '').toLowerCase().includes(search.toLowerCase());
 
       const matchFilters =
@@ -47,7 +47,7 @@ const Assessors = () => {
     });
   };
 
-  const filtered = getFilteredStudents();
+  const filtered = getFilteredInternalAssessors();
   const minRows = 10;
   const filledData = [...filtered];
 
@@ -84,19 +84,19 @@ const Assessors = () => {
       label: 'Nombre',
       key: 'name',
       render: (row) =>
-        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>,
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.fullName}</span>,
     },
     {
       label: 'Tipo',
       key: 'tipo',
       render: (row) =>
-        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>,
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{"row.tipo"}</span>,
     },
     {
       label: 'Contacto',
       key: 'contacto',
       render: (row) =>
-        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.career}</span>,
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{"row.contacto"}</span>,
     },
     {
       label: 'Alumnos Asignados',
@@ -109,12 +109,20 @@ const Assessors = () => {
             <IconButton
               icon="eye"
               title="Ver"
-              onClick={() => setModal({ name: 'assignedStudents', props: { user: row } })}
+              onClick={() => setModal({
+                name: 'assignedStudents', props: {
+                  internalAssessorID: row.internalAssessorID
+                }
+              })}
             />
             <IconButton
               icon="add"
               title="Agregar Estudiante"
-              onClick={() => setModal({ name: 'studentEdit', props: { user: row } })}
+              onClick={() => setModal({
+                name: 'addStudents', props: {
+                  internalAssessorID: row.internalAssessorID
+                }
+              })}
             />
           </div>
         );
@@ -131,12 +139,20 @@ const Assessors = () => {
             <IconButton
               icon="eye"
               title="Ver"
-              onClick={() => setModal({ name: 'student', props: { user: row } })}
+              onClick={() => setModal({
+                name: 'assessor', props: {
+                  internalAssessorID: row.internalAssessorID
+                }
+              })}
             />
             <IconButton
               icon="edit"
               title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user: row } })}
+              onClick={() => setModal({
+                name: 'assessorEdit', props: {
+                  internalAssessorID: row.internalAssessorID
+                }
+              })}
             />
           </div>
         );

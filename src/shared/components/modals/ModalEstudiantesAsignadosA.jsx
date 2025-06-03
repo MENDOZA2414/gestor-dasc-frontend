@@ -6,6 +6,7 @@ import { DataTable } from '@shared/components/datatable';
 import { Search, Filters } from '@shared/components/filters';
 import { getAllStudents } from '@modules/admin/services/studentsService';
 import IconButton from '@shared/components/buttons/IconButton';
+import { getInternalAssessorById } from '@modules/admin/services/assessorsService';
 
 /**
  * Modal especializado para mostrar información de estudiante.
@@ -15,100 +16,102 @@ import IconButton from '@shared/components/buttons/IconButton';
  * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalEstudiantesAsignadosA = ({ isOpen, onClose, user }) => {
-
-  const studentData = {
-    fullName: "MT. Alejandro Leyva",
-    id: "2023456702",
-    email: "aagundez_21@alu.uabcs.mx",
-    phone: "6121587915",
-    about: "Estudiante casi-egresado de la UABCS! Estudiante de Ingeniería en Desarrollo de Software.",
-    skills: "Especializado en programación Orientada a Objetos, Animación 3D y Diseñador Gráfico Digital.",
-    career: "IDS",
-    semester: "8vo",
-    shift: "TM",
-    period: "2025/I",
-    gender: "H",
-    status: "A",
-    practice: {
-      name: "Administrador de Base de Datos",
-      progress: 66,
-    },
-  }
+const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID }) => {
 
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [internalAssessor, setInternalAssessor] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const tableRef = useRef(null);
   const cardRef = useRef(null);
 
+  const [students, setStudents] = useState([]);
+
   const [modal, setModal] = useState({ name: null, props: {} });
 
   useEffect(() => {
-      const fetchStudents = async () => {
-        try {
-          const data = await getAllStudents();
-          setStudents(data);
-        } catch (error) {
-          console.error('Error al cargar estudiantes:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchStudents();
-    }, []);
-  
-    const getFilteredStudents = () => {
-      return students.filter((student) => {
-        const matchSearch = (student.name || '').toLowerCase().includes(search.toLowerCase());
-  
-        const matchFilters =
-          activeFilters.length === 0 ||
-          activeFilters.includes(student.career) ||
-          activeFilters.includes(student.semester) ||
-          activeFilters.includes(student.shift) ||
-          activeFilters.includes(student.internalAssessor);
-  
-        return matchSearch && matchFilters;
-      });
-    };
-  
-    const filtered = getFilteredStudents();
-    const minRows = 6;
-    const filledData = [...filtered];
-  
-    if (filtered.length < minRows) {
-      const emptyRows = Array(minRows - filtered.length)
-        .fill()
-        .map((_, index) => {
-          const isLastRow = index === minRows - filtered.length - 1;
-          return {
-            id: `empty-${index}`,
-            name: '',
-            matricula: '',
-            career: '',
-            semester: '',
-            shift: '',
-            internalAssessor: '',
-            isEmpty: true,
-            isLastRow,
-          };
-        });
-  
-      filledData.push(...emptyRows);
-    }
-  
-    useEffect(() => {
-      if (tableRef.current) {
-        const lastRow = tableRef.current.querySelector('tbody tr:last-child');
-        if (lastRow) {
-          lastRow.style.borderBottom = 'none';
-        }
+    const fetchInternalAssessor = async () => {
+      try {
+        const data = await getInternalAssessorById(internalAssessorID);
+        setInternalAssessor(data);
+      } catch (error) {
+        console.error('Error al cargar asesor interno:', error);
+      } finally {
+        setLoading(false);
       }
-    }, [filledData]);
+    };
+
+    fetchInternalAssessor();
+  }, []);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getAllStudents();
+        setStudents(data);
+      } catch (error) {
+        console.error('Error al cargar estudiantes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  const getFilteredStudents = () => {
+    return students.filter((student) => {
+      const lowerSearch = search.toLowerCase();
+      const matchSearch =
+        (student.name || '').toLowerCase().includes(lowerSearch) ||
+        (student.matricula || '').toLowerCase().includes(lowerSearch);
+
+      const filters = activeFilters;
+      const matchCareer = !filters.Carrera || filters.Carrera.includes(student.career);
+      const matchSemester = !filters.Semestre || filters.Semestre.includes(student.semester);
+      const matchShift = !filters.Turno || filters.Turno.includes(student.shift);
+
+      const matchAssessor =
+        student.internalAssessor === (internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName);
+
+      return matchSearch && matchCareer && matchSemester && matchShift && matchAssessor;
+    });
+  };
+
+  const filtered = getFilteredStudents();
+  const minRows = 6;
+  const filledData = [...filtered];
+
+  if (filtered.length < minRows) {
+    const emptyRows = Array(minRows - filtered.length)
+      .fill()
+      .map((_, index) => {
+        const isLastRow = index === minRows - filtered.length - 1;
+        return {
+          id: `empty-${index}`,
+          name: '',
+          matricula: '',
+          career: '',
+          semester: '',
+          shift: '',
+          internalAssessor: '',
+          isEmpty: true,
+          isLastRow,
+        };
+      });
+
+    filledData.push(...emptyRows);
+  }
+
+  useEffect(() => {
+    if (tableRef.current) {
+      const lastRow = tableRef.current.querySelector('tbody tr:last-child');
+      if (lastRow) {
+        lastRow.style.borderBottom = 'none';
+      }
+    }
+  }, [filledData]);
 
   const columns = [
     {
@@ -145,9 +148,19 @@ const ModalEstudiantesAsignadosA = ({ isOpen, onClose, user }) => {
         return (
           <div className="flex gap-2 justify-center">
             <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'student', props: { user }, })} />
+              onClick={() => setModal({
+                name: 'student', props: {
+                  matricula: row.matricula,
+                  userID: row.userID,
+                },
+              })} />
             <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+              onClick={() => setModal({
+                name: 'studentEdit', props: {
+                  matricula: row.matricula,
+                  userID: row.userID,
+                },
+              })} />
           </div>
         );
       },
@@ -155,7 +168,7 @@ const ModalEstudiantesAsignadosA = ({ isOpen, onClose, user }) => {
   ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={'Estudiantes asignados a ' + studentData.fullName} >
+    <Modal isOpen={isOpen} onClose={onClose} title={'Estudiantes asignados a ' + internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName + ' '} >
       <ModalContext modal={modal} setModal={setModal} />
 
       {/* Encabezado de búsqueda y filtros */}
