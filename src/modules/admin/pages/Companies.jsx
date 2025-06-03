@@ -103,7 +103,7 @@ const Companies = () => {
                             <span className="truncate">{row.semester}</span>
                         </div>
                         <IconButton icon="eye" title="Ver"
-                            onClick={() => setModal({ name: 'assignedStudents', props: { user }, })} />
+                            onClick={() => setModal({ name: 'practiceCarousel', props: { user }, })} />
                     </div>
                 );
             },

@@ -173,9 +173,9 @@ const Students = () => {
         return (
           <div className="flex gap-2 justify-center">
             <IconButton icon="eye" title="Ver"
-              onClick={() => setModal({ name: 'student', props: { user }, })} />
+              onClick={() => setModal({ name: 'student', props: { studentData: row }, })} />
             <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+              onClick={() => setModal({ name: 'studentEdit', props: { studentData: row }, })} />
           </div>
         );
       },
@@ -203,12 +203,12 @@ const Students = () => {
           <div className="w-full relative">
             <div className="flex items-center justify-right absolute -top-5 right-0" >
               <SwitchButton icon="add" title="Estudiantes pendientes"
-                onClick={() => setModal({ name: 'student', props: { user }, })} />
+                onClick={() => setModal({ name: 'student', props: { studentData: row }, })} />
             </div>
 
             <div className="flex items-center justify-right absolute -top-5 right-12" >
               <SwitchButton icon="edit" title="Estudiantes aceptados"
-                onClick={() => setModal({ name: 'student', props: { user }, })} />
+                onClick={() => setModal({ name: 'student', props: { studentData: row }, })} />
             </div>
           </div>
         </div>
