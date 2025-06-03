@@ -107,7 +107,7 @@ const FilterPanel = ({ schema, onApplyFilters }) => {
   }, [filters]);
 
   return (
-    <div className="relative z-50 flex items-center gap-2">
+    <div className="relative z-20 flex items-center gap-2">
       <div className="relative flex items-center gap-2">
         <button
           onClick={handleToggle}
