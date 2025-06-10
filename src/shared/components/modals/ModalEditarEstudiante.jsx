@@ -21,6 +21,8 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
   const [student, setStudent] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [phone, setPhone] = useState("")
+
   const [aboutMe, setAboutMe] = useState("")
   const [knowledge, setKnowledge] = useState("")
 
@@ -77,7 +79,13 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
                   </div>
                   <div className="flex items-center text-gray-600">
                     <FaPhone className="mr-2 text-gray-400" />
-                    <span>{student.phone}</span>
+                    <InputField
+                      placeholder={student.phone}
+                      value={phone}
+                      onChange={setPhone}
+                      multiline={false}
+                      rows={1}
+                    />
                   </div>
                 </div>
               </div>
@@ -136,7 +144,7 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
             </div>
             <div>
               <p className="text-gray-500">Periodo:</p>
-              <p className="font-medium">{2025/1}</p>
+              <p className="font-medium">{2025 / 1}</p>
             </div>
             <div>
               <p className="text-gray-500">Sexo:</p>
@@ -169,11 +177,11 @@ const ModalEditarEstudiante = ({ isOpen, onClose, matricula }) => {
 
       <div className="w-full mt-6 mx-2 flex items-center justify-center space-x-6">
         <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                onClick={() => {
-                  onClose()
-                }}>
-                <FaUser className="mr-2" /> Guardar información
-              </button>
+          onClick={() => {
+            onClose()
+          }}>
+          <FaUser className="mr-2" /> Guardar información
+        </button>
       </div>
     </Modal>
   )

@@ -24,7 +24,8 @@ api.interceptors.response.use(
   (error) => {
     const { response } = error;
 
-    if (response && (response.status === 401 || response.status === 403)) {
+    //if (response && (response.status === 401 || response.status === 403)) {
+    if (response && (response.status === 512)) {
       // Elimina token y datos de sesión
       localStorage.removeItem('token');
       sessionStorage.clear();

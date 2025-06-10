@@ -99,7 +99,9 @@ const Companies = () => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
           <div className="flex gap-2 justify-center">
-            <span className="truncate">{row.semester}</span>
+            <div className="mt-2">
+              <span className="truncate">{row.semester}</span>
+            </div>
             <IconButton
               icon="eye"
               title="Ver"
@@ -116,7 +118,9 @@ const Companies = () => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
           <div className="flex gap-2 justify-center">
-            <span className="truncate">{row.semester}</span>
+            <div className="mt-2">
+              <span className="truncate">{row.semester}</span>
+            </div>
             <IconButton
               icon="eye"
               title="Ver"

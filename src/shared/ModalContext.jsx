@@ -6,6 +6,7 @@ import ModalPracticaEstudiante from '@shared/components/modals/ModalPracticaEstu
 import ModalEditarEstudiante from '@shared/components/modals/ModalEditarEstudiante';
 
 import ModalEstudiantesAsignadosA from '@shared/components/modals/ModalEstudiantesAsignadosA';
+import ModalEstudiantesNoAsignadosA from '@shared/components/modals/ModalEstudiantesNoAsignadosA';
 import ModalAsesor from '@shared/components/modals/ModalAsesor';
 import ModalEditarAsesor from '@shared/components/modals/ModalEditarAsesor';
 
@@ -51,6 +52,14 @@ const ModalContext = ({ modal, setModal }) => {
         case 'assignedStudents':
             return (
                 <ModalEstudiantesAsignadosA
+                    isOpen={true}
+                    onClose={() => setModal({ name: null, props: {} })}
+                    {...modal.props}
+                />
+            );
+        case 'nonAssignedStudents':
+            return (
+                <ModalEstudiantesNoAsignadosA
                     isOpen={true}
                     onClose={() => setModal({ name: null, props: {} })}
                     {...modal.props}

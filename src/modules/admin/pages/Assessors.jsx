@@ -119,7 +119,7 @@ const Assessors = () => {
               icon="add"
               title="Agregar Estudiante"
               onClick={() => setModal({
-                name: 'addStudents', props: {
+                name: 'nonAssignedStudents', props: {
                   internalAssessorID: row.internalAssessorID
                 }
               })}

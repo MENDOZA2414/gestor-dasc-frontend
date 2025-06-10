@@ -19,6 +19,7 @@ const ModalEstudiante = ({ isOpen, onClose, matricula }) => {
   const [modal, setModal] = useState({ name: null, props: {} });
 
   const [student, setStudent] = useState([]);
+  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,6 +35,19 @@ const ModalEstudiante = ({ isOpen, onClose, matricula }) => {
     };
 
     fetchStudent();
+
+    const fetchUser = async () => {
+      try {
+        const data = await getUserById(student.userID);
+        setUser(data);
+      } catch (error) {
+        console.error('Error al cargar usuario:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   /*useEffect(() => {
@@ -159,7 +173,7 @@ const ModalEstudiante = ({ isOpen, onClose, matricula }) => {
             </div>
             <div>
               <p className="text-gray-500">Periodo:</p>
-              <p className="font-medium">{2025/1}</p>
+              <p className="font-medium">{2025 / 1}</p>
             </div>
             <div>
               <p className="text-gray-500">Sexo:</p>
