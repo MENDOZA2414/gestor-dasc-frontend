@@ -167,7 +167,13 @@ const ModalEstudiantesEnVacante = ({ isOpen, onClose, user }) => {
               <IconButton icon="delete" title="Ver"
                 onClick={() => setModal({ name: 'delete', props: { user }, })} />
               <IconButton icon="edit" title="Editar"
-                onClick={() => setModal({ name: 'studentEdit', props: { user }, })} />
+                onClick={() => setModal({
+                  name: 'student', props: {
+                    matricula: row.matricula,
+                    userID: row.userID,
+                    editar: true
+                  }
+                })} />
             </div>
           </div>
         );

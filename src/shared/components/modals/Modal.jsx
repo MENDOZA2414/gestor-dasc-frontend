@@ -1,5 +1,6 @@
 import Card from '@shared/components/cards/Card';
 import { FaTimes } from 'react-icons/fa';
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Modal reutilizable.
@@ -13,11 +14,33 @@ import { FaTimes } from 'react-icons/fa';
 const Modal = ({ isOpen, onClose, children, backdrop = true, title }) => {
   if (!isOpen) return null;
 
+  /*useEffect(() => {
+    function handleClickOutside(event) {
+      onClose()
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])*/
+
+  // Cerrar con Escape
+  useEffect(() => {
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape)
+      return () => document.removeEventListener("keydown", handleEscape)
+    }
+  }, [isOpen])
+
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        backdrop ? 'bg-black bg-opacity-40' : ''
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${backdrop ? 'bg-black bg-opacity-40' : ''
+        }`}
     >
       <div className={`mx-4`}>
         <Card

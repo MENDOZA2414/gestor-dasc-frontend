@@ -6,6 +6,7 @@ import { Search, Filters } from '@shared/components/filters';
 import { DataTable } from '@shared/components/datatable';
 import IconButton from '@shared/components/buttons/IconButton';
 import { getAllStudents } from '@modules/admin/services/studentsService';
+import { getAllCompanies } from '../services/companiesService';
 
 const Companies = () => {
   const [search, setSearch] = useState('');
@@ -20,7 +21,7 @@ const Companies = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const data = await getAllStudents(); // Temporal: luego cambiar a getAllCompanies
+        const data = await getAllCompanies();
         setStudents(data);
       } catch (error) {
         console.error('Error al cargar estudiantes:', error);
@@ -84,13 +85,13 @@ const Companies = () => {
       label: 'Nombre',
       key: 'name',
       render: (row) =>
-        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>,
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.companyName}</span>,
     },
     {
       label: 'Contacto',
       key: 'contact',
       render: (row) =>
-        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>,
+        row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{"row.companyContact"}</span>,
     },
     {
       label: 'Vacantes Activas',

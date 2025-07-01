@@ -14,6 +14,8 @@ const Students = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [estudiantesAceptados, setEstudiantesAceptados] = useState(true);
+
   const tableRef = useRef(null);
   const cardRef = useRef(null);
   const [modal, setModal] = useState({ name: null, props: {} });
@@ -93,13 +95,15 @@ const Students = () => {
       const matchAssessor =
         allAssessorFilters.length === 0 || allAssessorFilters.includes(student.internalAssessor);
 
-      return matchSearch && matchCareer && matchSemester && matchShift && matchAssessor;
+      const status = estudiantesAceptados ? student.status === 'Aceptado' : student.status === 'Pendiente'
+
+      return matchSearch && matchCareer && matchSemester && matchShift && matchAssessor && status;
     });
   };
 
-  const filtered = getFilteredStudents();
+  var filtered = getFilteredStudents();
   const minRows = 10;
-  const filledData = [...filtered];
+  var filledData = [...filtered];
 
   if (filtered.length < minRows) {
     const emptyRows = Array(minRows - filtered.length)
@@ -179,9 +183,10 @@ const Students = () => {
               })} />
             <IconButton icon="edit" title="Editar"
               onClick={() => setModal({
-                name: 'studentEdit', props: {
+                name: 'student', props: {
                   matricula: row.matricula,
                   userID: row.userID,
+                  editar: true
                 }
               })} />
           </div>
@@ -189,6 +194,8 @@ const Students = () => {
       },
     },
   ];
+
+  const colorClass = estudiantesAceptados ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
 
   return (
     <>
@@ -200,33 +207,35 @@ const Students = () => {
           <Search value={search} onChange={(e) => setSearch(e.target.value)} />
           <Filters schema={filterSchema} onFilterChange={setActiveFilters} />
 
-          {/*<div className="w-full relative">
+          {<div className="w-full relative">
             <div className="flex items-center justify-right absolute -top-5 right-0" >
-              <SwitchButton icon="add" title="Estudiantes pendientes"
-                onClick={() => setModal({
-                  name: 'student', props: {
-                    matricula: row.matricula,
-                    userID: row.userID,
-                  }
-                })} />
+              <SwitchButton icon="add" title="Estudiantes pendientes" selected={!estudiantesAceptados}
+                onClick={() => {
+                  setEstudiantesAceptados(false)
+                  filtered = getFilteredStudents()
+                  console.log("Mostrando estudiantes pendientes")
+                }} />
             </div>
 
             <div className="flex items-center justify-right absolute -top-5 right-12" >
-              <SwitchButton icon="edit" title="Estudiantes aceptados"
-                onClick={() => setModal({
-                  name: 'student', props: {
-                    matricula: row.matricula,
-                    userID: row.userID,
-                  }
-                })} />
+              <SwitchButton icon="edit" title="Estudiantes aceptados" selected={estudiantesAceptados}
+                onClick={() => {
+                  setEstudiantesAceptados(true)
+                  filtered = getFilteredStudents()
+                  console.log("Mostrando estudiantes aceptados")
+                }} />
             </div>
-          </div>*/}
+          </div>}
         </div>
 
         {/* Card fija con tabla expandida visualmente */}
         <Card className="min-h-[540px] flex flex-col justify-between" ref={cardRef}>
           <div className="flex-grow overflow-hidden">
-            <div className="h-full flex flex-col">
+            <span className="">Mostrando alumnos </span>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium truncate ${colorClass}`}> {estudiantesAceptados ? "Aceptados" : "Pendientes"}</span>
+            <span> en el sistema</span>
+
+            <div className="mt-5 h-full flex flex-col">
               <DataTable
                 columns={columns}
                 data={filledData}

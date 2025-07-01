@@ -3,13 +3,9 @@ import React from 'react';
 import ModalEstudiante from '@shared/components/modals/ModalEstudiante';
 import ModalArchivosEstudiante from '@shared/components/modals/ModalArchivosEstudiante';
 import ModalPracticaEstudiante from '@shared/components/modals/ModalPracticaEstudiante';
-import ModalEditarEstudiante from '@shared/components/modals/ModalEditarEstudiante';
 
 import ModalEstudiantesAsignadosA from '@shared/components/modals/ModalEstudiantesAsignadosA';
-import ModalEstudiantesNoAsignadosA from '@shared/components/modals/ModalEstudiantesNoAsignadosA';
 import ModalAsesor from '@shared/components/modals/ModalAsesor';
-import ModalEditarAsesor from '@shared/components/modals/ModalEditarAsesor';
-
 import ModalEstudiantesEnVacante from '@shared/components/modals/ModalEstudiantesEnVacante';
 
 import ModalCarruselVacantes from '@shared/components/modals/ModalCarruselVacantes';
@@ -20,14 +16,6 @@ const ModalContext = ({ modal, setModal }) => {
         case 'student':
             return (
                 <ModalEstudiante
-                    isOpen={true}
-                    onClose={() => setModal({ name: null, props: {} })}
-                    {...modal.props}
-                />
-            );
-        case 'studentEdit':
-            return (
-                <ModalEditarEstudiante
                     isOpen={true}
                     onClose={() => setModal({ name: null, props: {} })}
                     {...modal.props}
@@ -52,14 +40,6 @@ const ModalContext = ({ modal, setModal }) => {
         case 'assignedStudents':
             return (
                 <ModalEstudiantesAsignadosA
-                    isOpen={true}
-                    onClose={() => setModal({ name: null, props: {} })}
-                    {...modal.props}
-                />
-            );
-        case 'nonAssignedStudents':
-            return (
-                <ModalEstudiantesNoAsignadosA
                     isOpen={true}
                     onClose={() => setModal({ name: null, props: {} })}
                     {...modal.props}
@@ -92,14 +72,6 @@ const ModalContext = ({ modal, setModal }) => {
         case 'assessor':
             return (
                 <ModalAsesor
-                    isOpen={true}
-                    onClose={() => setModal({ name: null, props: {} })}
-                    {...modal.props}
-                />
-            );
-        case 'assessorEdit':
-            return (
-                <ModalEditarAsesor
                     isOpen={true}
                     onClose={() => setModal({ name: null, props: {} })}
                     {...modal.props}

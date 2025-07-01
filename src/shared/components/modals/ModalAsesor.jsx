@@ -5,6 +5,8 @@ import Modal from "./Modal"
 import ProgressBar from '@shared/components/ProgressBar';
 import { FaUser, FaEnvelope, FaPhone, FaDatabase } from "react-icons/fa"
 import { getInternalAssessorById } from '@modules/admin/services/assessorsService';
+import InputField from '@shared/components/InputField';
+import Select from '@shared/components/Select';
 
 /**
  * Modal especializado para mostrar información de estudiante.
@@ -14,11 +16,31 @@ import { getInternalAssessorById } from '@modules/admin/services/assessorsServic
  * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalEditarAsesor = ({ isOpen, onClose, internalAssessorID }) => {
+const ModalEditarAsesor = ({ isOpen, onClose, internalAssessorID, editar }) => {
   const [modal, setModal] = useState({ name: null, props: {} });
 
   const [internalAssessor, setInternalAssessor] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [editando, setEditando] = useState(editar);
+  const [aboutMe, setAboutMe] = useState("")
+  const [knowledge, setKnowledge] = useState("")
+  const [phone, setPhone] = useState("")
+  const [email, setEmail] = useState("")
+
+  useEffect(() => {
+    setLoading(false)
+  }, [])
+
+  const handleSave = () => {
+    console.log("Guardando cambios:", {
+      aboutMe,
+      knowledge,
+      phone,
+      email
+    })
+    setEditando(false)
+  }
 
   useEffect(() => {
     const fetchInternalAssessor = async () => {
@@ -70,11 +92,37 @@ const ModalEditarAsesor = ({ isOpen, onClose, internalAssessorID }) => {
                   </div>
                   <div className="flex items-center text-gray-600">
                     <FaEnvelope className="mr-2 text-gray-400" />
-                    <span>{"student.email"}</span>
+                    {editando ?
+                      (
+                        <InputField
+                          placeholder={"student.email"}
+                          value={email}
+                          onChange={setEmail}
+                          multiline={false}
+                          rows={1}
+                        />
+                      )
+                      :
+                      (
+                        <span>{"student.email"}</span>
+                      )}
                   </div>
                   <div className="flex items-center text-gray-600">
                     <FaPhone className="mr-2 text-gray-400" />
-                    <span>{"student.phone"}</span>
+                    {editando ?
+                      (
+                        <InputField
+                          placeholder={"student.phone"}
+                          value={phone}
+                          onChange={setPhone}
+                          multiline={false}
+                          rows={1}
+                        />
+                      )
+                      :
+                      (
+                        <span>{"student.phone"}</span>
+                      )}
                   </div>
                 </div>
               </div>
@@ -86,7 +134,16 @@ const ModalEditarAsesor = ({ isOpen, onClose, internalAssessorID }) => {
                 <span className="text-2xl mr-2">"</span>
                 Sobre mí
               </h3>
-              <p className="mt-2 text-gray-600">{"studentData.aboutMe"}</p>
+              {editando ?
+                (<InputField
+                  placeholder="¡Escribe qué te gustaría que la gente supiera de ti!"
+                  value={aboutMe}
+                  onChange={setAboutMe}
+                  multiline={true}
+                  rows={2}
+                />)
+                :
+                (<p className="mt-2 text-gray-600">{"studentData.aboutMe"}</p>)}
             </div>
 
             <div className="w-full mt-6">
@@ -94,21 +151,48 @@ const ModalEditarAsesor = ({ isOpen, onClose, internalAssessorID }) => {
                 <span className="mr-2">💻</span>
                 Conocimientos
               </h3>
-              <p className="mt-2 text-gray-600">{"studentData.knowledge"}</p>
+              {editando ?
+                (<InputField
+                  placeholder="¡Descríbele a las entidades qué es lo que puedes hacer!"
+                  value={knowledge}
+                  onChange={setKnowledge}
+                  multiline={true}
+                  rows={2}
+                />)
+                :
+                (<p className="mt-2 text-gray-600">{"studentData.aboutMe"}</p>)}
             </div>
 
-            <div className="w-full mt-16 mx-2 flex items-center justify-center space-x-6">
-              <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                onClick={() => {
-                  setModal({
-                    name: 'assessorEdit', props: {
-                      internalAssessorID: internalAssessorID
-                    }
-                  })
-                }}>
-                <FaUser className="mr-2" /> Editar información
-              </button>
-            </div>
+            {editando ?
+              (
+                <div className="w-full mt-6 mx-2 flex items-center justify-center space-x-6">
+                  <button
+                    className="flex items-center justify-center py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                    onClick={handleSave}
+                  >
+                    <FaUser className="mr-2" /> Guardar información
+                  </button>
+                  <button
+                    className="flex items-center justify-center py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition"
+                    onClick={() => setEditando(false)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              )
+              :
+              (
+                <div className="w-full mt-16 mx-2 flex items-center justify-center space-x-6">
+                  <button className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                    onClick={() => {
+                      setEditando(true)
+                      console.log({ editando })
+                    }}>
+                    <FaUser className="mr-2" /> Editar información
+                  </button>
+                </div>
+              )
+            }
           </div>
         </div>
 
@@ -145,6 +229,20 @@ const ModalEditarAsesor = ({ isOpen, onClose, internalAssessorID }) => {
               <p className="font-medium">{"student.status"}</p>
             </div>
           </div>
+
+          {!editando && (
+            <button
+              className="mt-36 w-full flex items-center justify-center py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition mt-5"
+              onClick={() => setModal({
+                name: 'assignedStudents', props: {
+                  internalAssessorID: internalAssessorID,
+                  asignar: true
+                }
+              })}
+            >
+              <span className="mr-2">👨‍🎓</span> Asignar estudiante
+            </button>
+          )}
         </div>
       </div>
     </Modal>

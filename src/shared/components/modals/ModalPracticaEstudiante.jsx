@@ -6,37 +6,33 @@ import { DataTable } from '@shared/components/datatable';
 import { FaUser, FaEnvelope, FaPhone, FaDatabase } from "react-icons/fa"
 import ProgressBar from '@shared/components/ProgressBar';
 import GoalProgressBar from '@shared/components/GoalProgressBar';
+import { deleteFile, getStudentFiles } from '@modules/admin/services/studentsService';
+import IconButton from '@shared/components/buttons/IconButton';
 
 /**
  * Modal especializado para mostrar información de estudiante.
  *
  * @param {boolean} isOpen
  * @param {function} onClose
- * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalPracticaEstudiante = ({ isOpen, onClose, user }) => {
+const ModalPracticaEstudiante = ({ isOpen, onClose, data }) => {
+  const statusOptions = [
+    { value: "aceptado", label: "Aceptado", color: "bg-green-100 text-green-800" },
+    { value: "rechazado", label: "Rechazado", color: "bg-red-100 text-red-800" },
+    { value: "revision", label: "En Revisión", color: "bg-blue-100 text-blue-800" },
+    { value: "pendiente", label: "Pendiente", color: "bg-yellow-100 text-yellow-800" },
+  ]
 
   const studentData = {
-    fullName: "Alan Martín Agúndez Meza",
-    id: "2023456702",
-    email: "aagundez_21@alu.uabcs.mx",
-    phone: "6121587915",
-    about: "Estudiante casi-egresado de la UABCS! Estudiante de Ingeniería en Desarrollo de Software.",
-    skills: "Especializado en programación Orientada a Objetos, Animación 3D y Diseñador Gráfico Digital.",
-    career: "IDS",
-    semester: "8vo",
-    shift: "TM",
-    period: "2025/I",
-    gender: "H",
-    status: "A",
     practice: {
       name: "Administrador de Base de Datos",
       progress: 66,
     },
   }
 
-  const [students, setStudents] = useState([]);
+  const [student, setStudent] = useState(data);
+  const [archivos, setStudentFiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const tableRef = useRef(null);
@@ -44,11 +40,15 @@ const ModalPracticaEstudiante = ({ isOpen, onClose, user }) => {
 
   const [modal, setModal] = useState({ name: null, props: {} });
 
+  const base = 'https://uabcs.online/practicas/';
+
   useEffect(() => {
-    const fetchStudents = async () => {
+    setStudent(data)
+    const fetchStudentFiles = async () => {
       try {
-        const data = await getAllStudents();
-        setStudents(data);
+        const data = await getStudentFiles(student.controlNumber);
+        setStudentFiles(data);
+        console.log(data)
       } catch (error) {
         console.error('Error al cargar estudiantes:', error);
       } finally {
@@ -56,26 +56,11 @@ const ModalPracticaEstudiante = ({ isOpen, onClose, user }) => {
       }
     };
 
-    fetchStudents();
+    fetchStudentFiles();
   }, []);
 
-  const getFilteredStudents = () => {
-    return students.filter((student) => {
-      const matchSearch = (student.name || '').toLowerCase().includes(search.toLowerCase());
-
-      const matchFilters =
-        activeFilters.length === 0 ||
-        activeFilters.includes(student.career) ||
-        activeFilters.includes(student.semester) ||
-        activeFilters.includes(student.shift) ||
-        activeFilters.includes(student.internalAssessor);
-
-      return matchSearch && matchFilters;
-    });
-  };
-
-  const filtered = getFilteredStudents();
-  const minRows = 4;
+  const filtered = archivos;
+  const minRows = 6;
   const filledData = [...filtered];
 
   if (filtered.length < minRows) {
@@ -110,22 +95,36 @@ const ModalPracticaEstudiante = ({ isOpen, onClose, user }) => {
     {
       label: 'Nombre',
       key: 'name',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.name}</span>),
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.fileName}</span>),
     },
     {
       label: 'Tamaño del archivo',
       key: 'tamano',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.matricula}</span>),
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{"row.fileSize"}</span>),
     },
     {
       label: 'Fecha',
       key: 'fecha',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.career}</span>),
+      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{"row.fecha"}</span>),
     },
     {
       label: 'Estado',
       key: 'estado',
-      render: (row) => (row.isEmpty ? <div className="h-9"></div> : <span className="truncate">{row.semester}</span>),
+      render: (row) => {
+        if (row.isEmpty) return <div className="h-9"></div>;
+
+        const statusOption = statusOptions.find(opt => opt.value === row.status?.toLowerCase());
+        const colorClass = statusOption ? statusOption.color : "bg-gray-100 text-gray-800";
+
+        return (
+          <div className="flex gap-2 justify-center">
+            <div className="mt-2">
+              <span className={`px-2 py-1 rounded-full text-xs font-medium truncate ${colorClass}`}>{row.status}</span>
+              {/*<span className="truncate">{row.status}</span>*/}
+            </div>
+          </div>
+        );
+      },
     },
     {
       label: 'Acciones',
@@ -134,9 +133,10 @@ const ModalPracticaEstudiante = ({ isOpen, onClose, user }) => {
       render: (row) => {
         if (row.isEmpty) return <div className="h-9"></div>;
         return (
-          <div className="flex gap-2 justify-center">
-            <IconButton icon="eye" title="Ver" />
-            <IconButton icon="edit" title="Editar" onClick={() => console.log('Editar alumno', row)} />
+          <div className="flex gap-2 justify-center mx-4">
+            <IconButton icon="eye" title="Ver" onClick={() => window.open(`https://gestor-dasc-backend.onrender.com/api/documents/view?path=${row.filePath.replace(base, '')}`, '_blank')} />
+            <IconButton icon="download" title="Descargar" onClick={() => window.open(`https://gestor-dasc-backend.onrender.com/api/documents/view?path=${row.filePath.replace(base, '')}&download=true`, '_blank')} />
+            <IconButton icon="delete" title="Delete" onClick={() => deleteFile(row.documentID)} />
           </div>
         );
       },
@@ -144,7 +144,7 @@ const ModalPracticaEstudiante = ({ isOpen, onClose, user }) => {
   ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={'Datos de práctica de ' + studentData.fullName} >
+    <Modal isOpen={isOpen} onClose={onClose} title={'Datos de práctica de ' + (student ? student.firstName + " " + student.firstLastName + " " + student.secondLastName : "")} >
       <ModalContext modal={modal} setModal={setModal} />
 
       {/* Práctica en curso */}

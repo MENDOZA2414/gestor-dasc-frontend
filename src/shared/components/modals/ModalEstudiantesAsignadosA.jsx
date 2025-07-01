@@ -16,7 +16,7 @@ import { getInternalAssessorById } from '@modules/admin/services/assessorsServic
  * @param {object} user - Información del usuario: firstName, firstLastName, logo
  * @param {ReactNode} children - Contenido adicional si es necesario
  */
-const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID }) => {
+const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID, asignar }) => {
 
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
@@ -27,6 +27,7 @@ const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID }) => 
   const cardRef = useRef(null);
 
   const [students, setStudents] = useState([]);
+  const [asignando, setAsignando] = useState(asignar);
 
   const [modal, setModal] = useState({ name: null, props: {} });
 
@@ -72,8 +73,10 @@ const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID }) => 
       const matchSemester = !filters.Semestre || filters.Semestre.includes(student.semester);
       const matchShift = !filters.Turno || filters.Turno.includes(student.shift);
 
-      const matchAssessor =
-        student.internalAssessor === (internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName);
+      const matchAssessor = asignando ?
+        student.internalAssessor === (internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName)
+        :
+        student.internalAssessor != (internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName);
 
       return matchSearch && matchCareer && matchSemester && matchShift && matchAssessor;
     });
@@ -154,13 +157,6 @@ const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID }) => 
                   userID: row.userID,
                 },
               })} />
-            <IconButton icon="edit" title="Editar"
-              onClick={() => setModal({
-                name: 'studentEdit', props: {
-                  matricula: row.matricula,
-                  userID: row.userID,
-                },
-              })} />
           </div>
         );
       },
@@ -168,7 +164,10 @@ const ModalEstudiantesAsignadosA = ({ isOpen, onClose, internalAssessorID }) => 
   ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={'Estudiantes asignados a ' + internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName + ' '} >
+    <Modal isOpen={isOpen} onClose={onClose} title={!asignando ?
+      ('Estudiantes asignados a ') + internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName + ' '
+      :
+      ('Asignar estudiante a ') + internalAssessor.firstName + ' ' + internalAssessor.firstLastName + ' ' + internalAssessor.secondLastName + ' '} >
       <ModalContext modal={modal} setModal={setModal} />
 
       {/* Encabezado de búsqueda y filtros */}

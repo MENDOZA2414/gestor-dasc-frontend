@@ -541,15 +541,13 @@ const Reports = () => {
             <IconButton
               icon="edit"
               title="Editar"
-              onClick={() =>
-                setModal({
-                  name: "studentEdit",
-                  props: {
-                    matricula: row.matricula,
-                    userID: row.userID,
-                  },
-                })
-              }
+              onClick={() => setModal({
+                name: 'student', props: {
+                  matricula: row.matricula,
+                  userID: row.userID,
+                  editar: true
+                }
+              })}
             />
           </div>
         )
@@ -568,11 +566,10 @@ const Reports = () => {
           disabled={generatingPDF}
           className={`
                         px-6 py-3 rounded-lg font-medium text-white transition-all duration-200
-                        ${
-                          generatingPDF
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:transform active:scale-95"
-                        }
+                        ${generatingPDF
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:transform active:scale-95"
+            }
                         flex items-center gap-2
                     `}
         >

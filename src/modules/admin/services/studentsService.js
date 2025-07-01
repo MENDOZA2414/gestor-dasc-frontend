@@ -18,6 +18,25 @@ export const getStudentById = async (id) => {
   }
 };
 
+// Marcar archivo como Rechazado
+export const changeStudentStatus = async (id, status) => {
+      console.log('aaaaaaaaaaaaaaa', status);
+  try {
+    const response = await api.patch(`/students/${id}/status`, {
+      status: status
+    });
+    console.log('Estatus del estudiante cambiado correctamente correctamente:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al cambiar el estado de estudiante ${id}:`, {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data
+    });
+    throw error;
+  }
+};
+
 // Reasignar Asesor Interno
 export const reassignInternalAssessor = async (studentID, assessorID) => {
   try {
@@ -57,6 +76,27 @@ export const getAndViewFile = async (path) => {
     throw error;
   }
 };
+
+// Subir archivo
+export const uploadFile = async (formData) => {
+  try {
+    const response = await api.post(`/documents/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    console.log(response)
+    console.log("Archivo subido correctamente:", response.data)
+    return response.data
+  } catch (error) {
+    console.error("Error al subir archivo:", {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    })
+    throw error
+  }
+}
 
 // Descargar archivo según su ruta
 export const getAndDownloadFile = async (path) => {

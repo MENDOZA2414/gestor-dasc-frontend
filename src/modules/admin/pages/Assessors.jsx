@@ -119,8 +119,9 @@ const Assessors = () => {
               icon="add"
               title="Agregar Estudiante"
               onClick={() => setModal({
-                name: 'nonAssignedStudents', props: {
-                  internalAssessorID: row.internalAssessorID
+                name: 'assignedStudents', props: {
+                  internalAssessorID: row.internalAssessorID,
+                  asignar: true
                 }
               })}
             />
@@ -149,8 +150,9 @@ const Assessors = () => {
               icon="edit"
               title="Editar"
               onClick={() => setModal({
-                name: 'assessorEdit', props: {
-                  internalAssessorID: row.internalAssessorID
+                name: 'assessor', props: {
+                  internalAssessorID: row.internalAssessorID,
+                  editar: true
                 }
               })}
             />

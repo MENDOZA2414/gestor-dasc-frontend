@@ -1,8 +1,9 @@
 "use client"
 
+import { markFileAsAccepted, markFileAsOnReview } from "@modules/admin/services/studentsService"
 import { useState } from "react"
 
-const StatusModal = ({ isOpen, onClose, currentStatus, onConfirm }) => {
+const StatusModal = ({ isOpen, onClose, currentStatus, onConfirm, fileID }) => {
   const [selectedStatus, setSelectedStatus] = useState(currentStatus || "")
 
   const statusOptions = [
@@ -15,6 +16,15 @@ const StatusModal = ({ isOpen, onClose, currentStatus, onConfirm }) => {
   const handleConfirm = () => {
     if (selectedStatus) {
       onConfirm(selectedStatus)
+      if (selectedStatus === "rechazado") {
+        markFileAsRejected(fileID, "Era necesario...")
+      }
+      else if (selectedStatus === "aceptado") {
+        markFileAsAccepted(fileID)
+      }
+      else if (selectedStatus === "revision") {
+        markFileAsOnReview(fileID)
+      }
       onClose()
     }
   }

@@ -4,7 +4,7 @@ import ModalContext from '@shared/ModalContext';
 import Modal from "./Modal"
 import { DataTable } from '@shared/components/datatable';
 import { Search, Filters } from '@shared/components/filters';
-import { getStudentById, getStudentFiles, deleteFile, markFileAsOnReview, markFileAsRejected, markFileAsAccepted } from '@modules/admin/services/studentsService';
+import { getStudentById, getStudentFiles, deleteFile, markFileAsOnReview, markFileAsRejected, markFileAsAccepted, uploadFile } from '@modules/admin/services/studentsService';
 import IconButton from '@shared/components/buttons/IconButton';
 import StatusModal from "@shared/components/StatusModal"
 
@@ -18,7 +18,17 @@ import StatusModal from "@shared/components/StatusModal"
  */
 const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
 
+  const statusOptions = [
+    { value: "aceptado", label: "Aceptado", color: "bg-green-100 text-green-800" },
+    { value: "rechazado", label: "Rechazado", color: "bg-red-100 text-red-800" },
+    { value: "revision", label: "En Revisión", color: "bg-blue-100 text-blue-800" },
+    { value: "pendiente", label: "Pendiente", color: "bg-yellow-100 text-yellow-800" },
+  ]
+
   const [student, setStudent] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
 
   const [statusModal, setStatusModal] = useState({
     isOpen: false,
@@ -46,7 +56,7 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
 
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [archivos, setStudentFiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const tableRef = useRef(null);
@@ -55,10 +65,10 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
   const [modal, setModal] = useState({ name: null, props: {} });
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchStudentFiles = async () => {
       try {
         const data = await getStudentFiles(matricula);
-        setStudents(data);
+        setStudentFiles(data);
         console.log(data)
       } catch (error) {
         console.error('Error al cargar estudiantes:', error);
@@ -67,10 +77,10 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
       }
     };
 
-    fetchStudents();
+    fetchStudentFiles();
   }, []);
 
-  const filtered = students;
+  const filtered = archivos;
   const minRows = 6;
   const filledData = [...filtered];
 
@@ -102,6 +112,58 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
     }
   }, [filledData]);
 
+  // Función para abrir el explorador de archivos
+  const adjuntarArchivo = () => {
+    fileInputRef.current?.click()
+  }
+
+  // Función para manejar la selección de archivo
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      setSelectedFile(file)
+      console.log("Archivo seleccionado:", file.name)
+    }
+  }
+
+  // Función para subir el archivo
+  const subirArchivo = async () => {
+    if (!selectedFile) {
+      alert("Por favor selecciona un archivo primero")
+      return
+    }
+
+    setUploading(true)
+
+    try {
+      // Crear FormData para enviar el archivo
+      const formData = new FormData()
+      formData.append("document", selectedFile)
+      formData.append("studentID", matricula)
+      formData.append("documentType", "general")
+
+      const response = await uploadFile(formData)
+
+      console.log("Archivo subido correctamente:", response)
+      alert("Archivo subido exitosamente")
+
+      // Limpiar el archivo seleccionado
+      setSelectedFile(null)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+
+      // Recargar la lista de archivos
+      /*const updatedData = await getStudentFiles(matricula)
+      setStudentFiles(updatedData)*/
+    } catch (error) {
+      console.error("Error al subir archivo:", error)
+      alert("Error al subir el archivo. Por favor intenta de nuevo.")
+    } finally {
+      setUploading(false)
+    }
+  }
+
   // Función para abrir el modal de cambio de estado
   const handleStatusClick = (fileId, currentStatus) => {
     setStatusModal({
@@ -126,7 +188,7 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
     console.log(`Cambiando estado del archivo ${statusModal.fileId} a: ${newStatus}`)
 
     // Actualizar el estado local si es necesario
-    /*setStudents((prevStudents) =>
+    /*setStudentFiles((prevStudents) =>
       prevStudents.map((student) =>
         student.documentID === statusModal.fileId ? { ...student, status: newStatus } : student,
       ),
@@ -141,21 +203,6 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
         return "bg-yellow-100 text-yellow-800"
       case "revision":
         return markFileAsOnReview(statusModal.fileId)
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
-
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case "aceptado":
-        return "bg-green-100 text-green-800"
-      case "rechazado":
-        return "bg-red-100 text-red-800"
-      case "pendiente":
-        return "bg-yellow-100 text-yellow-800"
-      case "revision":
-        return "bg-blue-100 text-blue-800"
       default:
         return "bg-gray-100 text-gray-800"
     }
@@ -182,10 +229,15 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
       key: 'estado',
       render: (row) => {
         if (row.isEmpty) return <div className="h-9"></div>;
+
+        const statusOption = statusOptions.find(opt => opt.value === row.status?.toLowerCase());
+        const colorClass = statusOption ? statusOption.color : "bg-gray-100 text-gray-800";
+
         return (
           <div className="flex gap-2 justify-center">
             <div className="mt-2">
-              <span className="truncate">{row.status}</span>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium truncate ${colorClass}`}>{row.status}</span>
+              {/*<span className="truncate">{row.status}</span>*/}
             </div>
             <IconButton icon="edit" title="Editar Estado" onClick={() => handleStatusClick(row.documentID, row.status)} />
           </div>
@@ -213,6 +265,15 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
     <Modal isOpen={isOpen} onClose={onClose} title={'Archivos subidos por ' + student.firstName + " " + student.firstLastName + " " + student.secondLastName} >
       <ModalContext modal={modal} setModal={setModal} />
 
+      {/* Input file oculto */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileSelect}
+        style={{ display: "none" }}
+        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" // Ajusta los tipos de archivo según tus necesidades
+      />
+
       {/* Encabezado de búsqueda y filtros */}
       <div className="flex gap-3 items-center">
         <Search value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -233,6 +294,38 @@ const ModalArchivosEstudiante = ({ isOpen, onClose, matricula }) => {
           </div>
         </div>
       </div>
+
+      {/* Mostrar archivo seleccionado */}
+      {selectedFile && (
+        <div className="flex justify-center mb-4">
+          <div className="bg-gray-100 px-4 py-2 rounded-md">
+            <span className="text-sm text-gray-700">
+              Archivo seleccionado: <strong>{selectedFile.name}</strong>
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col items-center">
+        <div className="flex flex-rows gap-11">
+          <button
+            className="flex items-center justify-center py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            onClick={adjuntarArchivo}
+          >
+            <span className="mr-2">📄</span> Seleccionar archivo a subir
+          </button>
+          <button
+            className={`flex items-center justify-center py-2 px-4 rounded-md transition ${uploading || !selectedFile ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+              } text-white`}
+            onClick={subirArchivo}
+            disabled={uploading || !selectedFile}
+          >
+            <span className="mr-2">📄</span>
+            {uploading ? "Subiendo..." : "Subir documento para alumno"}
+          </button>
+        </div>
+      </div>
+
       <StatusModal
         isOpen={statusModal.isOpen}
         onClose={handleStatusModalClose}
